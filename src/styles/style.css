@@ -410,6 +410,20 @@
   border-radius: 8px;
   padding: 20px;
 }
+/*********Dashboard All details**********/
+.dropdown-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+.custom-dropdown {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 16px;
+  width: 200px;
+}
 .custom-box {
   width: calc(25% - 20px);;
   padding: 20px; 
@@ -433,6 +447,7 @@
   word-wrap: break-word;
   max-width: 100%;
 }
+/***********Dashboard product details***********/
 .product-details h4 {
   background: #ECEEF4;
 }
@@ -445,14 +460,6 @@
   align-items: flex-start;
   gap: 10px;
   padding: 10px 0;
-}
-.product-details-sub img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  padding: 5px;
-  border-right: 2px solid #333;
-  margin-right: 10px;
 }
 .product-details-item {
   display: flex;

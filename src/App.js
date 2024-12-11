@@ -9,7 +9,6 @@ import HomePage from "./Pages/Home/HomePage";
 import NotFound from "./Pages/NotFound";
 import "./styles/style.css";
 import Main from "./Pages/Dashboard/Main";
-import Dashboard from "./Pages/Dashboard/Dashboard";
 import Purchase from "./Pages/Dashboard/Purchase";
 import InventoryManagement from "./Pages/Dashboard/InventoryManagement";
 import SalesOrder from "./Pages/Dashboard/SalesOrder";
@@ -21,6 +20,7 @@ import VendorPayment from "./Pages/Dashboard/VendorPayment";
 import Customer from "./Pages/Dashboard/Customer";
 import Invoices from "./Pages/Dashboard/Invoices";
 import VendorManagement from "./Pages/Dashboard/VendorManagement";
+import Dashboard from "./Pages/Dashboard/Dashboard/Dashboard";
 
 function App() {
   return (
