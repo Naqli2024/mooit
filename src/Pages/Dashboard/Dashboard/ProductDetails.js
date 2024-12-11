@@ -18,20 +18,20 @@ const ProductDetails = () => {
   useEffect(() => {
     const chartCtx = chartRef.current.getContext("2d");
 
-    // Dynamically generate labels and data from productDetails
-    const labels = productDetails.map((item) => item.category);
-    const data = productDetails.map((item) => item.count);
+    const labels = productDetails.map((item) => item.category); // Extract categories
+    const data = productDetails.map((item) => item.count); // Extract counts
 
-    // Destroy any existing chart instance to avoid canvas reuse error
+    console.log("Labels: ", labels);
+    console.log("Data: ", data);
+
     if (chartInstanceRef.current) {
       chartInstanceRef.current.destroy();
     }
 
-    // Create new Doughnut Chart instance
     chartInstanceRef.current = new Chart(chartCtx, {
       type: "doughnut",
       data: {
-        labels,
+        // labels, 
         datasets: [
           {
             data,
@@ -43,17 +43,26 @@ const ProductDetails = () => {
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            position: "top",
-          },
           tooltip: {
-            enabled: true,
+            callbacks: {
+              label: function (tooltipItem) {
+                // Safely map index to get the data value and category dynamically
+                const index = tooltipItem.dataIndex;
+                const category = productDetails[index]?.category || "Unknown";
+                const value = productDetails[index]?.count || 0;
+
+                console.log("Hover index: ", index);
+                console.log("Hover category: ", category);
+                console.log("Hover value: ", value);
+
+                return `${category}: ${value}`;
+              },
+            },
           },
         },
       },
     });
 
-    // Cleanup function to destroy the chart when the component unmounts
     return () => {
       if (chartInstanceRef.current) {
         chartInstanceRef.current.destroy();
@@ -65,10 +74,9 @@ const ProductDetails = () => {
     <div className="col-md-4 product-details">
       <h4>Product details</h4>
       <div className="product-details-sub">
-        <canvas
-          ref={chartRef}
-          style={{ maxWidth: "150px", margin: "0 auto" }}
-        />
+        <canvas ref={chartRef} style={{ maxWidth: "200px", margin: "0 auto" }} />
+        {/* Separator line */}
+        <div className="separator-line"></div>
         <div className="product-details-container">
           {productDetails.map((productDetail, index) => (
             <div className="product-details-item" key={index}>

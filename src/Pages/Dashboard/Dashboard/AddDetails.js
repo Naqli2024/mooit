@@ -3,7 +3,7 @@ import { overAllData } from "../../../Data/DashboardData";
 
 const AddDetails = () => {
   return (
-    <div className="col-md-8 dashboard-head">
+    <div className="col-md-7 dashboard-head">
       <div className="dropdown-container">
         <select className="custom-dropdown">
           <option value="all-time">All Time</option>
