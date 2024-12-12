@@ -42,7 +42,6 @@ const PurchaseList = () => {
                 <option value="1">One</option>
                 <option value="2">Two</option>
                 <option value="3">Three</option>
-                <option value="4">Four</option>
               </Form.Select>
             </div>
             <div className="col-md-2">
