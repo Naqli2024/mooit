@@ -25,7 +25,7 @@ const Dashboard = () => {
         <SalesActivity />
         <TopSellingItem />
       </div>
-    </>
+    </div>
   );
 };
 
