@@ -460,7 +460,7 @@
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }
-.col-md-4.product-details {
+.product-details {
   border: 1px solid #ddd;
   border-radius: 8px;
   width: 100%;
@@ -494,6 +494,10 @@
 }
 .product-details-container {
   flex: 1; 
+}
+.sales-analysis {
+  width: 100%;
+  max-width: 50% !important;
 }
 .canvas-container {
   flex: 1; 
@@ -588,4 +592,19 @@
     font-size: 12px; 
     text-align: center;
   }
+}
+/*************Product Sale**************/
+.product-sale {
+  max-width: 100% !important;
+}
+/*************Top selling item*************/
+.top-selling-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.top-selling-item .custom-box {
+  width: 100%;
+  margin: 10px;
 }
