@@ -27,7 +27,7 @@ const HomePage = () => {
             </div>
             <div class="row mt-4 gx-2 button-group">
               <div class="col-auto">
-                <button class="btn btn-outline-secondary text-white fw-bold bg-primary">
+                <button class="btn btn-outline-secondary text-white fw-bold bg-primary me-3">
                   Get started for free
                 </button>
               </div>

@@ -9,7 +9,7 @@ import TopSellingItem from "./TopSellingItem";
 
 const Dashboard = () => {
   return (
-    <>
+    <div className="dashboard-padding">
       <div className="row dashboard">
         <AddDetails />
         <ProductDetails />

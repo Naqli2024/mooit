@@ -251,7 +251,9 @@
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+}
+.dashboard-padding{
+  padding: 20px !important;
 }
 .menu-icon {
   position: fixed;
@@ -592,19 +594,4 @@
     font-size: 12px; 
     text-align: center;
   }
-}
-/*************Product Sale**************/
-.product-sale {
-  max-width: 100% !important;
-}
-/*************Top selling item*************/
-.top-selling-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-.top-selling-item .custom-box {
-  width: 100%;
-  margin: 10px;
 }
