@@ -9,7 +9,6 @@ import HomePage from "./Pages/Home/HomePage";
 import NotFound from "./Pages/NotFound";
 import "./styles/style.css";
 import Main from "./Pages/Dashboard/Main";
-import Purchase from "./Pages/Dashboard/Purchase";
 import InventoryManagement from "./Pages/Dashboard/InventoryManagement";
 import SalesOrder from "./Pages/Dashboard/SalesOrder";
 import Packages from "./Pages/Dashboard/Packages";
@@ -21,6 +20,7 @@ import Customer from "./Pages/Dashboard/Customer";
 import Invoices from "./Pages/Dashboard/Invoices";
 import VendorManagement from "./Pages/Dashboard/VendorManagement";
 import Dashboard from "./Pages/Dashboard/Dashboard/Dashboard";
+import PurchaseList from "./Pages/Dashboard/Purchase/PurchaseList";
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
           <Route path="/admin" element={<Main />}>
             <Route index element={<Navigate to="/admin/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="purchase" element={<Purchase />} />
+            <Route path="purchase" element={<PurchaseList />} />
             <Route
               path="inventory-management"
               element={<InventoryManagement />}
