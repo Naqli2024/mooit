@@ -1,12 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
-import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import Modal from "@mui/material/Modal";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Checkbox from "@mui/material/Checkbox";
 
 const CreatePurchase = ({ backToList }) => {
+    const [open, setOpen] = useState(false); 
+
+  const handleOpen = () => setOpen(true); 
+  const handleClose = () => setOpen(false);
+
+  const modalStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 0, 
+    borderRadius: "8px",
+    overflow: "hidden",
+  };
+
   return (
     <>
       <button onClick={backToList} className="goBack-btn">
@@ -44,7 +69,7 @@ const CreatePurchase = ({ backToList }) => {
         </div>
         <div className="row create-purchase-heading">
           <div className="col-md-10 fs-4 fw-bold">Classification</div>
-          <div className="col-md-2 edit-text">Edit</div>
+          <div onClick={handleOpen} className="col-md-2 edit-text">Edit</div>
         </div>
         <Box
           component="form"
@@ -199,8 +224,62 @@ const CreatePurchase = ({ backToList }) => {
           </div>
         </div>
       </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <div className="modal-title">
+            <Typography id="modal-modal-title" className="modal-title">
+              Edit
+            </Typography>
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{ padding: 0 }}
+            >
+              <CloseIcon className="close-icon"/>
+            </IconButton>
+          </div>
+          <Box id="modal-modal-description">
+            <div className="modal-content">
+              <div className="model-checkbox-text">
+                <Checkbox />
+                <Typography variant="body1">Part number</Typography>
+              </div>
+              <div>
+                <IconButton aria-label="edit">
+                  <EditIcon />
+                </IconButton>
+                <IconButton aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              </div>
+            </div>
+          </Box>
+          <Box id="modal-modal-description" className="modal-content">
+            <div className="modal-content">
+              <div className="model-checkbox-text">
+                <Checkbox />
+                <Typography variant="body1">Part number</Typography>
+              </div>
+              <div>
+                <IconButton aria-label="edit">
+                  <EditIcon />
+                </IconButton>
+                <IconButton aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              </div>
+            </div>
+          </Box>
+        </Box>
+      </Modal>
     </>
   );
 };
+
 
 export default CreatePurchase;

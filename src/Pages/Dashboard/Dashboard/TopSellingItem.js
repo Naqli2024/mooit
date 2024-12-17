@@ -3,9 +3,9 @@ import { topSellingItems } from "../../../Data/DashboardData";
 
 const TopSellingItem = () => {
   return (
-    <div className="col-md-6 product-details sales-analysis">
-      <h4>Top seliing item</h4>
-      <div className="dropdown-container">
+    <div className="col-md-6 product-details top-selling">
+      <h4>Top selling item</h4>
+      <div className="dropdown-container selling-dropdown">
         <select className="custom-dropdown">
           <option value="all-time">All Time</option>
           <option value="monthly">Monthly</option>

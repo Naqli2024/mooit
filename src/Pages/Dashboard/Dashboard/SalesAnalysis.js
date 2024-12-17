@@ -71,9 +71,9 @@ const SalesAnalysis = () => {
   }, []);
 
   return (
-    <div className="col-md-6 product-details sales-analysis">
+    <div className="col-md-5 product-details sales-analysis sales-category">
       <h4>Sales Analysis by Categories</h4>
-      <div className="dropdown-container">
+      <div className="dropdown-container category-dropdown">
         <select className="custom-dropdown">
           <option value="all-time">All Time</option>
           <option value="monthly">Monthly</option>
