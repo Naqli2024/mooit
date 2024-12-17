@@ -498,8 +498,21 @@
   flex: 1; 
 }
 .sales-analysis {
+  border: 1px solid #ddd;
+  border-radius: 8px;
   width: 100%;
-  max-width: 50% !important;
+  max-width: 45% !important;
+  margin: 20px 0px;
+}
+.category-dropdown{
+  padding: 20px;
+}
+.sales-category{
+  margin-right: 30px;
+}
+.stock-availability{
+  width: 100%;
+  max-width: 52% !important;
 }
 .canvas-container {
   flex: 1; 
@@ -510,17 +523,26 @@
   background-color: #ddd;
   margin: 0 10px;
 }
+@media (max-width: 1550px) {
+  .sales-analysis {
+    max-width: 100% !important;
+  }
+  .top-selling {
+    max-width: 100% !important;
+    width: 100%;
+    margin-left: 0px !important;
+  }
+}
 @media (max-width: 1295px) {
   .dashboard-head {
-    margin-left: 20px;
     margin-top: 20px;
+    width: 100%;
+    max-width: 100%;
   }
   .col-md-4.product-details {
     margin-top: 20px;
     width: 100%;
     max-width: 34%;
-    margin-left: 10px;
-    margin-right: 3px;
   }
   .product-details-sub {
     flex-direction: column;
@@ -533,14 +555,14 @@
 @media (max-width: 1320px) {
   .dashboard-head {
     width: 100%;
-    max-width: 93%;
+    max-width: 100%;
   }
   .col-md-4.product-details {
     border: 1px solid #ddd;
     border-radius: 8px;
     width: 100%;
-    max-width: 93%;
-    margin: 20px 20px;
+    max-width: 100%;
+    margin-top: 20px;
   }
   .number {
     font-size: 16px; 
@@ -576,14 +598,14 @@
   }
   .dashboard-head {
     width: 100%;
-    max-width: 93%;
+    max-width: 100%;
   }
   .col-md-4.product-details {
     border: 1px solid #ddd;
     border-radius: 8px;
     width: 100%;
-    max-width: 93%;
-    margin: 20px 20px;
+    max-width: 100%;
+    margin-top: 20px;
   }
 }
 @media (max-width: 480px) {
@@ -597,20 +619,66 @@
 }
 /*************Product Sale**************/
 .product-sale {
+  border: 1px solid #ddd;
+  border-radius: 8px;
   max-width: 100% !important;
 }
+.stock-dropdown{
+  padding: 20px;
+}
+@media (max-width: 480px) {
+  .product-sale {
+    overflow-y: scroll;
+  }
+}
 /*************Top selling item*************/
+.sales-activity{
+  width: 100%;
+  max-width: 60%;
+}
 .top-selling-item {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 20px;
 }
+.top-selling-item .number {
+  font-size: 18px !important;
+}
 .top-selling-item .custom-box {
   width: 100%;
   margin: 10px;
+  font-size: 14px !important;
 }
-
+.top-selling{
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 20px 0px;
+  margin-left: 40px;
+}
+.selling-dropdown{
+  padding: 20px;
+}
+@media (max-width: 1550px) {
+  .top-selling {
+    max-width: 100% !important;
+    width: 100%;
+    margin-left: 0px !important;
+  }
+}
+@media (max-width: 590px) {
+  .top-selling-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    gap: 10px; 
+    padding: 5px;
+  }
+  .top-selling-item .custom-box {
+    width: 100%; 
+    margin: 0;
+  }
+}
 /***********Purchase List***********/
 .purchase-list h2{
   padding: 20px;
@@ -644,8 +712,6 @@
 .custom-table .purchase-id{
   color: #7D0CB4;
   padding: 10px;
-  cursor: pointer;
-  pointer-events: auto;
 }
 .table-container {
   overflow: hidden; 
@@ -731,6 +797,7 @@
 }
 .edit-text{
   text-align: right;
+  cursor: pointer;
 }
 .submit-btn{
   background-color: #1F3F7F !important;
@@ -788,7 +855,4 @@
     width: 90%;
     border: 1px solid #ddd; 
   }
-}
-.form-select {
-  font-size: 14px !important;
 }

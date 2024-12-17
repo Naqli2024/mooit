@@ -1,9 +1,10 @@
-import React from 'react'
+
+import React from "react";
 
 const InventoryManagement = () => {
   return (
-    <div>InventoryManagement</div>
-  )
-}
+   <></>
+  );
+};
 
-export default InventoryManagement
+export default InventoryManagement;
