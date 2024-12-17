@@ -3,19 +3,35 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
 import CreatePurchase from "./CreatePurchase";
+import PurchaseDetails from "./PurchaseDetails";
 
 const PurchaseList = () => {
   const [createPurchase, setCreatePurchase] = useState(false);
+  const [openPurchaseDetail, setOpenPurchaseDetail] = useState(false);
 
   const openCreatePurchase = () => {
-    setCreatePurchase(!createPurchase);
+    setCreatePurchase(true);
+    setOpenPurchaseDetail(false);
   };
+
+  const openPurchaseDetails = () => {
+    setOpenPurchaseDetail(true);
+    setCreatePurchase(false);
+  };
+
+  const backToList = () => {
+    setOpenPurchaseDetail(false);
+    setCreatePurchase(false);
+  };
+
   return (
     <div className="purchase-list">
       <h2>Purchase</h2>
 
-      {createPurchase ? (
-        <CreatePurchase openCreatePurchase={openCreatePurchase}/>
+      {openPurchaseDetail ? (
+        <PurchaseDetails backToList={backToList} />
+      ) : createPurchase ? (
+        <CreatePurchase backToList={backToList} />
       ) : (
         <>
           <div className="row purchase-textfield">
@@ -67,14 +83,18 @@ const PurchaseList = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="purchase-id">#8697869768</td>
+                  <td className="purchase-id" onClick={openPurchaseDetails}>
+                    #8697869768
+                  </td>
                   <td>xxxxxxxxxxx</td>
                   <td>xxxxxxxxxxx</td>
                   <td>xxxxxxxxxxx</td>
                   <td>xxxxxxxxxxx</td>
                 </tr>
                 <tr>
-                  <td className="purchase-id">#8697869768</td>
+                  <td className="purchase-id" onClick={openPurchaseDetails}>
+                    #8697869769
+                  </td>
                   <td>xxxxxxxxxxx</td>
                   <td>xxxxxxxxxxx</td>
                   <td>xxxxxxxxxxx</td>

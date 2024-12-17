@@ -13,8 +13,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Checkbox from "@mui/material/Checkbox";
 
-const CreatePurchase = ({ openCreatePurchase }) => {
-  const [open, setOpen] = useState(false); 
+const CreatePurchase = ({ backToList }) => {
+    const [open, setOpen] = useState(false); 
 
   const handleOpen = () => setOpen(true); 
   const handleClose = () => setOpen(false);
@@ -34,7 +34,7 @@ const CreatePurchase = ({ openCreatePurchase }) => {
 
   return (
     <>
-      <button onClick={openCreatePurchase} className="goBack-btn">
+      <button onClick={backToList} className="goBack-btn">
         <span>
           <ArrowBackIosIcon />
         </span>
@@ -79,7 +79,11 @@ const CreatePurchase = ({ openCreatePurchase }) => {
         >
           <div className="row first-row-textfield">
             <div className="col-md-3">
-              <TextField id="part-number" label="Part number" sx={{ width: "90%" }}/>
+              <TextField
+                id="part-number"
+                label="Part number"
+                sx={{ width: "90%" }}
+              />
             </div>
             <div className="col-md-3">
               <TextField id="hns-code" label="HNS code" sx={{ width: "90%" }} />
@@ -144,7 +148,7 @@ const CreatePurchase = ({ openCreatePurchase }) => {
               />
             </div>
             <div className="col-md-3">
-            <Form.Select className="classify-dropdown">
+              <Form.Select className="classify-dropdown">
                 <option>Warehouse</option>
                 <option value="1">One</option>
                 <option value="2">Two</option>
@@ -207,18 +211,18 @@ const CreatePurchase = ({ openCreatePurchase }) => {
           </div>
         </Box>
         <button className="print-barcode">
-        <span>
-          <LocalPrintshopIcon/>
-        </span>
-        Print Barcode
-      </button>
+          <span>
+            <LocalPrintshopIcon />
+          </span>
+          Print Barcode
+        </button>
         <div className="container mt-4">
-            <div className="col d-flex justify-content-center">
-              <button type="button" className="btn submit-btn">
-                Submit
-              </button>
-            </div>
+          <div className="col d-flex justify-content-center">
+            <button type="button" className="btn submit-btn">
+              Submit
+            </button>
           </div>
+        </div>
       </div>
       <Modal
         open={open}
