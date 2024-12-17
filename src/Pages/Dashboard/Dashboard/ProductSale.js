@@ -98,7 +98,7 @@ const ProductSale = () => {
   return (
     <div className="col-md-12 product-details product-sale">
       <h4>Stock Availability</h4>
-      <div className="dropdown-container">
+      <div className="dropdown-container stock-dropdown">
         <select className="custom-dropdown">
           <option value="all-time">All Time</option>
           <option value="monthly">Monthly</option>
@@ -106,7 +106,7 @@ const ProductSale = () => {
           <option value="this-year">This Year</option>
         </select>
       </div>
-      <canvas ref={chartRef} style={{ maxHeight: "350px" }}></canvas>
+      <canvas className="canvas-height" ref={chartRef} style={{ maxHeight: "350px" }}></canvas>
     </div>
   );
 };

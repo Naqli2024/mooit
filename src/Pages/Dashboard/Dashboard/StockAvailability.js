@@ -29,7 +29,7 @@ const StockAvailability = () => {
     const parsedData = StockAvailable.map((item, index) => ({
       x: index * 0.8 + 1, 
       y: parseFloat(item.data) * 0.8,
-      r: Math.max(parseFloat(item.data) / 0.65, 9), 
+      r: Math.max(parseFloat(item.data) / 1, 12), 
     }));
   
     if (chartInstanceRef.current) {
@@ -85,20 +85,20 @@ const StockAvailability = () => {
   }, []);
 
   return (
-    <div className="col-md-6 product-details sales-analysis">
+    <div className="col-md-4 product-details sales-analysis stock-availability">
       <h4>Stock Availability</h4>
-      <div style={{ display: "flex", alignItems: "center", height: "300px" }}>
+      <div style={{ alignItems: "center", height: "300px" }}>
         <div style={{ flex: "1", position: "relative", height: "100%" }}>
           <canvas ref={chartRef}></canvas>
         </div>
-        <div style={{ flex: "0 0 200px", paddingLeft: "20px" }}>
+        {/* <div style={{ flex: "0 0 200px", paddingLeft: "20px" }}>
           <p style={{ color: "#36A2EB", fontSize: "14px" }}>
             ● In Stock: {StockAvailable[0]?.data || "0"}%
           </p>
           <p style={{ color: "#FF6384", fontSize: "14px" }}>
             ● Out of Stock: {StockAvailable[1]?.data || "0"}%
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

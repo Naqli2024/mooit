@@ -4,7 +4,7 @@ export const overAllData = [
     count: 5,
   },
   {
-    name: "Total stock quantity",
+    name: "Total stock value",
     count: 4454,
   },
   {
@@ -56,8 +56,8 @@ export const salesAnalysis = [
 ];
 
 export const StockAvailable = [
-  { stock: "In stock", data: "40" },
-  { stock: "Out of stock", data: "60" },
+  { stock: "In stock", data: "90" },
+  { stock: "Out of stock", data: "10" },
 ];
 
 export const productSaleData = [
