@@ -26,18 +26,18 @@ const PurchaseList = () => {
 
   return (
     <div className="purchase-list">
-      <h2>Purchase</h2>
-
       {openPurchaseDetail ? (
         <PurchaseDetails backToList={backToList} />
       ) : createPurchase ? (
         <CreatePurchase backToList={backToList} />
       ) : (
         <>
+         <h2>Purchase</h2>
           <div className="row purchase-textfield">
             <div className="col-md-4">
               <InputGroup className="mb-3">
                 <Form.Control
+                  className="text-field"
                   placeholder="Search by Product"
                   aria-label="Default"
                   aria-describedby="inputGroup-sizing-default"
@@ -45,7 +45,7 @@ const PurchaseList = () => {
               </InputGroup>
             </div>
             <div className="col-md-2">
-              <Form.Select>
+              <Form.Select className="text-field">
                 <option>Select a Category</option>
                 <option value="1">One</option>
                 <option value="2">Two</option>
@@ -53,7 +53,7 @@ const PurchaseList = () => {
               </Form.Select>
             </div>
             <div className="col-md-2">
-              <Form.Select>
+              <Form.Select className="text-field">
                 <option>Filter by Brand name</option>
                 <option value="1">One</option>
                 <option value="2">Two</option>
@@ -61,7 +61,7 @@ const PurchaseList = () => {
               </Form.Select>
             </div>
             <div className="col-md-2">
-              <Form.Select>
+              <Form.Select className="text-field">
                 <option>Filter by Party</option>
                 <option value="1">One</option>
                 <option value="2">Two</option>
@@ -103,7 +103,7 @@ const PurchaseList = () => {
               </tbody>
             </Table>
           </div>
-          <div className="container mt-4">
+          <div className="mt-4">
             <div className="col d-flex justify-content-end">
               <button
                 type="button"

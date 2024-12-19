@@ -3,7 +3,6 @@
 * {
   font-family: "Open Sans", sans-serif;
   font-style: normal;
-  font-size: 14px !important;
 }
 
 /***********Header Section*************/
@@ -16,6 +15,7 @@
   padding-left: 5%;
   padding-right: 5%;
   padding-top: 2px;
+  font-size: 14px;
 }
 .home-content {
   padding: 50px 0px !important;
@@ -33,6 +33,7 @@
 .login-btn,
 .try-it-btn {
   margin-left: 10px;
+  font-size: 14px;
 }
 .btn-no-hover:hover {
   background-color: transparent !important;
@@ -59,6 +60,7 @@
   justify-content: center;
   background-color: #e1eeff;
   border: 0;
+  font-size: 14px;
 }
 .card.outer-card {
   position: relative;
@@ -198,6 +200,7 @@
   overflow-y: auto;
   padding-right: 0px !important;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
 }
 .sidebar ul {
   list-style-type: none;
@@ -206,7 +209,6 @@
   min-height: 200px;
   max-height: 400px;
   overflow-y: auto;
-  margin-top: 10px;
 }
 .sidebar li {
   margin: 0px 0px 15px 15px;
@@ -221,6 +223,7 @@
   background-color: rgba(57, 105, 202, 0.13);
   color: #333; 
   border-right: 4px solid #3969CA;
+  font-weight: bold;
 }
 .sidebar-logo {
   margin: 15px 15px 15px 30px;
@@ -228,6 +231,15 @@
 .side-links {
   margin: 0 !important;
   padding-left: 15px;
+}
+.sub-menus {
+  height: max-content !important;
+  min-height: max-content !important;
+}
+.dropdown-arrow {
+  transition: transform 0.3s ease;
+  margin-right: 10px;
+  font-size: 14px;
 }
 .warehouse {
   display: flex;
@@ -271,10 +283,11 @@
 }
 .menu-icon .icon {
   display: block;
+  font-size: 16px;
 }
 @media (max-width: 1295px) {
   .sidebar {
-    flex: 0 0 30%; 
+    flex: 0 0 25%; 
   }
   .layout-container {
     margin: 50px !important;
@@ -283,7 +296,6 @@
     padding: 5px !important;
   }
   .mainbar {
-    padding: 3px !important;
     margin: 15px !important;
   }
 }
@@ -299,7 +311,6 @@
     height: auto;
     overflow-y: scroll;
     margin: 5px 5px;
-    padding: 15px;
   }
   .sidebar {
     flex: 0 0 250px;
@@ -341,6 +352,9 @@
    }
 }
 @media (max-width: 768px) {
+  .layout-container {
+    margin: 40px 20px !important;
+  }
   .sidebar {
     flex: 0 0 250px;
     height: 87vh;
@@ -416,6 +430,7 @@
   border-radius: 8px;
   padding: 20px;
   margin-right: 10px;
+  font-size: 14px;
 }
 /*********Dashboard All details**********/
 .dropdown-container {
@@ -454,6 +469,7 @@
   overflow: hidden;
   word-wrap: break-word;
   max-width: 100%;
+  font-size: 14px;
 }
 /***********Dashboard product details***********/
 .product-details h4 {
@@ -461,6 +477,7 @@
   padding: 12px;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  font-size: 14px;
 }
 .col-md-4.product-details {
   border: 1px solid #ddd;
@@ -487,12 +504,14 @@
 .product-details-item .category {
   margin: 0;
   padding: 7px 8px;
+  font-size: 14px;
 }
 .product-details-item .count {
   margin: 0;
   padding: 0;
   padding-left: 10px;
   padding-right: 40px;
+  font-size: 14px;
 }
 .product-details-container {
   flex: 1; 
@@ -503,12 +522,15 @@
   width: 100%;
   max-width: 45% !important;
   margin: 20px 0px;
+  font-size: 14px;
 }
 .category-dropdown{
   padding: 20px;
+  font-size: 14px;
 }
 .sales-category{
   margin-right: 30px;
+  font-size: 14px;
 }
 .stock-availability{
   width: 100%;
@@ -625,6 +647,7 @@
 }
 .stock-dropdown{
   padding: 20px;
+  font-size: 14px;
 }
 @media (max-width: 480px) {
   .product-sale {
@@ -643,7 +666,7 @@
   gap: 20px;
 }
 .top-selling-item .number {
-  font-size: 18px !important;
+  font-size: 16px !important;
 }
 .top-selling-item .custom-box {
   width: 100%;
@@ -658,6 +681,7 @@
 }
 .selling-dropdown{
   padding: 20px;
+  font-size: 14px;
 }
 @media (max-width: 1550px) {
   .top-selling {
@@ -689,12 +713,16 @@
   position: sticky;
   top: 0;
   z-index: 1;
+  font-size: 14px;
 }
 .purchase-textfield {
   margin: 0;
-  padding: 20px 40px;
+  padding: 20px 50px;
   justify-content: space-between;
   display: flex;
+}
+.purchase-textfield .text-field {
+  font-size: 14px;
 }
 .custom-table th {
   background-color: #4B3D52;
@@ -703,16 +731,18 @@
   position: sticky;
   top: 0;
   z-index: 1;
+  font-size: 14px;
 }
 .custom-table td, 
 .custom-table th {
   border-style: none;
   text-align: center;
+  font-size: 14px;
 }
 .custom-table .purchase-id{
   color: #7D0CB4;
   padding: 10px;
-cursor: pointer;
+  cursor: pointer;
   pointer-events: auto;
 }
 .table-container {
@@ -721,7 +751,8 @@ cursor: pointer;
   border-bottom-right-radius: 10px; 
   border: 1px solid #e3e3e3; 
   box-shadow: 0 4px 8px rgba(153, 153, 153, 0.2);
-  height: 450px;
+  height: max-content;
+  max-height: 500px;
   overflow-y:  auto !important;
 }
 .custom-table tbody tr:last-child {
@@ -732,10 +763,13 @@ cursor: pointer;
   color: white !important;
   margin-bottom: 10px;
   cursor: pointer;
+  margin-right: 50px;
+  font-size: 14px;
 }
 @media (max-width: 480px) {
 .purchase-list {
-  padding: 20px;
+  margin: 0;
+  padding: 0;
 }
 .purchase-textfield {
   margin: 0;
@@ -744,7 +778,7 @@ cursor: pointer;
   display: flex;
 }
 .table-container {
-  margin: 0 !important;
+  margin: 0px 20px !important;
   display: flex;
   overflow-x: auto;
 }
@@ -757,8 +791,11 @@ cursor: pointer;
   padding: 12px;
   text-align: left;
 }
-.purchase-textfield select, .purchase-textfield input {
-  width: 100%;
+.purchase-textfield {
+  margin: 0px 20px;
+}
+.create-purchase-btn{
+  margin-right: 20px;
 }
 }
 @media (max-width: 1250px) {
@@ -785,10 +822,30 @@ cursor: pointer;
   color: #3969CA;
   padding: 10px;
   margin-left: 30px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+.goBack-btn span {
+  display: flex;
+}
+.goBack-btn span svg {
+  font-size: 14px; 
+}
+.textfield-spacing label {
+  font-size: 14px;
+}
+.all-textfield-spacing,
+.textfield-spacing{
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  gap: 14px;
 }
 .create-purchase-textfield {
   justify-content: space-between;
   display: flex;
+  font-size: 14px;
 }
 .custom-textfield{
   height: 45px
@@ -796,17 +853,36 @@ cursor: pointer;
 .create-purchase-heading{
   justify-content: space-between;
   display: flex;
+  align-items: center;
+}
+.classification-text {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+.Invoice-date-textfield label,
+.Invoice-no-textfield label,
+.Invoice-val-textfield label{
+  font-size: 14px;
+}
+.invoice-textfield-spacing {
+  gap: 16px;
 }
 .edit-text{
   text-align: right;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
 }
 .submit-btn{
   background-color: #1F3F7F !important;
   color: white !important;
   margin-bottom: 10px;
-  width: 13%;
+  width: 25%;
   cursor: pointer;
+  font-size: 14px;
+}
+.create-purchase .row {
+  margin-left: 0;
 }
 .print-barcode {
   border: 1px solid #707070; 
@@ -819,6 +895,7 @@ cursor: pointer;
   cursor: pointer;
   margin-top: 30px;
   padding: 5px;
+  font-size: 14px;
 }
 .print-barcode span svg {
   font-size: 30px !important; 
@@ -839,11 +916,69 @@ cursor: pointer;
 }
 .classify-dropdown{
   height: 100%;
-  width: 90%;
+  width: 100%;
   border: 1px solid #ddd; 
+  color: #707070;
+  font-size: 14px;
+}
+.modal-title {
+  color: black;
+  font-size: 18px !important;
+  font-weight: bold;
+  background-color: #F0F3FB;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-content {
+  background-color: #F8F9F9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  padding: 10px 10px;
+  margin-bottom: 10px;
+}
+.model-checkbox-text {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+.model-content {
+  font-size: 14px !important;
+}
+.plus-icon {
+  border: 1px solid #707070 !important;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 50%; 
+  width: 40px; 
+  height: 40px; 
+  cursor: pointer; 
+}
+.container {
+  display: flex; 
+  justify-content: center;
+  margin-bottom: 30px;
+  padding: 10px;
+}
+.modalStyle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  background-color: white;
+  padding: 0;
+  border-radius: 8px;
+  overflow: hidden;
+};
+.close-icon {
+  font-size: 22px !important;
+  color: black;
 }
 @media (max-width:768px) {
-  .first-row-textfield .col-md-3{
+  .textfield-spacing .col-md-3{
     margin-bottom: 10px;
   }
   .submit-btn{
@@ -854,41 +989,89 @@ cursor: pointer;
   }
   .classify-dropdown{
     height: 100% !important;
-    width: 90%;
+    width: 100%;
+    padding: 15px;
     border: 1px solid #ddd; 
   }
+  .all-textfield-spacing,
+  .textfield-spacing{
+    display: flex;
+    flex-direction: column;
+  }
+  .Invoice-date-textfield,
+  .Invoice-no-textfield,
+  .Invoice-val-textfield {
+    display: flex;
+    flex-direction: column; 
+    width: 100% !important;
+  }
+}
+@media (max-width:480px) {
+  .create-purchase{
+    padding-left: 20px;
+    padding-right: 30px;
+  }
+  .create-purchase-heading {
+    flex-direction: column; 
+    align-items: flex-start; 
+  }
+  .goBack-btn {
+    margin-left: 10px;
+  }
+  .modalStyle {
+    width: 250px !important;
+  };
+}
+@media (max-width:550px) {
+  .modalStyle {
+    width: 350px;
+  };
 }
 /**************Create invoice overview*************/
 .invoice-btn{
   display: flex;
   justify-content: space-between;
   margin: 0;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left: 10px;
+  margin-right: 33px;
   padding: 10px;
-}
-.edit-print-btn {
-  background-color: #E9EAEB;
-  margin: 0;
-  display: flex;
   align-items: center;
-  justify-content: flex-start; 
-  gap: 10px;
+  font-size: 14px;
 }
-.edit-btn, .print-btn, .delete-btn {
-  padding: 10px;
-  text-align: center;
+.create-invoice-btn {
+  background-color: #1F3F7F !important;
+  color: white !important;
+  margin-bottom: 10px;
   cursor: pointer;
-  position: relative; 
+  width: 15%;
+  font-size: 14px;
 }
-.edit-btn::after, .print-btn::after, .delete-btn::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
+.edit-print-del-btn {
+  display: flex;
+  align-items: center; 
+  justify-content: flex-start;
+  background-color: #E9EAEB;
+  gap: 15px; 
+}
+.action-btn {
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  gap: 3px; 
+  padding: 10px 30px; 
+  font-size: 14px;
+  border-radius: 5px; 
+  cursor: pointer;
+  color: #000;
+  position: relative;
+}
+.action-icon {
+  font-size: 16px !important; 
+}
+.divider {
+  height: 40px;
   width: 1px;
-  height: 100%;
-  background-color: #707070; 
+  background-color: #707070;
 }
 .invoice-card{
   border-radius: 5px;
@@ -899,6 +1082,7 @@ cursor: pointer;
   max-width: 15%;  
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  
   flex-wrap: wrap;
+  font-size: 14px;
 }
 .outer-card {
   background-color: white;
@@ -906,6 +1090,7 @@ cursor: pointer;
   border: 1px solid #ddd;
   border-radius: 5px;
   flex: 1;
+  padding: 40px 0px;
 }
 .invoice-id{
   color: #3769CE;
@@ -918,30 +1103,51 @@ cursor: pointer;
     max-width: 40%;
     margin-bottom: 20px; 
   }
+  .create-invoice-btn {
+    width: 20%;
+  }
+  .action-btn {
+    padding: 8px 12px; 
+  }
 }
 @media (max-width: 768px) {
   .outer-card .invoice-card {
     width: 100%;
-    max-width: 100%;
-    margin-bottom: 20px; 
+    max-width: 70%;
   }
   .outer-card {
-    margin: 40px 5px;
+    margin: 40px 10px;
   }
   .invoice-btn {
     flex-direction: column;
     margin: 0px;
   }
+  .create-invoice-btn {
+    width: 60%;
+    margin-top: 10px;
+  }
+  .edit-print-del-btn {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+@media (max-width: 420px) {
+  .divider {
+    display: none;
+  }
 }
 /**************Create invoice*************/
 .create-invoice-outer-card {
   margin: 0;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left: 30px;
+  margin-right: 30px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  margin-top: 30px;
+  margin-top: 50px;
   margin-bottom: 30px;
+}
+.create-invoice-content {
+  margin: 0px 10%;
 }
 .invoice-heading {
   justify-content: center;
@@ -951,14 +1157,17 @@ cursor: pointer;
 }
 .invoice-content {
   display: flex;
+  flex-direction: row;
+  font-size: 14px;
+  align-items: center !important;
 }
 .invoice-table {
   overflow-y:  auto !important;
-  margin-top: 40px;
-  margin-bottom: 30px;
   border: 1px solid #ddd;
   border-radius: 5px;
   overflow: hidden;
+  font-size: 14px;
+  margin: 30px 1px;
 }
 .table-content th, 
 .table-content td {
@@ -977,51 +1186,11 @@ cursor: pointer;
 }
 .table-bottom-content .col-md-5 {
   padding: 10px;
-}
-.close-icon {
-  font-size: 1.8rem !important;
-  color: black;
-}
-.modal-title {
-  color: black;
-  font-size: 1.3rem !important;
-  font-weight: bold;
-  background-color: #F0F3FB;
-  padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.modal-content {
-  background-color: #F8F9F9;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  padding: 10px 10px;
-}
-.model-checkbox-text {
-  display: flex;
-  align-items: center;
+  font-size: 14px;
 }
 @media (max-width: 1160px) {
-  .create-invoice-outer-card {
-    margin-left: 5px;
-    margin-right: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
-  .invoice-content {
-    flex-direction: column !important; 
-    align-items: flex-start; 
-    align-items: center;
-    text-align: center;
-    margin-left: 0px;
-  }
   .invoice-table {
     overflow-x: scroll;
-    margin: 10px;
   }
   .table-bottom-content {
     display: flex;
@@ -1029,3 +1198,14 @@ cursor: pointer;
     align-items: flex-start;
   }
 }
+@media (max-width: 768px) {
+  .invoice-content {
+    justify-content: space-between;
+  }
+}
+@media (max-width: 580px) {
+  .invoice-content {
+    flex-direction: column;
+  }
+}
+
