@@ -1197,15 +1197,6 @@
     flex-direction: column;
     align-items: flex-start;
   }
+.form-select {
+  font-size: 14px !important;
 }
-@media (max-width: 768px) {
-  .invoice-content {
-    justify-content: space-between;
-  }
-}
-@media (max-width: 580px) {
-  .invoice-content {
-    flex-direction: column;
-  }
-}
-
