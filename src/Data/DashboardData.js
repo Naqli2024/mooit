@@ -86,3 +86,25 @@ export const topSellingItems = [
   {name: "Product B", QtySold: "100", Revenue: "34,564"},
   {name: "Product C", QtySold: "100", Revenue: "34,564"},
 ];
+
+export const products = [
+  {
+    name: "Product 1",
+    sku: "SKU-XXXXXX",
+    stock: 78,
+    price: 6574,
+  },
+  {
+    name: "Product 2",
+    sku: "SKU-YYYYYY",
+    stock: 50,
+    price: 3500,
+  },
+  {
+    name: "Product 3",
+    sku: "SKU-ZZZZZZ",
+    stock: 120,
+    price: 7800,
+  },
+  // Add more products here...
+];

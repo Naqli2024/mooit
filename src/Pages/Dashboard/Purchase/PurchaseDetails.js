@@ -60,33 +60,33 @@ const PurchaseDetails = ({ backToList }) => {
               </div>
               <div class="col-md-2 p-3 text-center invoice-card">
                 <p>HNS code</p>
-                <p className="invoice-id">65GFDGIGI5224</p>
+                <p className="invoice-id">76BFHGG46</p>
               </div>
               <div class="col-md-2 p-3 text-center invoice-card">
                 <p>Quantity</p>
-                <p className="invoice-id">65GFDGIGI5224</p>
+                <p className="invoice-id">70</p>
               </div>
               <div class="col-md-2 p-3 text-center invoice-card">
                 <p>MRP</p>
-                <p className="invoice-id">65GFDGIGI5224</p>
+                <p className="invoice-id">7675</p>
               </div>
             </div>
             <div class="row justify-content-evenly mt-5">
               <div class="col-md-2 p-3 text-center invoice-card">
                 <p>GST</p>
-                <p className="invoice-id">65GFDGIGI5224</p>
+                <p className="invoice-id">5%</p>
               </div>
               <div class="col-md-2 p-3 text-center invoice-card">
                 <p>Advance payment</p>
-                <p className="invoice-id">65GFDGIGI5224</p>
+                <p className="invoice-id">3452</p>
               </div>
               <div class="col-md-2 p-3 text-center invoice-card">
                 <p>Brand name</p>
-                <p className="invoice-id">65GFDGIGI5224</p>
+                <p className="invoice-id">XXXXXX</p>
               </div>
               <div class="col-md-2 p-3 text-center invoice-card">
                 <p>Category</p>
-                <p className="invoice-id">65GFDGIGI5224</p>
+                <p className="invoice-id">Electricals</p>
               </div>
             </div>
             <CreateInvoice />

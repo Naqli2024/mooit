@@ -7,17 +7,20 @@ export const dashboardItems = [
       { item: "Vendors", path: "vendors" },
     ],
   },
-  { item: "Inventory management", path: "inventory-management" },
-  { item: "Sales Order", path: "sales-order" },
-  { item: "Packages", path: "packages" },
-  { item: "Storage", path: "storage" },
-];
-
-export const dashboardItems2 = [
-  { item: "Return", path: "return" },
-  { item: "Floor management", path: "floor-management" },
-  { item: "Vendor management", path: "vendor-management" },
-  { item: "Vendor payment", path: "vendor-payment" },
-  { item: "Customer", path: "customer" },
-  { item: "Invoices", path: "invoices" },
+  {
+    item: "Inventory management",
+    submenus: [
+      { item: "Items", path: "items", },
+      { item: "Sales", path: "sales" },
+      { item: "Sales order", path: "sales-order" },
+      { item: "Packages", path: "packages" },
+      { item: "Shipments", path: "shipments" },
+      { item: "Delivery challans", path: "delivery-challans" },
+      { item: "Customer", path: "customer" },
+      { item: "Category", path: "category" },
+    ],
+  },
+  { item: "Warehouse management", path: "warehouse-management" },
+  { item: "Invoice", path: "invoice" },
+  { item: "User", path: "user" },
 ];
