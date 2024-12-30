@@ -248,10 +248,6 @@
   margin: 0 !important;
   padding-left: 15px;
 }
-.sub-menus {
-  height: max-content !important;
-  min-height: max-content !important;
-}
 .dropdown-arrow {
   transition: transform 0.3s ease;
   margin-right: 10px;
