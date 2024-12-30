@@ -4,10 +4,33 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
 import CreatePurchase from "./CreatePurchase";
 import PurchaseDetails from "./PurchaseDetails";
+import Select from "react-select";
 
 const PurchaseList = () => {
   const [createPurchase, setCreatePurchase] = useState(false);
   const [openPurchaseDetail, setOpenPurchaseDetail] = useState(false);
+  const [categoryOption, setCategoryOption] = useState(null);
+  const [brandOption, setBrandOption] = useState(null);
+  const [partyOption, setPartyOption] = useState(null);
+
+  const options = [
+    { value: "all", label: "All" },
+    { value: "1", label: "One" },
+    { value: "2", label: "Two" },
+    { value: "3", label: "Three" },
+  ];
+
+  const handleCategoryChange = (selectedOption) => {
+    setCategoryOption(selectedOption);
+  };
+
+  const handleBrandChange = (selectedOption) => {
+    setBrandOption(selectedOption);
+  };
+
+  const handlePartyChange = (selectedOption) => {
+    setPartyOption(selectedOption);
+  };
 
   const openCreatePurchase = () => {
     setCreatePurchase(true);
@@ -32,7 +55,7 @@ const PurchaseList = () => {
         <CreatePurchase backToList={backToList} />
       ) : (
         <>
-         <h2>Purchase</h2>
+          <h2>Purchase</h2>
           <div className="row purchase-textfield">
             <div className="col-md-4">
               <InputGroup className="mb-3">
@@ -44,29 +67,56 @@ const PurchaseList = () => {
                 />
               </InputGroup>
             </div>
-            <div className="col-md-2">
-              <Form.Select className="text-field">
-                <option>Select a Category</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </Form.Select>
+            <div className="col-md-2 text-field">
+              <Select
+                options={options}
+                value={categoryOption}
+                onChange={handleCategoryChange}
+                isSearchable={true}
+                classNamePrefix="custom-select"
+                placeholder="Select a Category"
+                menuPortalTarget={document.body} 
+                styles={{
+                  option: (provided) => ({
+                    ...provided,
+                    fontSize: '14px', 
+                  }),
+                }}
+              />
             </div>
-            <div className="col-md-2">
-              <Form.Select className="text-field">
-                <option>Filter by Brand name</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </Form.Select>
+            <div className="col-md-2 text-field">
+              <Select
+                options={options}
+                value={brandOption}
+                onChange={handleBrandChange}
+                isSearchable={true}
+                classNamePrefix="custom-select"
+                placeholder="Filter by Brand name"
+                menuPortalTarget={document.body} 
+                styles={{
+                  option: (provided) => ({
+                    ...provided,
+                    fontSize: '14px',
+                  }),
+                }}
+              />
             </div>
-            <div className="col-md-2">
-              <Form.Select className="text-field">
-                <option>Filter by Party</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </Form.Select>
+            <div className="col-md-2 text-field">
+              <Select
+                options={options}
+                value={partyOption}
+                onChange={handlePartyChange}
+                isSearchable={true}
+                classNamePrefix="custom-select"
+                placeholder="Filter by Party"
+                menuPortalTarget={document.body} 
+                styles={{
+                  option: (provided) => ({
+                    ...provided,
+                    fontSize: '14px',
+                  }),
+                }}
+              />
             </div>
           </div>
 

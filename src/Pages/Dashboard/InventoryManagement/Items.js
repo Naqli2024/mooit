@@ -7,13 +7,33 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 import DeleteOutlineSharpIcon from "@mui/icons-material/DeleteOutlineSharp";
 import { products } from "../../../Data/ProductData";
 import CreateNewItems from "./CreateNewItems";
+import Select from "react-select";
 
 const Items = () => {
   const [productDetails, setProductDetails] = useState(false);
   const [createNewItems, setNewItems] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [categoryOption, setCategoryOption] = useState(null);
+  const [brandOption, setBrandOption] = useState(null);
+  const [supplierOption, setSupplierOption] = useState(null);
 
+  const options = [
+    { value: "all", label: "All" },
+    { value: "1", label: "One" },
+    { value: "2", label: "Two" },
+    { value: "3", label: "Three" },
+  ];
+
+  const handleCategoryChange = (selectedOption) => {
+    setCategoryOption(selectedOption);
+  };
+  const handleBrandChange = (selectedOption) => {
+    setBrandOption(selectedOption);
+  };
+  const handleSupplierChange = (selectedOption) => {
+    setSupplierOption(selectedOption);
+  };
   const handleCheckboxChange = (e) => {
     setIsChecked(e.target.checked);
   };
@@ -37,7 +57,7 @@ const Items = () => {
       {productDetails ? (
         <ProductDetails backToList={backToList} />
       ) : createNewItems ? (
-        <CreateNewItems backToList={backToList}/>
+        <CreateNewItems backToList={backToList} />
       ) : (
         <>
           <div className="purchase-list">
@@ -61,7 +81,11 @@ const Items = () => {
                   </Button>
                 </InputGroup>
               </div>
-              <button type="button" onClick={createNewItemsOnClick} className="btn create-new-btn">
+              <button
+                type="button"
+                onClick={createNewItemsOnClick}
+                className="btn create-new-btn"
+              >
                 Create new
               </button>
             </div>
@@ -69,7 +93,7 @@ const Items = () => {
               <div className="edit-print-del-btn mt-3">
                 <div className="action-btn edit-btn">
                   <input
-                    type="checkbox" 
+                    type="checkbox"
                     onChange={(e) => setIsChecked(e.target.checked)}
                   />
                   Select All
@@ -93,50 +117,47 @@ const Items = () => {
               </div>
             ) : (
               <div className="inventory-dropdown">
-                {/* Original Dropdown */}
                 <Form.Group className="col-md-2 inventory-category-dropdown">
                   <Form.Label className="custom-label">
                     Select a Category
                   </Form.Label>
-                  <Form.Select className="inventory-custom-dropdown">
-                    <option>All</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
-                </Form.Group>
-                <Form.Group className="col-md-2 inventory-category-dropdown">
-                  <Form.Label className="custom-label">
-                    Select a Sub Category
-                  </Form.Label>
-                  <Form.Select className="inventory-custom-dropdown">
-                    <option>All</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
+                  <div className="form-group inventory-custom-dropdown">
+                    <Select
+                      options={options}
+                      value={categoryOption}
+                      onChange={handleCategoryChange}
+                      isSearchable={true}
+                      classNamePrefix="custom-select"
+                    />
+                  </div>
                 </Form.Group>
                 <Form.Group className="col-md-2 inventory-category-dropdown">
                   <Form.Label className="custom-label">
                     Filter by Brand name
                   </Form.Label>
-                  <Form.Select className="inventory-custom-dropdown">
-                    <option>All</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
+                  <div className="form-group inventory-custom-dropdown">
+                    <Select
+                      options={options}
+                      value={brandOption}
+                      onChange={handleBrandChange}
+                      isSearchable={true}
+                      classNamePrefix="custom-select"
+                    />
+                  </div>
                 </Form.Group>
                 <Form.Group className="col-md-2 inventory-category-dropdown">
                   <Form.Label className="custom-label">
                     Filter by Supplier
                   </Form.Label>
-                  <Form.Select className="inventory-custom-dropdown">
-                    <option>All</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
+                  <div className="form-group inventory-custom-dropdown">
+                    <Select
+                      options={options}
+                      value={supplierOption}
+                      onChange={handleSupplierChange}
+                      isSearchable={true}
+                      classNamePrefix="custom-select"
+                    />
+                  </div>
                 </Form.Group>
               </div>
             )}
