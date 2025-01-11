@@ -3,10 +3,14 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Table from "react-bootstrap/Table";
+import { useSelector } from "react-redux";
+
 const ProductHistory = () => {
     const [selectedTable, setSelectedTable] = useState("purchase");
+    const { loading, product, error } = useSelector(
+      (state) => state.findPurchaseByItemName
+    );
 
   return (
     <div>
@@ -65,25 +69,11 @@ const ProductHistory = () => {
             </thead>
             <tbody>
               <tr>
-                <td>04/02/2024</td>
-                <td>xxxxxxxxxxx</td>
-                <td>34</td>
-                <td>100</td>
-                <td>3400</td>
-              </tr>
-              <tr>
-                <td>04/02/2024</td>
-                <td>xxxxxxxxxxx</td>
-                <td>34</td>
-                <td>100</td>
-                <td>3400</td>
-              </tr>
-              <tr>
-                <td>04/02/2024</td>
-                <td>xxxxxxxxxxx</td>
-                <td>34</td>
-                <td>100</td>
-                <td>3400</td>
+                <td>{product.storageDate}</td>
+                <td>{product.vendor}</td>
+                <td>{product.quantity}</td>
+                <td>{product.unitPrice}</td>
+                <td>TotalAmount</td>
               </tr>
             </tbody>
           </Table>

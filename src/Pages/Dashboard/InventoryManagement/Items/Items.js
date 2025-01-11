@@ -1,61 +1,116 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputGroup, Form, Button } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
-import ProductDetails from "./ProductDetails";
+import ProductDetails from "../Items/ProductDetails";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import DeleteOutlineSharpIcon from "@mui/icons-material/DeleteOutlineSharp";
-import { products } from "../../../Data/ProductData";
 import CreateNewItems from "./CreateNewItems";
 import Select from "react-select";
+import { useDispatch, useSelector } from "react-redux";
+import { getInventories } from "../../../../Redux/inventory/getInventoriesSlice";
 
 const Items = () => {
   const [productDetails, setProductDetails] = useState(false);
   const [createNewItems, setNewItems] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [categoryOption, setCategoryOption] = useState(null);
-  const [brandOption, setBrandOption] = useState(null);
-  const [supplierOption, setSupplierOption] = useState(null);
+  const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
+  const [selectedBrandOption, setSelectedBrandOption] = useState(null);
+  const [selectedSupplierOption, setSelectedSupplierOption] = useState(null);
+  const dispatch = useDispatch();
+  const { loading, inventories, error } = useSelector(
+    (state) => state.getInventories
+  );
+  const [sku, setSKU] = useState("");
+  const [querySearch, setQuerySearch] = useState("");
 
-  const options = [
-    { value: "all", label: "All" },
-    { value: "1", label: "One" },
-    { value: "2", label: "Two" },
-    { value: "3", label: "Three" },
+  const categoryOptions = [
+    { label: "All", value: "All" },
+    ...Array.from(
+      new Set(inventories?.map((inventories) => inventories.category || ""))
+    ).map((category) => ({
+      label: category,
+      value: category,
+    })),
+  ];
+
+  const brandOptions = [
+    { label: "All", value: "All" },
+    ...Array.from(
+      new Set(inventories?.map((inventories) => inventories.brandName || ""))
+    ).map((inventory) => ({
+      label: inventory,
+      value: inventory,
+    })),
+  ];
+
+  const supplierOptions = [
+    { label: "All", value: "All" },
+    ...Array.from(
+      new Set(inventories?.map((inventories) => inventories.vendorName || ""))
+    ).map((supplier) => ({
+      label: supplier,
+      value: supplier,
+    })),
   ];
 
   const handleCategoryChange = (selectedOption) => {
-    setCategoryOption(selectedOption);
+    setSelectedCategoryOption(selectedOption);
   };
   const handleBrandChange = (selectedOption) => {
-    setBrandOption(selectedOption);
+    setSelectedBrandOption(selectedOption);
   };
   const handleSupplierChange = (selectedOption) => {
-    setSupplierOption(selectedOption);
+    setSelectedSupplierOption(selectedOption);
   };
   const handleCheckboxChange = (e) => {
     setIsChecked(e.target.checked);
   };
-  const handleOnClick = () => {
+  const handleOnClick = (sku) => {
     setProductDetails(true);
+    setSKU(sku);
   };
   const backToList = () => {
     setProductDetails(false);
     setNewItems(false);
   };
-  const handleCardClick = (e) => {
+  const handleCardClick = (e, sku) => {
     if (e.target.type !== "checkbox") {
-      handleOnClick();
+      handleOnClick(sku);
     }
   };
   const createNewItemsOnClick = () => {
     setNewItems(true);
   };
+
+  const filteredData = inventories?.filter((inventory) => {
+    const matchCriteria =
+      !querySearch ||
+      inventory.productName.toLowerCase().includes(querySearch.toLowerCase());
+    const matchCategory =
+      !selectedCategoryOption ||
+      selectedCategoryOption.value === "All" ||
+      inventory.category === selectedCategoryOption.value;
+    const matchBrandName =
+      !selectedBrandOption ||
+      selectedBrandOption.value === "All" ||
+      inventory.brandName === selectedBrandOption.value;
+    const supplierName =
+      !selectedSupplierOption ||
+      selectedSupplierOption.value === "All" ||
+      inventory.vendorName === selectedSupplierOption.value;
+    return matchCriteria && matchCategory && matchBrandName && supplierName;
+  });
+
+  useEffect(() => {
+    dispatch(getInventories());
+  }, [dispatch, inventories]);
+
   return (
     <div>
       {productDetails ? (
-        <ProductDetails backToList={backToList} />
+        <ProductDetails backToList={backToList} sku={sku} />
       ) : createNewItems ? (
         <CreateNewItems backToList={backToList} />
       ) : (
@@ -71,6 +126,8 @@ const Items = () => {
                     className="text-field"
                     placeholder="Search here"
                     aria-label="Search"
+                    value={querySearch}
+                    onChange={(e) => setQuerySearch(e.target.value)}
                   />
                   <div className="divider"></div>
                   <Button
@@ -123,8 +180,8 @@ const Items = () => {
                   </Form.Label>
                   <div className="form-group inventory-custom-dropdown">
                     <Select
-                      options={options}
-                      value={categoryOption}
+                      options={categoryOptions}
+                      value={selectedCategoryOption}
                       onChange={handleCategoryChange}
                       isSearchable={true}
                       classNamePrefix="custom-select"
@@ -137,8 +194,8 @@ const Items = () => {
                   </Form.Label>
                   <div className="form-group inventory-custom-dropdown">
                     <Select
-                      options={options}
-                      value={brandOption}
+                      options={brandOptions}
+                      value={selectedBrandOption}
                       onChange={handleBrandChange}
                       isSearchable={true}
                       classNamePrefix="custom-select"
@@ -151,8 +208,8 @@ const Items = () => {
                   </Form.Label>
                   <div className="form-group inventory-custom-dropdown">
                     <Select
-                      options={options}
-                      value={supplierOption}
+                      options={supplierOptions}
+                      value={selectedSupplierOption}
                       onChange={handleSupplierChange}
                       isSearchable={true}
                       classNamePrefix="custom-select"
@@ -162,56 +219,34 @@ const Items = () => {
               </div>
             )}
             <div className="inventory-product">
-              {products.map((product) => (
-                <div
-                  className={`inventory-card ${isChecked ? "checked" : ""}`}
-                  onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
-                  onClick={handleCardClick}
-                >
-                  <div className="product-text">{product.name}</div>
-                  <div className="mb-3">{product.sku}</div>
-                  <div className="mb-3">
-                    Stock on hand:{" "}
-                    <span className="stock-hand">{product.stock}</span>
+              {filteredData &&
+                filteredData.map((filteredData) => (
+                  <div
+                    className={`inventory-card ${isChecked ? "checked" : ""}`}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                    onClick={(e) => handleCardClick(e, filteredData.sku)}
+                  >
+                    <div className="product-text">
+                      {filteredData.productName}
+                    </div>
+                    <div className="mb-3">SKU: {filteredData.sku}</div>
+                    <div className="mb-3">
+                      Stock on hand: <span className="stock-hand">{""}</span>
+                    </div>
+                    <div className="mb-3">
+                      Sales Price: {filteredData.salesInformation.salePrice}
+                    </div>
+                    {(isHovered || isChecked) && (
+                      <input
+                        type="checkbox"
+                        className="select-checkbox"
+                        onChange={handleCheckboxChange}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    )}
                   </div>
-                  <div className="mb-3">Sales Price: {product.price}</div>
-                  {(isHovered || isChecked) && (
-                    <input
-                      type="checkbox"
-                      className="select-checkbox"
-                      onChange={handleCheckboxChange}
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="inventory-product">
-              <div className="inventory-card" onClick={handleOnClick}>
-                <div className="product-text">Product name</div>
-                <div className="mb-3">SKU-XXXXXX</div>
-                <div className="mb-3 low-stock">Low stock: 68</div>
-                <div className="mb-3">Sales Price: 6574</div>
-              </div>
-              <div className="inventory-card" onClick={handleOnClick}>
-                <div className="product-text">Product name</div>
-                <div className="mb-3">SKU-XXXXXX</div>
-                <div className="mb-3 low-stock">Low stock: 68</div>
-                <div className="mb-3">Sales Price: 6574</div>
-              </div>
-              <div className="inventory-card" onClick={handleOnClick}>
-                <div className="product-text">Product name</div>
-                <div className="mb-3">SKU-XXXXXX</div>
-                <div className="mb-3 low-stock">Low stock: 68</div>
-                <div className="mb-3">Sales Price: 6574</div>
-              </div>
-              <div className="inventory-card" onClick={handleOnClick}>
-                <div className="product-text">Product name</div>
-                <div className="mb-3">SKU-XXXXXX</div>
-                <div className="mb-3 low-stock">Low stock: 68</div>
-                <div className="mb-3">Sales Price: 6574</div>
-              </div>
+                ))}
             </div>
           </div>
         </>

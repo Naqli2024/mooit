@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
 import CreatePurchase from "./CreatePurchase";
 import PurchaseDetails from "./PurchaseDetails";
 import Select from "react-select";
+import { getPurchaseDetails } from "../../../Redux/features/getPurchaseDetailsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const PurchaseList = () => {
   const [createPurchase, setCreatePurchase] = useState(false);
@@ -12,17 +15,45 @@ const PurchaseList = () => {
   const [categoryOption, setCategoryOption] = useState(null);
   const [brandOption, setBrandOption] = useState(null);
   const [partyOption, setPartyOption] = useState(null);
-
-  const options = [
-    { value: "all", label: "All" },
-    { value: "1", label: "One" },
-    { value: "2", label: "Two" },
-    { value: "3", label: "Three" },
+  const [searchQuery, setSearchQuery] = useState("");
+  const dispatch = useDispatch();
+  const { loading, data, error } = useSelector(
+    (state) => state.getPurchaseDetails
+  );
+  // Derive dropdown options dynamically from data
+  const categoryOptions = [
+    { value: "All", label: "All" },
+    ...Array.from(new Set(data?.map((item) => item.category || ""))).map(
+      (category) => ({
+        value: category,
+        label: category,
+      })
+    ),
   ];
 
-  const handleCategoryChange = (selectedOption) => {
+  const brandOptions = [
+    { value: "All", label: "All" },
+    ...Array.from(new Set(data?.map((item) => item.brandName || ""))).map(
+      (brand) => ({
+        value: brand,
+        label: brand,
+      })
+    ),
+  ];
+
+  const partyOptions = [
+    { value: "All", label: "All" },
+    ...Array.from(new Set(data?.map((item) => item.vendorName || ""))).map(
+      (vendor) => ({
+        value: vendor,
+        label: vendor,
+      })
+    ),
+  ];
+  const navigate = useNavigate();
+
+  const handleCategoryChange = (selectedOption) =>
     setCategoryOption(selectedOption);
-  };
 
   const handleBrandChange = (selectedOption) => {
     setBrandOption(selectedOption);
@@ -32,14 +63,38 @@ const PurchaseList = () => {
     setPartyOption(selectedOption);
   };
 
+  // Unified filter logic
+  const filteredData = data?.filter((item) => {
+    const matchesSearchQuery =
+      !searchQuery ||
+      item.productName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      !categoryOption ||
+      categoryOption.value === "All" ||
+      item.category === categoryOption.value;
+    const matchesBrand =
+      !brandOption ||
+      brandOption.value === "All" ||
+      item.brandName === brandOption.value;
+    const matchesParty =
+      !partyOption ||
+      partyOption.value === "All" ||
+      item.vendorName === partyOption.value;
+
+    return (
+      matchesSearchQuery && matchesCategory && matchesBrand && matchesParty
+    );
+  });
+
   const openCreatePurchase = () => {
     setCreatePurchase(true);
     setOpenPurchaseDetail(false);
   };
 
-  const openPurchaseDetails = () => {
+  const openPurchaseDetails = (id) => {
     setOpenPurchaseDetail(true);
     setCreatePurchase(false);
+    navigate(`/admin/purchase-details/${id}`);
   };
 
   const backToList = () => {
@@ -47,10 +102,14 @@ const PurchaseList = () => {
     setCreatePurchase(false);
   };
 
+  useEffect(() => {
+    dispatch(getPurchaseDetails());
+  }, [dispatch]);
+
   return (
     <div className="purchase-list">
       {openPurchaseDetail ? (
-        <PurchaseDetails backToList={backToList} />
+        <PurchaseDetails />
       ) : createPurchase ? (
         <CreatePurchase backToList={backToList} />
       ) : (
@@ -64,56 +123,58 @@ const PurchaseList = () => {
                   placeholder="Search by Product"
                   aria-label="Default"
                   aria-describedby="inputGroup-sizing-default"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </InputGroup>
             </div>
             <div className="col-md-2 text-field">
               <Select
-                options={options}
+                options={categoryOptions}
                 value={categoryOption}
                 onChange={handleCategoryChange}
                 isSearchable={true}
                 classNamePrefix="custom-select"
                 placeholder="Select a Category"
-                menuPortalTarget={document.body} 
+                menuPortalTarget={document.body}
                 styles={{
                   option: (provided) => ({
                     ...provided,
-                    fontSize: '14px', 
+                    fontSize: "14px",
                   }),
                 }}
               />
             </div>
             <div className="col-md-2 text-field">
               <Select
-                options={options}
+                options={brandOptions}
                 value={brandOption}
                 onChange={handleBrandChange}
                 isSearchable={true}
                 classNamePrefix="custom-select"
                 placeholder="Filter by Brand name"
-                menuPortalTarget={document.body} 
+                menuPortalTarget={document.body}
                 styles={{
                   option: (provided) => ({
                     ...provided,
-                    fontSize: '14px',
+                    fontSize: "14px",
                   }),
                 }}
               />
             </div>
             <div className="col-md-2 text-field">
               <Select
-                options={options}
+                options={partyOptions}
                 value={partyOption}
                 onChange={handlePartyChange}
                 isSearchable={true}
                 classNamePrefix="custom-select"
-                placeholder="Filter by Party"
-                menuPortalTarget={document.body} 
+                placeholder="Filter by Vendor"
+                menuPortalTarget={document.body}
                 styles={{
                   option: (provided) => ({
                     ...provided,
-                    fontSize: '14px',
+                    fontSize: "14px",
                   }),
                 }}
               />
@@ -132,24 +193,21 @@ const PurchaseList = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="purchase-id" onClick={openPurchaseDetails}>
-                    #8697869768
-                  </td>
-                  <td>xxxxxxxxxxx</td>
-                  <td>xxxxxxxxxxx</td>
-                  <td>xxxxxxxxxxx</td>
-                  <td>xxxxxxxxxxx</td>
-                </tr>
-                <tr>
-                  <td className="purchase-id" onClick={openPurchaseDetails}>
-                    #8697869769
-                  </td>
-                  <td>xxxxxxxxxxx</td>
-                  <td>xxxxxxxxxxx</td>
-                  <td>xxxxxxxxxxx</td>
-                  <td>xxxxxxxxxxx</td>
-                </tr>
+                {filteredData &&
+                  filteredData.map((data) => (
+                    <tr>
+                      <td
+                        className="purchase-id"
+                        onClick={() => openPurchaseDetails(data._id)}
+                      >
+                        {data._id}
+                      </td>
+                      <td>{data.productName}</td>
+                      <td>{data.sku}</td>
+                      <td>{data.unitPrice}</td>
+                      <td>{data.vendorName}</td>
+                    </tr>
+                  ))}
               </tbody>
             </Table>
           </div>

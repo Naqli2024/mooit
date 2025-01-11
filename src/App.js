@@ -9,7 +9,7 @@ import HomePage from "./Pages/Home/HomePage";
 import NotFound from "./Pages/NotFound";
 import "./styles/style.css";
 import Main from "./Pages/Dashboard/Main";
-import SalesOrder from "./Pages/Dashboard/SalesOrder";
+import SalesOrder from "./Pages/Dashboard/InventoryManagement/Salesorder/SalesOrder";
 import Packages from "./Pages/Dashboard/Packages";
 import Storage from "./Pages/Dashboard/Storage";
 import Return from "./Pages/Dashboard/Return";
@@ -20,7 +20,9 @@ import Invoices from "./Pages/Dashboard/Invoices";
 import VendorManagement from "./Pages/Dashboard/VendorManagement";
 import Dashboard from "./Pages/Dashboard/Dashboard/Dashboard";
 import PurchaseList from "./Pages/Dashboard/Purchase/PurchaseList";
-import Items from "./Pages/Dashboard/InventoryManagement/Items";
+import Items from "./Pages/Dashboard/InventoryManagement/Items/Items";
+import PurchaseDetails from "./Pages/Dashboard/Purchase/PurchaseDetails";
+import Sales from "./Pages/Dashboard/InventoryManagement/Sales/Sales";
 
 function App() {
   return (
@@ -33,8 +35,10 @@ function App() {
             <Route index element={<Navigate to="/admin/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="purchase-list" element={<PurchaseList />} />
-            <Route path="items" element={<Items />}/>
-            <Route path="sales-order" element={<SalesOrder />} />
+            <Route path="purchase-details/:id" element={<PurchaseDetails />} />
+            <Route path="items" element={<Items />} />
+            <Route path="sales" element={<Sales />} />
+            <Route path="salesorder" element={<SalesOrder />} />
             <Route path="packages" element={<Packages />} />
             <Route path="storage" element={<Storage />} />
             <Route path="return" element={<Return />} />

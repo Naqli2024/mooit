@@ -14,7 +14,7 @@ export const dashboardItems = [
     submenus: [
       { item: "Items", path: "items", },
       { item: "Sales", path: "sales" },
-      { item: "Sales order", path: "sales-order" },
+      { item: "Sales order", path: "salesorder" },
       { item: "Packages", path: "packages" },
       { item: "Shipments", path: "shipments" },
       { item: "Delivery challans", path: "delivery-challans" },

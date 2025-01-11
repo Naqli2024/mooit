@@ -722,7 +722,7 @@
   color: white;
   font-size: 22px !important;
   font-weight: bold;
-  position: sticky;
+  position: sticky !important;
   top: 0;
   z-index: 1;
   font-size: 14px;
@@ -843,9 +843,6 @@
 }
 .goBack-btn span svg {
   font-size: 14px; 
-}
-.textfield-spacing label {
-  font-size: 14px;
 }
 .all-textfield-spacing,
 .textfield-spacing{
@@ -1058,6 +1055,10 @@
   cursor: pointer;
   width: 15%;
   font-size: 14px;
+}
+.invoice-bottom {
+  display: flex;
+  justify-content: space-between;
 }
 .edit-print-del-btn {
   display: flex;
@@ -1302,7 +1303,7 @@
   font-size: 14px;
   margin-top: 30px;
   gap: 20px;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 .stock-hand {
   color: green !important;
@@ -1602,3 +1603,30 @@
     margin: 10px 0;
   }
 }
+/*************Inventory-Sales order***********/
+.in-outbound-btn {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.btn-salesOrder {
+  border: 1px solid #ccc;
+  background-color: white;
+  padding: 5px 40px;
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+  color: #707070;
+}
+.btn-salesOrder:hover {
+  border: 1px solid #ccc;
+}
+.in-outbound-btn .active-btn {
+  color: black;
+}
+.sales-order-table th, td {
+  text-align: start !important;
+  padding: 15px 20px !important;
+}
+

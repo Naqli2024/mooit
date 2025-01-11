@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ProductOverview from "./ProductOverview";
 import ProductStorageLocation from "./ProductStorageLocation";
@@ -6,26 +6,41 @@ import PurchaseInformation from "./PurchaseInformation";
 import ProductHistory from "./ProductHistory";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import ProductSalesInformation from "./ProductSalesInformation";
+import { useDispatch, useSelector } from "react-redux";
+import { findPurchaseByItemName } from "../../../../Redux/features/findPurchaseSlice";
 
-const ProductDetails = ({ backToList }) => {
-  const [activeTab, setActiveTab] = useState("Overview"); 
+const ProductDetails = ({ backToList, sku }) => {
+  const [activeTab, setActiveTab] = useState("Overview");
+  const dispatch = useDispatch();
+  const { loading, product, error } = useSelector(
+    (state) => state.findPurchaseByItemName
+  );
+    const { inventories } = useSelector(
+      (state) => state.getInventories
+    );
 
   const renderContent = () => {
     switch (activeTab) {
       case "Overview":
-        return <ProductOverview />;
+        return <ProductOverview sku={sku} />;
       case "Storage location":
-        return <ProductStorageLocation/>;
+        return <ProductStorageLocation />;
       case "Purchase information":
         return <PurchaseInformation />;
       case "Sales information":
-        return <ProductSalesInformation/>;
+        return <ProductSalesInformation />;
       case "History":
-        return <ProductHistory/>;
+        return <ProductHistory />;
       default:
         return <ProductOverview />;
     }
   };
+
+  useEffect(() => {
+    if (sku) {
+      dispatch(findPurchaseByItemName({sku: sku})); 
+    }
+  }, [sku]);
 
   return (
     <div>
@@ -40,11 +55,22 @@ const ProductDetails = ({ backToList }) => {
       </button>
       <div className="product-details-content">
         <div className="product-title">
-        <p className="fw-bold">Product name</p>
-        <p className="edit-icon"><span><EditOutlinedIcon /></span>Edit</p>
+          <p className="fw-bold">Product name: {product && product.productName}</p>
+          <p className="edit-icon">
+            <span>
+              <EditOutlinedIcon />
+            </span>
+            Edit
+          </p>
         </div>
         <div className="product-navigation">
-          {["Overview", "Storage location", "Purchase information", "Sales information","History"].map((tab) => (
+          {[
+            "Overview",
+            "Storage location",
+            "Purchase information",
+            "Sales information",
+            "History",
+          ].map((tab) => (
             <div
               key={tab}
               className={`tab-item ${activeTab === tab ? "active" : ""}`}
@@ -54,7 +80,7 @@ const ProductDetails = ({ backToList }) => {
             </div>
           ))}
         </div>
-        <hr className="inventory-divider"/>
+        <hr className="inventory-divider" />
         {renderContent()}
       </div>
     </div>

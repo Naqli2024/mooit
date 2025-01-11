@@ -1,43 +1,45 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const ProductStorageLocation = () => {
+  const {loading, product, error} = useSelector(state => state.findPurchaseByItemName)
   return (
     <div>
       <div className="storage-location">
         <div className="storage-content">
           <div className="col-md-2 text-secondary">Warehouse name</div>
           <div className="col-md-1">-</div>
-          <div className="col-md-3">Warehouse 1</div>
+          <div className="col-md-3">{product.wareHouse}</div>
         </div>
         <div className="storage-content">
           <div className="col-md-2 text-secondary">Rack</div>
           <div className="col-md-1">-</div>
-          <div className="col-md-3">RackB</div>
+          <div className="col-md-3">{product.rack}</div>
         </div>
         <div className="storage-content">
           <div className="col-md-2 text-secondary">Shelf</div>
           <div className="col-md-1">-</div>
-          <div className="col-md-3">Shelf B2</div>
+          <div className="col-md-3">{product.shelf}</div>
         </div>
         <div className="storage-content">
-          <div className="col-md-2 text-secondary">Shelf</div>
+          <div className="col-md-2 text-secondary">Shelf Space</div>
           <div className="col-md-1">-</div>
-          <div className="col-md-3">Shelf B2-5</div>
+          <div className="col-md-3">{product.shelfSpace}</div>
         </div>
         <div className="storage-content">
           <div className="col-md-2 text-secondary">Storage Condition</div>
           <div className="col-md-1">-</div>
-          <div className="col-md-3">Refrigerator</div>
+          <div className="col-md-3">{product.storageCondition}</div>
         </div>
         <div className="storage-content">
           <div className="col-md-2 text-secondary">Storage date</div>
           <div className="col-md-1">-</div>
-          <div className="col-md-3">23/04/2024</div>
+          <div className="col-md-3">{product.storageDate}</div>
         </div>
         <div className="storage-content">
           <div className="col-md-2 text-secondary">Expiry date</div>
           <div className="col-md-1">-</div>
-          <div className="col-md-3">23/04/2025</div>
+          <div className="col-md-3">{product.expiryDate}</div>
         </div>
         <div className="storage-content">
           <div className="col-md-2 text-secondary">Location</div>
