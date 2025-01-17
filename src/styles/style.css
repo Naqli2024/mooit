@@ -1629,4 +1629,60 @@
   text-align: start !important;
   padding: 15px 20px !important;
 }
-
+/****************SaleOrder Form***************/
+.saleOrder-form {
+  padding: 20px 90px;
+}
+@media (max-width: 768px) {
+  .saleOrder-form {
+    padding: 20px 20px;
+  }
+}
+/*sale order table*/
+.table-container {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+  margin: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+.table-title {
+  margin-bottom: 12px;
+  font-weight: bold;
+  font-size: 18px;
+}
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+.custom-table th,
+.custom-table td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+.custom-table th {
+  font-weight: bold;
+}
+.custom-table input {
+  width: 95%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.add-item-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #1976d2;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.add-item-btn:hover {
+  background-color: #1565c0;
+}
