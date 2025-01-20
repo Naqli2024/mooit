@@ -5,6 +5,8 @@ import InputGroup from "react-bootstrap/InputGroup";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSalesOrder } from "../../../../Redux/salesOrder/createSaleOrder";
 import CreateSaleOrderForm from "./CreateSaleOrderForm";
+import SalesDetails from "./SalesDetails";
+
 
 const SalesOrder = () => {
   const [activeTab, setActiveTab] = useState("outBound");
@@ -12,10 +14,14 @@ const SalesOrder = () => {
   const { loading, saleOrder, error } = useSelector(
     (state) => state.getAllSalesorder
   );
+  const [openSalesDetail, setOpenSalesDetail] = useState(false);
   const [salesData, setSalesData] = useState([]);
   const [querySearch, setQuerySearch] = useState();
   const [saleOrderForm, setSaleOrderForm] = useState(false);
-
+  const backToList = () => {
+    setSaleOrderForm(false);
+    setOpenSalesDetail(false);
+  };
   const filteredData =
     salesData?.filter(
       (sales) =>
@@ -34,97 +40,110 @@ const SalesOrder = () => {
     }
   }, [dispatch, saleOrder]);
 
+  const openSalesOrderDetails = (id) =>{
+    setOpenSalesDetail(true);
+  }
+
   return (
     <>
       <div className="purchase-list">
-        <h2>Sales Order</h2>
-      </div>
-      {!saleOrderForm ? (
-        <>
-          <div className="row purchase-textfield">
-            <div className="col-md-4">
-              <InputGroup className="mb-3">
-                <Form.Control
-                  className="text-field"
-                  placeholder="Search sales order"
-                  aria-label="Default"
-                  aria-describedby="inputGroup-sizing-default"
-                  value={querySearch}
-                  onChange={(e) => setQuerySearch(e.target.value)}
-                />
-              </InputGroup>
+        {openSalesDetail?(
+          <SalesDetails backToList={backToList}/>
+        ) : saleOrderForm  ?(
+          <CreateSaleOrderForm backToList={backToList}/>
+        ) : (
+          <div>
+          <h2>Sales Order</h2>
+           <div className="row purchase-textfield">
+              <div className="col-md-4">
+                <InputGroup className="mb-3">
+                  <Form.Control
+                    className="text-field"
+                    placeholder="Search sales order"
+                    aria-label="Default"
+                    aria-describedby="inputGroup-sizing-default"
+                    value={querySearch}
+                    onChange={(e) => setQuerySearch(e.target.value)}
+                  />
+                </InputGroup>
+              </div>
             </div>
-          </div>
-          <div className="in-outbound-btn mx-5 d-flex">
-            <div
-              className={`btn-salesOrder ${
-                activeTab === "outBound" ? "active-btn" : ""
-              }`}
-              onClick={() => setActiveTab("outBound")}
-            >
-              outBound
-            </div>
-            <div
-              className={`btn-salesOrder ${
-                activeTab === "InBound" ? "active-btn" : ""
-              }`}
-              onClick={() => setActiveTab("InBound")}
-            >
-              InBound
-            </div>
-          </div>
-          <div className="table-container mx-5">
-            <Table bordered className="custom-table sales-order-table">
-              <thead>
-                <tr>
-                  <th>Sales Order ID</th>
-                  <th>Date</th>
-                  <th>{activeTab === "outBound" ? "Customer" : "Store"}</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredData.length > 0 ? (
-                  filteredData
-                    .filter(
-                      (sales) =>
-                        sales.saleType.toLowerCase() === activeTab.toLowerCase()
-                    )
-                    .map((sales, index) => (
-                      <tr key={sales._id || index}>
-                        <td className="purchase-id">{sales.salesOrderId}</td>
-                        <td>{sales.salesorderDate}</td>
-                        <td>{sales.customerName}</td>
-                        <td>{sales.itemDetails?.Total}</td>
-                        <td>{sales.status?.value}</td>
-                      </tr>
-                    ))
-                ) : (
-                  <tr>
-                    <td colSpan="5" className="text-center">
-                      No sales orders found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-          </div>
-          <div className="mt-4">
-            <div className="col d-flex justify-content-end">
-              <button
-                type="button"
-                className="btn create-purchase-btn"
-                onClick={() => setSaleOrderForm(true)}
+            <div className="in-outbound-btn mx-5 d-flex">
+              <div
+                className={`btn-salesOrder ${
+                  activeTab === "outBound" ? "active-btn" : ""
+                }`}
+                onClick={() => setActiveTab("outBound")}
               >
-                Create New
-              </button>
+                outBound
+              </div>
+              <div
+                className={`btn-salesOrder ${
+                  activeTab === "InBound" ? "active-btn" : ""
+                }`}
+                onClick={() => setActiveTab("InBound")}
+              >
+                InBound
+              </div>
+            </div>
+            <div className="table-container mx-5">
+              <Table bordered className="custom-table sales-order-table">
+                <thead>
+                  <tr>
+                    <th>Sales Order ID</th>
+                    <th>Date</th>
+                    <th>{activeTab === "outBound" ? "Customer" : "Store"}</th>
+                    <th>Status</th>
+                    <th>Packed</th>
+                    <th>Shipped</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredData.length > 0 ? (
+                    filteredData
+                      .filter(
+                        (sales) =>
+                          sales.saleType.toLowerCase() === activeTab.toLowerCase()
+                      )
+                      .map((sales, index) => (
+                        <tr key={sales._id || index}>
+                          <td className="purchase-id"
+                          onClick={() => openSalesOrderDetails(sales.salesOrderId)}
+                          >{sales.salesOrderId}</td>
+                          <td>{sales.salesorderDate}</td>
+                          <td>{sales.customerName}</td>
+                          <td>{sales.status?.value}</td>
+                          <td>{sales.status?.value}</td>
+                          <td>{sales.status?.value}</td>
+                          <td>{sales.itemDetails?.Total}</td>
+                        </tr>
+                      ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        No sales orders found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+            </div>
+            <div className="mt-4">
+              <div className="col d-flex justify-content-end">
+                <button
+                  type="button"
+                  className="btn create-purchase-btn"
+                  onClick={() => setSaleOrderForm(true)}
+                >
+                  Create New
+                </button>
+              </div>
             </div>
           </div>
-        </>
-      ) : (
-        <CreateSaleOrderForm />
-      )}
+        )
+        }
+        </div>
     </>
   );
 };

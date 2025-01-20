@@ -319,7 +319,7 @@
     margin-top: 30px;
   }
   .mainbar {
-    flex: 0 0 100%;
+    /* flex: 0 0 100%; */
     height: auto;
     overflow-y: scroll;
     margin: 5px 5px;
@@ -758,14 +758,10 @@
   pointer-events: auto;
 }
 .table-container {
-  overflow: hidden; 
   border-bottom-left-radius: 10px; 
   border-bottom-right-radius: 10px; 
-  border: 1px solid #e3e3e3; 
-  box-shadow: 0 4px 8px rgba(153, 153, 153, 0.2);
   height: max-content;
   max-height: 500px;
-  overflow-y:  auto !important;
 }
 .custom-table tbody tr:last-child {
   border-bottom: none; 
@@ -1454,6 +1450,7 @@
   justify-content: space-between;
   text-align: left;
   font-size: 14px;
+  align-items: center;
 }
 @media (max-width: 768px){
   .overview-right-content {
@@ -1632,17 +1629,31 @@
 /****************SaleOrder Form***************/
 .saleOrder-form {
   padding: 20px 90px;
+  font-size: 14px !important; 
+  font-weight: 600;
 }
-@media (max-width: 768px) {
-  .saleOrder-form {
-    padding: 20px 20px;
-  }
+.sales-back-btn {
+  padding-left: 50px;
+}
+.sales-order-label {
+  font-size: 14px !important;
+  font-weight: 400;
+}
+.select-an-item {
+  font-size: 12px;
+}
+.edit-icon span svg {
+  font-size: 14px;
+}
+.new-sales-table .sales-name-text {
+  padding-left: 20px !important;
+}
+.new-sales-table .item-details-header {
+  padding-left: 20px !important;
 }
 /*sale order table*/
 .table-container {
-  border: 1px solid #ddd;
   border-radius: 10px;
-  padding: 16px;
   margin: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
@@ -1661,7 +1672,7 @@
 .custom-table td {
   padding: 8px;
   text-align: left;
-  border: 1px solid #ddd;
+  border: 0.2px solid #ddd;
 }
 .custom-table th {
   font-weight: bold;
@@ -1673,16 +1684,233 @@
   border-radius: 4px;
   box-sizing: border-box;
 }
-.add-item-btn {
-  display: inline-block;
-  padding: 10px 20px;
+.new-sales-table th, .new-sales-table td {
+  background-color: white;
+  color: black;
+}
+.new-sales-table {
+  width: 100%;
+  margin-top: 30px;
+  border-radius: 10px;
+  overflow: hidden; 
+  border-collapse: separate; 
+  border-spacing: 0;
+  overflow-x: auto !important;
+}
+.sales-table-outer-border {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 0px;
+  position: relative;
+  overflow: visible; 
+  margin: 0;
+}
+.sales-table-outer-border table {
+  margin: 0;
+  padding-bottom: 50px;
+  width: 100%; 
+}
+.add-item-button {
+  position: absolute;
+  bottom: -20px; 
+  left: 10px; 
+  z-index: 2;
   color: #fff;
   background-color: #1976d2;
   border: none;
-  border-radius: 4px;
+  border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
-.add-item-btn:hover {
-  background-color: #1565c0;
+.sales-address{
+  display: flex;
+  gap: 40px;
+}
+.new-sales-btn {
+  display: flex;
+  justify-content: flex-start; 
+  gap: 10px; 
+}
+.new-sales-btn .btn {
+  flex: 0 0 15%; 
+  max-width: 25%; 
+  text-align: center; 
+}
+.save-download-btn,.sales-cancel-btn {
+  font-size: 14px;
+  border: 1px solid #ddd;
+}
+.save-draft-btn {
+  font-size: 14px;
+  border: 1px solid #3769CE;
+}
+.save-draft-btn:hover {
+  border: 1px solid #ddd;
+  border: 1px solid #3769CE;
+}
+.sales-bottom-content {
+  margin-left: auto;  
+  background-color: #F2F5FB;
+  padding: 30px;
+  width: 100%;
+  max-width: 35%;
+  height: 100%;
+  max-height: 50%;
+  border-radius: 5px; 
+  text-align: center;
+  margin-top: 3%;
+}
+@media (max-width: 768px) {
+  .saleOrder-form {
+    padding: 20px 40px;
+  }
+  .sales-table-outer-border {
+    overflow-x: auto;
+  }
+  .sales-bottom-content {
+    width: 100%;
+    max-width: 100% !important;
+    margin-top: 10%;
+  }
+  .sales-back-btn {
+    padding-left: 0px;
+  }
+  .new-sales-table input {
+    width: 100%;
+    padding: 3px;
+    box-sizing: content-box;
+  }
+}
+@media (max-width: 1300px){
+  .sales-bottom-content {
+    width: 100%;
+    max-width: 100% !important;
+    margin-top: 10%;
+  }
+  .sales-back-btn {
+    padding-left: 40px;
+  }
+}
+@media (max-width: 480px){
+  .sales-back-btn {
+    padding-left: 20px !important;
+  }
+  .new-sales-btn {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+  }
+  .new-sales-btn .btn {
+    width: 100%; 
+    max-width: 100%;
+    text-align: center; 
+    margin-bottom: 10px; 
+  }
+  .sales-address{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+@media (max-width: 1060px){
+  .saleOrder-form {
+    padding: 20px 40px;
+  }
+  .sales-back-btn {
+    padding-left: 0px;
+  }
+}
+@media (max-width: 600px){
+  .sales-bottom-content {
+    margin-bottom: 7px !important;
+  }
+  .sales-order-table th, td {
+    text-align: start !important;
+    padding: 10px 10px !important;
+  }
+}
+/****************SaleOrder Details***************/
+.salesOrder-dropdown-style{
+  width: 110px; 
+  background-color: #E9EAEB;
+  border: 0px ;
+  color: #000; 
+  font-size: 14px; 
+  appearance: none; 
+}
+.salesOrder-dropdown-style:focus {
+  outline: none; 
+  box-shadow: none; 
+}
+.pdf-switch {
+  display: flex;
+  justify-content: flex-end !important;
+}
+.sales-invoice-detail {
+  margin: 30px 30px;
+}
+.sales-invoice-heading {
+  font-weight: 500;
+}
+.sales-id-text {
+  font-size: 14px;
+}
+.draft-text {
+  background-color: #CFCFCF;
+  margin-left: 5px;
+  padding: 3px;
+  padding-left: 7px;
+  padding-right: 7px;
+  font-size: 14px;
+  border-radius: 2px;
+}
+.sales-invoice {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+.sales-order-date {
+  font-size: 14px;
+}
+.sales-order-bill {
+  font-size: 14px;
+  margin-top: 30px;
+}
+.sales-order-ship {
+  font-size: 14px;
+  margin-right: 20px;
+  margin-top: 30px;
+}
+.sales-invoice-table th ,.sales-invoice-table td {
+  text-align: center !important;
+}
+.amount-divider {
+  border: none;        
+  border-top: 1px solid black; 
+  margin: 10px 0;      
+  width: 35%;          
+}
+.sales-amount {
+  justify-content: end !important;
+}
+.sales-invoice-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin: 10px 0;
+}
+@media (max-width: 600px){
+  .sales-invoice {
+    flex-direction: column;
+  }
+  .sales-invoice-heading, .sales-order-date {
+    margin-bottom: 20px;
+  }
+  .sales-invoice-detail {
+    margin: 20px 20px;
+  }
 }
