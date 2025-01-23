@@ -6,7 +6,8 @@ import findPurchaseByItemName from "./features/findPurchaseSlice";
 import createInventoryReducer from "./inventory/createInventorySlice";
 import getInventoriesReducer from "./inventory/getInventoriesSlice";
 import getInventoryBySku from "./inventory/getInventoryBySku";
-import getAllSalesOrderSlice from "./salesOrder/createSaleOrder";
+import getAllSalesOrderSlice from "./salesOrder/getSaleOrder";
+import createSaleOrderSlice from "./salesOrder/createSaleOrder";
 
 const store = configureStore({
   reducer: {
@@ -17,7 +18,8 @@ const store = configureStore({
     createInventoryReducer: createInventoryReducer,
     getInventories: getInventoriesReducer,
     getInventoryBySku: getInventoryBySku,
-    getAllSalesorder: getAllSalesOrderSlice
+    getAllSalesorder: getAllSalesOrderSlice,
+    createSaleOrder: createSaleOrderSlice
   },
 });
 

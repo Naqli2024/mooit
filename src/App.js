@@ -23,6 +23,7 @@ import PurchaseList from "./Pages/Dashboard/Purchase/PurchaseList";
 import Items from "./Pages/Dashboard/InventoryManagement/Items/Items";
 import PurchaseDetails from "./Pages/Dashboard/Purchase/PurchaseDetails";
 import Sales from "./Pages/Dashboard/InventoryManagement/Sales/Sales";
+import SalesDetails from "./Pages/Dashboard/InventoryManagement/Salesorder/SalesDetails";
 
 function App() {
   return (

@@ -1,4 +1,5 @@
 export const paymentTerms = [
+  "select payment terms",
   "Net 15",
   "Net 30",
   "Net 45",
