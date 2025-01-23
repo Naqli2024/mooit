@@ -1671,7 +1671,6 @@ td {
 .custom-table td {
   padding: 8px;
   text-align: left;
-  border: 0.2px solid #ddd;
 }
 .custom-table th {
   font-weight: bold;
@@ -1836,10 +1835,10 @@ td {
   }
 }
 /****************SaleOrder Details***************/
-.salesOrder-dropdown-style {
+.salesOrder-dropdown-style{
   width: 110px;
-  background-color: #e9eaeb;
-  border: 0px;
+  background-color: #E9EAEB;
+  border: 0px ;
   color: #000;
   font-size: 14px;
   appearance: none;
@@ -1848,19 +1847,9 @@ td {
   outline: none;
   box-shadow: none;
 }
-.sales-in-outbound-table th,
-.sales-in-outbound-table td {
-  text-align: start !important;
-  padding: 15px 20px !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-bottom: 1px solid #ddd;
-}
-.sales-in-outbound-table tr:last-child td {
-  border-bottom: none;
-}
 .pdf-switch {
   display: flex;
+  align-items: center !important;
   justify-content: flex-end !important;
 }
 .sales-invoice-detail {
@@ -1873,13 +1862,42 @@ td {
   font-size: 14px;
 }
 .draft-text {
-  background-color: #cfcfcf;
+  background-color: #CFCFCF;
   margin-left: 5px;
   padding: 3px;
   padding-left: 7px;
   padding-right: 7px;
   font-size: 14px;
   border-radius: 2px;
+}
+.approve-text {
+  background-color: #DBF0FF;
+  margin-left: 5px;
+  padding: 3px;
+  padding-left: 7px;
+  padding-right: 7px;
+  font-size: 14px;
+  border-radius: 2px;
+  color: #209EFF;
+}
+.confirm-text {
+  background-color: #F6DBFF;
+  margin-left: 5px;
+  padding: 3px;
+  padding-left: 7px;
+  padding-right: 7px;
+  font-size: 14px;
+  border-radius: 2px;
+  color: #C113FF;
+}
+.status-text {
+  margin: 5px 35px;
+  padding: 3px;
+  padding-left: 7px;
+  padding-right: 7px;
+  font-size: 14px;
+  border-radius: 2px;
+  width: fit-content;
 }
 .sales-invoice {
   display: flex;
@@ -1898,15 +1916,14 @@ td {
   margin-right: 20px;
   margin-top: 30px;
 }
-.sales-invoice-table th,
-.sales-invoice-table td {
+.sales-invoice-table th ,.sales-invoice-table td {
   text-align: center !important;
 }
 .amount-divider {
-  border: none;
+  border: none;        
   border-top: 1px solid black;
-  margin: 10px 0;
-  width: 35%;
+  margin: 10px 0;      
+  width: 35%;          
 }
 .sales-amount {
   justify-content: end !important;
@@ -1917,23 +1934,41 @@ td {
   font-size: 14px;
   margin: 10px 0;
 }
-@media (max-width: 600px) {
+.sales-invoice-outer-card {
+  margin: 0;
+  margin-left: 30px;
+  margin-right: 30px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
+.sales-invoice-bottom-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: justify;
+  margin-right: 30px;
+}
+.sales-invoice-bottom-content .col-md-5 {
+  padding: 10px;
+  font-size: 14px;
+}
+@media (max-width: 400px) {
+  .sales-invoice-bottom-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+@media (max-width: 600px){
   .sales-invoice {
     flex-direction: column;
   }
-  .sales-invoice-heading,
-  .sales-order-date {
+  .sales-invoice-heading, .sales-order-date {
     margin-bottom: 20px;
   }
   .sales-invoice-detail {
     margin: 20px 20px;
-  }
-}
-@media (max-width: 600px) {
-  .sales-in-outbound-table th,
-  td {
-    text-align: start !important;
-    padding: 10px 10px !important;
   }
 }
 /***************OutBoundSaleOrder****************/

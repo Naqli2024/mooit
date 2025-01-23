@@ -7,11 +7,9 @@ import { getAllSalesOrder } from "../../../../Redux/salesOrder/getSaleOrder";
 import OutBoundSaleOrderForm from "./OutBoundSaleOrderForm";
 import SalesDetails from "./SalesDetails";
 import InBoundSaleOrderForm from "./InBoundSaleOrderForm";
-import { useNavigate } from "react-router-dom";
 
 const SalesOrder = () => {
   const [activeTab, setActiveTab] = useState("outBound");
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading, allSaleOrder, error } = useSelector(
     (state) => state.getAllSalesorder
@@ -125,7 +123,7 @@ const SalesOrder = () => {
                           <tr key={sales._id || index}>
                             <td
                               className="purchase-id"
-                              onClick={""}
+                              onClick={() => setOpenSalesDetail(!openSalesDetail)}
                             >
                               {sales.salesOrderId}
                             </td>
