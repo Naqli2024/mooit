@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const createSaleOrder = createAsyncThunk(
-  "saleOrder",
+export const createNewPackage = createAsyncThunk(
+  "newPackage",
   async (payload, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/create-saleOrder",
+        "http://localhost:4000/api/create-package",
         payload
       );
       return response.data;
@@ -14,34 +14,36 @@ export const createSaleOrder = createAsyncThunk(
       return rejectWithValue(
         error.response?.data?.message ||
           error.message ||
-          "An unknown error occurred"
+          "An unknown error occured"
       );
     }
   }
 );
 
-const createSaleOrderSlice = createSlice({
-  name: "saleOrder",
+const newPackageSlice = createSlice({
+  name: "newPackage",
   initialState: {
     loading: false,
-    saleOrder: null,
+    package: null,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(createSaleOrder.pending, (state) => {
+      .addCase(createNewPackage.pending, (state) => {
         state.loading = true;
       })
-      .addCase(createSaleOrder.fulfilled, (state, action) => {
+      .addCase(createNewPackage.fulfilled, (state, action) => {
         state.loading = false;
-        state.saleOrder = action.payload;
+        state.package = action.payload;
+        state.error = null;
       })
-      .addCase(createSaleOrder.rejected, (state, action) => {
+      .addCase(createNewPackage.rejected, (state, action) => {
         state.loading = false;
+        state.package = null;
         state.error = action.payload;
       });
   },
 });
 
-export default createSaleOrderSlice.reducer;
+export default newPackageSlice.reducer;

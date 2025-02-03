@@ -18,6 +18,7 @@ export const dashboardItems = [
       { item: "Packages", path: "packages" },
       { item: "Shipments", path: "shipments" },
       { item: "Delivery challans", path: "delivery-challans" },
+      { item: "Source department", path: "source-department" },
       { item: "Customer", path: "customer" },
       { item: "Category", path: "category" },
     ],

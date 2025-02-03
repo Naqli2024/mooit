@@ -243,7 +243,7 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
             {!addStore ? (
               <Form.Group className="mb-5">
                 <Form.Label className="custom-label ">
-                  Store Department
+                  Source Department
                 </Form.Label>
                 <Select
                   options={storeName}

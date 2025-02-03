@@ -182,7 +182,7 @@ const PurchaseList = () => {
           </div>
 
           <div className="table-container mx-5">
-            <Table bordered className="custom-table">
+            <Table bordered className="custom-table sales-in-outbound-table">
               <thead>
                 <tr>
                   <th>Purchase Id</th>

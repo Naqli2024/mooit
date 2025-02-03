@@ -10,7 +10,7 @@ import NotFound from "./Pages/NotFound";
 import "./styles/style.css";
 import Main from "./Pages/Dashboard/Main";
 import SalesOrder from "./Pages/Dashboard/InventoryManagement/Salesorder/SalesOrder";
-import Packages from "./Pages/Dashboard/Packages";
+import Packages from "./Pages/Dashboard/InventoryManagement/Packages/Packages";
 import Storage from "./Pages/Dashboard/Storage";
 import Return from "./Pages/Dashboard/Return";
 import FloorManagement from "./Pages/Dashboard/FloorManagement";
@@ -20,10 +20,15 @@ import Invoices from "./Pages/Dashboard/Invoices";
 import VendorManagement from "./Pages/Dashboard/VendorManagement";
 import Dashboard from "./Pages/Dashboard/Dashboard/Dashboard";
 import PurchaseList from "./Pages/Dashboard/Purchase/PurchaseList";
+import Vendors from "./Pages/Dashboard/Purchase/Vendors/Vendors";
 import Items from "./Pages/Dashboard/InventoryManagement/Items/Items";
 import PurchaseDetails from "./Pages/Dashboard/Purchase/PurchaseDetails";
 import Sales from "./Pages/Dashboard/InventoryManagement/Sales/Sales";
-import SalesDetails from "./Pages/Dashboard/InventoryManagement/Salesorder/SalesDetails";
+import DeliveryChallans from "./Pages/Dashboard/InventoryManagement/DeliveryChallans/DeliveryChallans";
+import Shipments from "./Pages/Dashboard/InventoryManagement/Shipments/Shipments";
+import SourceDepartment from "./Pages/Dashboard/InventoryManagement/SourceDepartment/SourceDepartment";
+import Category from "./Pages/Dashboard/InventoryManagement/Category/Category";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -36,11 +41,16 @@ function App() {
             <Route index element={<Navigate to="/admin/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="purchase-list" element={<PurchaseList />} />
+            <Route path="vendors" element={<Vendors />} />
             <Route path="purchase-details/:id" element={<PurchaseDetails />} />
             <Route path="items" element={<Items />} />
             <Route path="sales" element={<Sales />} />
             <Route path="salesorder" element={<SalesOrder />} />
             <Route path="packages" element={<Packages />} />
+            <Route path="delivery-challans" element={<DeliveryChallans />} />
+            <Route path="source-department" element={<SourceDepartment />} />
+            <Route path="category" element={<Category />} />
+            <Route path="shipments" element={<Shipments />} />
             <Route path="storage" element={<Storage />} />
             <Route path="return" element={<Return />} />
             <Route path="floor-management" element={<FloorManagement />} />
@@ -52,6 +62,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
+      <ToastContainer />
     </>
   );
 }

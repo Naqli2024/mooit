@@ -7,12 +7,16 @@ import { getAllSalesOrder } from "../../../../Redux/salesOrder/getSaleOrder";
 import OutBoundSaleOrderForm from "./OutBoundSaleOrderForm";
 import SalesDetails from "./SalesDetails";
 import InBoundSaleOrderForm from "./InBoundSaleOrderForm";
+import { getSaleOrderBySaleOrderId } from "../../../../Redux/salesOrder/getSaleOrderByIdSlice";
 
 const SalesOrder = () => {
   const [activeTab, setActiveTab] = useState("outBound");
   const dispatch = useDispatch();
   const { loading, allSaleOrder, error } = useSelector(
     (state) => state.getAllSalesorder
+  );
+  const { saleOrderData } = useSelector(
+    (state) => state.getSaleOrderBySaleOrderId
   );
   const [openSalesDetail, setOpenSalesDetail] = useState(false);
   const [salesData, setSalesData] = useState([]);
@@ -21,17 +25,24 @@ const SalesOrder = () => {
   const backToList = () => {
     setSaleOrderForm(false);
     setOpenSalesDetail(false);
+    dispatch(getAllSalesOrder());
   };
   const filteredData =
     salesData?.filter(
       (sales) =>
-        sales.customerName
+        sales.saleType.toLowerCase() === activeTab.toLowerCase() &&
+        (sales.customerName
           ?.toLowerCase()
           .includes(querySearch?.toLowerCase() || "") ||
-        sales.salesOrderId
-          ?.toLowerCase()
-          .includes(querySearch?.toLowerCase() || "")
+          sales.salesOrderId
+            ?.toLowerCase()
+            .includes(querySearch?.toLowerCase() || ""))
     ) || [];
+
+  const handleSaleOrderDetail = (saleOrderId) => {
+    setOpenSalesDetail(!openSalesDetail);
+    dispatch(getSaleOrderBySaleOrderId(saleOrderId));
+  };
 
   useEffect(() => {
     dispatch(getAllSalesOrder());
@@ -47,7 +58,7 @@ const SalesOrder = () => {
     <>
       <div className="purchase-list">
         {openSalesDetail ? (
-          <SalesDetails backToList={backToList} />
+          <SalesDetails backToList={backToList} saleOrderData={saleOrderData} />
         ) : (
           (saleOrderForm &&
             (activeTab === "outBound" ? (
@@ -63,19 +74,28 @@ const SalesOrder = () => {
             ))) || (
             <div>
               <h2>Sales Order</h2>
-              <div className="row purchase-textfield">
+              <div className="purchase-textfield">
                 <div className="col-md-4">
-                  <InputGroup className="mb-3">
-                    <Form.Control
-                      className="text-field"
-                      placeholder="Search sales order"
-                      aria-label="Default"
-                      aria-describedby="inputGroup-sizing-default"
-                      value={querySearch}
-                      onChange={(e) => setQuerySearch(e.target.value)}
-                    />
-                  </InputGroup>
+                  <div className="sales-search-field">
+                    <InputGroup className="mb-3">
+                      <Form.Control
+                        className="text-field"
+                        placeholder="Search sales orderId"
+                        aria-label="Default"
+                        aria-describedby="inputGroup-sizing-default"
+                        value={querySearch}
+                        onChange={(e) => setQuerySearch(e.target.value)}
+                      />
+                    </InputGroup>
+                  </div>
                 </div>
+                <button
+                  type="button"
+                  className="btn create-purchase-btn"
+                  onClick={() => setSaleOrderForm(true)}
+                >
+                  Create New
+                </button>
               </div>
               <div className="in-outbound-btn mx-5 d-flex">
                 <div
@@ -84,7 +104,7 @@ const SalesOrder = () => {
                   }`}
                   onClick={() => setActiveTab("outBound")}
                 >
-                  outBound
+                  OutBound
                 </div>
                 <div
                   className={`btn-salesOrder ${
@@ -104,7 +124,11 @@ const SalesOrder = () => {
                     <tr>
                       <th>Sales Order ID</th>
                       <th>Date</th>
-                      <th>{activeTab === "outBound" ? "Customer" : "Store"}</th>
+                      <th>
+                        {activeTab === "outBound"
+                          ? "Customer"
+                          : "Source Department"}
+                      </th>
                       <th>Status</th>
                       <th>Packed</th>
                       <th>Shipped</th>
@@ -112,53 +136,51 @@ const SalesOrder = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredData.length > 0 ? (
-                      filteredData
-                        .filter(
-                          (sales) =>
-                            sales.saleType.toLowerCase() ===
-                            activeTab.toLowerCase()
-                        )
-                        .map((sales, index) => (
-                          <tr key={sales._id || index}>
-                            <td
-                              className="purchase-id"
-                              onClick={() => setOpenSalesDetail(!openSalesDetail)}
-                            >
-                              {sales.salesOrderId}
-                            </td>
-                            <td>{sales.salesorderDate}</td>
-                            <td>
-                              {activeTab === "outBound"
-                                ? sales.customerName
-                                : sales.storeDepartment}
-                            </td>
-                            <td>{sales.status?.value}</td>
-                            <td>{sales.status?.value}</td>
-                            <td>{sales.status?.value}</td>
-                            <td>{sales.total}</td>
-                          </tr>
-                        ))
-                    ) : (
+                    {salesData.length === 0 ? (
+                      // No sales data fetched
                       <tr>
                         <td colSpan="7" className="text-center">
-                          No sales orders found
+                          No sales data found
+                        </td>
+                      </tr>
+                    ) : filteredData.length > 0 ? (
+                      // Render filtered results if available
+                      filteredData.map((sales, index) => (
+                        <tr key={sales._id || index}>
+                          <td
+                            className="purchase-id"
+                            onClick={() => {
+                              if (sales && sales.salesOrderId) {
+                                handleSaleOrderDetail(sales.salesOrderId);
+                              }
+                            }}
+                          >
+                            {sales.salesOrderId}
+                          </td>
+                          <td>{sales.salesorderDate}</td>
+                          <td>
+                            {activeTab === "outBound"
+                              ? sales.customerName
+                              : sales.sourceDepartment}
+                          </td>
+                          <td>{sales.status?.value}</td>
+                          <td>{sales.status?.value}</td>
+                          <td>{sales.status?.value}</td>
+                          <td>{sales.total}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      // No filtered results match the query
+                      <tr>
+                        <td colSpan="7" className="text-center">
+                          No sales orders found for{" "}
+                          {activeTab === "outBound" ? "OutBound" : "InBound"}{" "}
+                          tab
                         </td>
                       </tr>
                     )}
                   </tbody>
                 </Table>
-              </div>
-              <div className="mt-4">
-                <div className="col d-flex justify-content-end">
-                  <button
-                    type="button"
-                    className="btn create-purchase-btn"
-                    onClick={() => setSaleOrderForm(true)}
-                  >
-                    Create New
-                  </button>
-                </div>
               </div>
             </div>
           )
