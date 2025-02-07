@@ -25,6 +25,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
 
 const PackageShipmentDetails = ({ backToList, shipmentData }) => {
   const [open, setOpen] = useState(false);
@@ -42,6 +43,23 @@ const PackageShipmentDetails = ({ backToList, shipmentData }) => {
   const openIcon = Boolean(openMoreIcon);
   const [status, setStatus] = React.useState("");
   const navigate = useNavigate();
+  const componentRef = React.useRef(null);
+
+  const handleAfterPrint = React.useCallback(() => {
+    console.log("`onAfterPrint` called");
+  }, []);
+
+  const handleBeforePrint = React.useCallback(() => {
+    console.log("`onBeforePrint` called");
+    return Promise.resolve();
+  }, []);
+
+  const reactToPrintFn = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: "Package Details",
+    onAfterPrint: handleAfterPrint,
+    onBeforePrint: handleBeforePrint,
+  });
 
   const handleUpdate = () => {
     handleClose();
@@ -133,7 +151,7 @@ const PackageShipmentDetails = ({ backToList, shipmentData }) => {
         </div>
         <div className="divider"></div>
         <div className="action-btn print-btn">
-          <PrintOutlinedIcon className="action-icon" />
+          <PrintOutlinedIcon className="action-icon" onClick={reactToPrintFn}/>
           Print
         </div>
         <div className="divider"></div>
@@ -158,7 +176,7 @@ const PackageShipmentDetails = ({ backToList, shipmentData }) => {
         </React.Fragment>
         <div className="divider"></div>
       </div>
-      <div className="package-shipment-details package-top-heading">
+      <div className="package-shipment-details package-top-heading" ref={componentRef}>
         <div className="ms-5 package-order-date">
           <span className="fw-bold">Shipment order: </span>
           {data?.data.shipmentOrder}

@@ -12,19 +12,21 @@ import {
   TextField,
   Slide,
 } from "@mui/material";
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import SubCategoryProducts from "./SubCategoryProducts";
+
 const SubCategory = ({ backToList }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [open, setOpen] = React.useState(false);
-  const [openSubCategory, setOpenSubCategory] = useState(false);
+  const [openSubCategoryProducts, setOpenSubCategoryProducts] = useState(false);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
+
   const categories = [
     { title: "Sub Category 1", count: 100 },
     { title: "Sub Category 2", count: 200 },
@@ -33,6 +35,7 @@ const SubCategory = ({ backToList }) => {
     { title: "Sub Category 5", count: 150 },
     { title: "Sub Category 6", count: 150 },
   ];
+
   const handleCheckboxChange = (categoryIndex) => {
     setSelectedCategories((prevSelected) =>
       prevSelected.includes(categoryIndex)
@@ -48,111 +51,136 @@ const SubCategory = ({ backToList }) => {
       setSelectedCategories(categories.map((_, index) => index));
     }
   };
+
+  const handleSubCategoryProducts = () => {
+    setOpenSubCategoryProducts(true);
+  };
+
   return (
-    <div className="purchase-list">
-      <h2>Category 1</h2>
-      <button onClick={backToList} className="goBack-btn">
-        <span>
-          <ArrowBackIosIcon />
-        </span>
-        Back
-      </button>
-      <div className="package-text-field">
-        <div className="d-md-flex"></div>
-        <button
-          type="button"
-          className="btn create-new-btn"
-          onClick={handleClickOpen}
-        >
-          Create new
+    <div>
+ {openSubCategoryProducts ? (<SubCategoryProducts backToList={()=>setOpenSubCategoryProducts(false)}/>)
+      : (
+        <div className="purchase-list">
+        <h2>Category 1</h2>
+        <button onClick={backToList} className="goBack-btn">
+          <span>
+            <ArrowBackIosIcon />
+          </span>
+          Back
         </button>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-describedby="alert-dialog-slide-description"
-          sx={{
-            "& .MuiDialog-paper": {
-              width: "400px",
-              maxWidth: "80vw",
-            },
-          }}
-        >
-          <DialogTitle className="purchase-list" sx={{ padding: 0 }}>
-            <h2>New Category</h2>
-          </DialogTitle>
-          <DialogContent>
-            <div className=" mt-3">
-              <Form.Group>
-                <Form.Label className="custom-label">
-                  Enter Sub Category Name
-                </Form.Label>
-                <InputGroup className="mt-1">
-                  <Form.Control
-                    aria-label="Default"
-                    aria-describedby="inputGroup-sizing-default"
-                    className="custom-textfield"
-                    name="packageReceipt"
-                  />
-                </InputGroup>
-              </Form.Group>
-            </div>
-          </DialogContent>
-          <DialogActions
+        <div className="package-text-field">
+          <div className="d-md-flex"></div>
+          <button
+            type="button"
+            className="btn create-new-btn"
+            onClick={handleClickOpen}
+          >
+            Create new
+          </button>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-describedby="alert-dialog-slide-description"
             sx={{
-              display: "flex",
-              gap: "8px",
-              padding: "16px",
-              justifyContent: "center",
+              "& .MuiDialog-paper": {
+                width: "400px",
+                maxWidth: "80vw",
+              },
             }}
           >
-            <Button
-              variant="contained"
-              className="btn-primary"
-              sx={{ fontWeight: "normal",paddingTop: "5px",paddingBottom: "3px" }}
-            >
-              Save
-            </Button>
-            <Button
-              onClick={handleClose}
+            <DialogTitle className="purchase-list" sx={{ padding: 0 }}>
+              <h2>New Category</h2>
+            </DialogTitle>
+            <DialogContent>
+              <div className=" mt-3">
+                <Form.Group>
+                  <Form.Label className="custom-label">
+                    Enter Sub Category Name
+                  </Form.Label>
+                  <InputGroup className="mt-1">
+                    <Form.Control
+                      aria-label="Default"
+                      aria-describedby="inputGroup-sizing-default"
+                      className="custom-textfield"
+                      name="packageReceipt"
+                    />
+                  </InputGroup>
+                </Form.Group>
+              </div>
+            </DialogContent>
+            <DialogActions
               sx={{
-                backgroundColor: "#CFCFCF",
-                color: "black",
-                fontWeight: "normal",
-                paddingTop: "5px",paddingBottom: "3px"
+                display: "flex",
+                gap: "8px",
+                padding: "16px",
+                justifyContent: "center",
               }}
             >
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-      {selectedCategories.length > 0 && (
-        <div className="select-all-btn" onClick={handleSelectAll}>
-          {selectedCategories.length === categories.length
-            ? "Deselect All"
-            : "Select All"}
+              <Button
+                variant="contained"
+                sx={{
+                  fontWeight: "normal",
+                  paddingTop: "5px",
+                  paddingBottom: "3px",
+                  backgroundColor: "#1F3F7F",
+                  textTransform: "capitalize"
+                }}
+              >
+                Save
+              </Button>
+              <Button
+                onClick={handleClose}
+                sx={{
+                  backgroundColor: "#CFCFCF",
+                  color: "black",
+                  fontWeight: "normal",
+                  paddingTop: "5px",
+                  paddingBottom: "3px",
+                  textTransform: "capitalize"
+                }}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
-      )}
-      <div className="category-content">
-        {categories.map((category, index) => (
-          <div key={index} className="category-card">
-            <div className="checkbox-container">
-              <input
-                type="checkbox"
-                checked={selectedCategories.includes(index)}
-                onChange={() => handleCheckboxChange(index)}
-              />
-            </div>
-            {selectedCategories.includes(index) && (
-              <div className="delete-icon">
-                <RiDeleteBin6Line size={20} />
-              </div>
-            )}
-            <div className="fw-bold mb-4">{category.title}</div>
-            <div>{category.count} Products</div>
+        {selectedCategories.length > 0 && (
+          <div className="select-all-btn" onClick={handleSelectAll}>
+            {selectedCategories.length === categories.length
+              ? "Deselect All"
+              : "Select All"}
           </div>
-        ))}
+        )}
+        <div className="category-content mt-5">
+          {categories.map((category, index) => (
+            <div
+              key={index}
+              className="category-card"
+              onClick={() => handleSubCategoryProducts(index)}
+            >
+              <div
+                className="checkbox-container"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedCategories.includes(index)}
+                  onChange={() => handleCheckboxChange(index)}
+                />
+              </div>
+              {selectedCategories.includes(index) && (
+                <div className="delete-icon">
+                  <RiDeleteBin6Line size={20} />
+                </div>
+              )}
+              <div className="fw-bold mb-4">{category.title}</div>
+              <div>{category.count} Products</div>
+            </div>
+          ))}
+        </div>
       </div>
+      )
+    }
     </div>
   );
 };

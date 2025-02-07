@@ -163,7 +163,7 @@ const Packages = () => {
                         <td className="purchase-id">
                           {packages.salesOrderId || "-"}
                         </td>
-                        <td>{packages.shipmentStatus}</td>
+                        <td>{packages?.shipmentStatus}</td>
                         <td>{packages.shipmentDate}</td>
                         <td>{totalQuantity || 0}</td>
                       </tr>

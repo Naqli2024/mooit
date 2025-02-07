@@ -3,14 +3,14 @@ import axios from "axios";
 
 export const deletePackageByPackageSlip = createAsyncThunk(
   "deletePackage",
-  async (id, { rejectedWithValue }) => {
+  async (id, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
         `http://localhost:4000/api/deletePackageByPackageSlip/${id}`
       );
       return response.data;
     } catch (error) {
-      return rejectedWithValue(
+      return rejectWithValue(
         error.response?.data?.message ||
           error.message ||
           "An unknown error occured"

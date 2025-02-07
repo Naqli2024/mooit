@@ -3,14 +3,14 @@ import axios from "axios";
 
 export const getAllPackages = createAsyncThunk(
   "getAllPackages",
-  async (_, { rejectedWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         "http://localhost:4000/api/getAllPackage"
       );
       return response.data.data;
     } catch (error) {
-      return rejectedWithValue(
+      return rejectWithValue(
         error.response?.data?.message || error.message || "An error occured"
       );
     }

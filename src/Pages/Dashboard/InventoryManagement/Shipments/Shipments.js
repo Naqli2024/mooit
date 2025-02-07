@@ -37,18 +37,20 @@ const Shipments = () => {
     setNewShipment(false);
   };
 
-  const filteredData = Array.isArray(data)? data.filter((filtered) => {
-    const isMatchingSearch = [
-      "shipmentOrder",
-      "salesOrderId",
-      "customerName",
-    ].some((key) =>
-      filtered?.[key]?.toLowerCase().includes(querySearch.toLowerCase())
-    );
-    const isMatchingStatus =
-      filter === "" || filtered?.shipmentStatus === filter;
-    return isMatchingSearch && isMatchingStatus;
-  }): [];
+  const filteredData = Array.isArray(data)
+    ? data.filter((filtered) => {
+        const isMatchingSearch = [
+          "shipmentOrder",
+          "salesOrderId",
+          "customerName",
+        ].some((key) =>
+          filtered?.[key]?.toLowerCase().includes(querySearch.toLowerCase())
+        );
+        const isMatchingStatus =
+          filter === "" || filtered?.shipmentStatus === filter;
+        return isMatchingSearch && isMatchingStatus;
+      })
+    : [];
 
   useEffect(() => {
     dispatch(getAllShipment());
@@ -64,7 +66,10 @@ const Shipments = () => {
           closeButton: false,
         })}
       {openShipmentDetails ? (
-        <ShipmentDetails backToList={backToList} newShipmentData={newShipmentData} />
+        <ShipmentDetails
+          backToList={backToList}
+          newShipmentData={newShipmentData}
+        />
       ) : openNewShipment ? (
         <ProductNewShipment backToList={backToList} />
       ) : (
@@ -130,10 +135,13 @@ const Shipments = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredData &&
+                {filteredData.length > 0 ? (
                   filteredData.map((shipmentData) => (
                     <tr>
-                      <td className="purchase-id" onClick={() =>handleShipmentId(shipmentData)}>
+                      <td
+                        className="purchase-id"
+                        onClick={() => handleShipmentId(shipmentData)}
+                      >
                         {shipmentData.shipmentOrder}
                       </td>
                       <td>{shipmentData.shipmentDate}</td>
@@ -147,7 +155,14 @@ const Shipments = () => {
                         {shipmentData.shipmentStatus}
                       </td>
                     </tr>
-                  ))}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7} style={{ textAlign: "center" }}>
+                      No Shipment Found
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </Table>
           </div>

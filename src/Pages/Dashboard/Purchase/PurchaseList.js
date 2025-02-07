@@ -8,6 +8,7 @@ import Select from "react-select";
 import { getPurchaseDetails } from "../../../Redux/features/getPurchaseDetailsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getAllVendors } from "../../../Redux/vendor/vendorSlice";
 
 const PurchaseList = () => {
   const [createPurchase, setCreatePurchase] = useState(false);
@@ -20,6 +21,7 @@ const PurchaseList = () => {
   const { loading, data, error } = useSelector(
     (state) => state.getPurchaseDetails
   );
+  const { vendors } = useSelector((state) => state.vendor);
   // Derive dropdown options dynamically from data
   const categoryOptions = [
     { value: "All", label: "All" },
@@ -43,12 +45,17 @@ const PurchaseList = () => {
 
   const partyOptions = [
     { value: "All", label: "All" },
-    ...Array.from(new Set(data?.map((item) => item.vendorName || ""))).map(
-      (vendor) => ({
-        value: vendor,
-        label: vendor,
-      })
-    ),
+    ...Array.from(
+      new Set(
+        vendors?.map(
+          (item) =>
+            `${item.basicInformation.firstName} ${item.basicInformation.firstName}`
+        )
+      )
+    ).map((vendor) => ({
+      value: vendor,
+      label: vendor,
+    })),
   ];
   const navigate = useNavigate();
 
@@ -104,6 +111,7 @@ const PurchaseList = () => {
 
   useEffect(() => {
     dispatch(getPurchaseDetails());
+    dispatch(getAllVendors());
   }, [dispatch]);
 
   return (
@@ -116,7 +124,7 @@ const PurchaseList = () => {
         <>
           <h2>Purchase</h2>
           <div className="row purchase-textfield">
-            <div className="col-md-4">
+            <div className="col-md-3">
               <InputGroup className="mb-3">
                 <Form.Control
                   className="text-field"
@@ -145,7 +153,7 @@ const PurchaseList = () => {
                 }}
               />
             </div>
-            <div className="col-md-2 text-field">
+            <div className="col-md-3 text-field">
               <Select
                 options={brandOptions}
                 value={brandOption}
@@ -193,7 +201,7 @@ const PurchaseList = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredData &&
+                {filteredData?.length > 0 ? (
                   filteredData.map((data) => (
                     <tr>
                       <td
@@ -207,7 +215,12 @@ const PurchaseList = () => {
                       <td>{data.unitPrice}</td>
                       <td>{data.vendorName}</td>
                     </tr>
-                  ))}
+                  ))
+                ) : (
+                  <tr colspan={5}>
+                    <td>No purchase list found</td>
+                  </tr>
+                )}
               </tbody>
             </Table>
           </div>

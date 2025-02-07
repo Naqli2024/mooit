@@ -2,19 +2,26 @@ import React, { useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import CreateNewBasicInformation from "./CreateNewBasicInformation";
 import CreateNewAddress from "./CreateNewAddress";
-const NewVendor = ({ backToList }) => {
+
+const NewVendor = ({ backToList, vendorDetails }) => {
   const [activeTab, setActiveTab] = useState("Basic Information");
 
   const renderContent = () => {
     switch (activeTab) {
       case "Basic Information":
-        return <CreateNewBasicInformation backToList={backToList}/>;
+        return (
+          <CreateNewBasicInformation
+            backToList={backToList}
+            vendorDetails={vendorDetails}
+          />
+        );
       case "Address":
-        return <CreateNewAddress backToList={backToList}/>;
+        return <CreateNewAddress backToList={backToList} />;
       default:
-        return <CreateNewBasicInformation backToList={backToList}/>;
+        return <CreateNewBasicInformation backToList={backToList} />;
     }
   };
+
   return (
     <div className="purchase-list">
       <h2>New Vendors</h2>

@@ -1,117 +1,130 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { LiaMinusCircleSolid } from "react-icons/lia";
-import { GoPlusCircle } from "react-icons/go";
 import Select from "react-select";
-import { InputGroup, Form, Button } from "react-bootstrap";
-import { Col, Row } from "react-bootstrap";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import AddCoulmnModal from "../Salesorder/AddCoulmnModal";
+import { InputGroup, Form } from "react-bootstrap";
+import Table from "react-bootstrap/Table";
+import { getAllSalesOrder } from "../../../../Redux/salesOrder/getSaleOrder";
+import { useDispatch, useSelector } from "react-redux";
+import { getSaleOrderBySaleOrderId } from "../../../../Redux/salesOrder/getSaleOrderByIdSlice";
+import { challanTypeOptions } from "../../../../Data/challanTypeOptions";
+import {
+  createDeliveryChallan,
+  generateDeliveryChallan,
+  getAllChallans,
+} from "../../../../Redux/deliveryChallan/deliveryChallanSlice";
+import { ToastContainer, toast } from "react-toastify";
+
 const NewDeliveryChallan = ({ backToList }) => {
-  const [rows, setRows] = useState([
-    { name: "", quantity: 1, price: 0.0, discount: 0, gst: 0, amount: 0 },
-  ]);
-
-  const [addColumn, setAddColumn] = useState(false);
-  const [newColumnName, setNewColumnName] = useState("");
-  const [saleOrderId, setSaleOrderId] = useState("");
+  const dispatch = useDispatch();
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [salesOrder, setSalesOrder] = useState([]);
+  const { saleOrderData } = useSelector(
+    (state) => state.getSaleOrderBySaleOrderId
+  );
+  const { allSaleOrder } = useSelector((state) => state.getAllSalesorder);
   const [formData, setFormData] = useState({
-    saleType: "",
-    customerName: "",
-    salesOrderId: saleOrderId,
-    salesorderDate: "",
-    paymentTerms: "",
-    shipmentDate: "",
-    deliveryMethod: "",
-    deliveryDate: "",
-    salesPerson: "",
-    itemDetails: rows,
-    subTotal: 0,
-    shipmentCharges: 0,
-    total: 0,
+    customerName: null,
+    salesOrderId: null,
+    deliveryChallan: "",
+    deliveryChallanDate: "",
+    expectedDeliveryDate: "",
+    challanType: "",
+    itemDetails: [],
   });
-  const addRow = () => {
-    setRows([
-      ...rows,
-      { name: "", quantity: 1, price: 0.0, discount: 0, gst: 0, amount: 0 },
-    ]);
+
+  const getSalesOrderId = (selectedOption) => {
+    if (!selectedOption) return;
+    const filterSaleOrder = allSaleOrder
+      ?.filter((saleOrder) => saleOrder.customerName === selectedOption.value)
+      .map((item) => ({ value: item.salesOrderId, label: item.salesOrderId }));
+
+    setSalesOrder(filterSaleOrder);
   };
-  const [columnVisibility, setColumnVisibility] = useState({
-    name: true,
-    quantity: true,
-    price: true,
-    discount: true,
-    gst: true,
-  });
-  const [columns, setColumns] = useState([
-    { key: "name", label: "Name", width: "22%", type: "text", colSpan: 2 },
-    { key: "quantity", label: "Quantity", width: "6%", type: "number" },
-    { key: "price", label: "Price", width: "8%", type: "number" },
-    { key: "discount", label: "Discount", width: "6%", type: "number" },
-    { key: "gst", label: "GST", width: "6%", type: "number" },
-  ]);
 
-  const handleInputChange = (index, field, value) => {
-    const updatedRows = [...rows];
-    updatedRows[index][field] = value;
-    updatedRows[index].amount =
-      updatedRows[index].price -
-      updatedRows[index].discount +
-      (updatedRows[index].price * updatedRows[index].gst) / 100;
-
-    setRows(updatedRows);
-
-    //calculate total and subTotal dynamically
-    const newSubTotal = updatedRows.reduce((sum, row) => sum + row.amount, 0);
-    setFormData((prev) => ({
-      ...prev,
-      itemDetails: updatedRows,
-      subTotal: newSubTotal,
-      total: newSubTotal + Number(prev.shipmentCharges),
+  const getCustomerNameFromSaleOrder = () => {
+    if (!Array.isArray(allSaleOrder)) return;
+    const customerName = allSaleOrder
+      ?.map((customer) => customer.customerName)
+      .filter((filtered) => filtered !== "undefined" && filtered !== undefined);
+    const customerNamesArray = customerName?.map((name) => ({
+      value: name,
+      label: name,
     }));
+    setCategoryOptions(customerNamesArray);
   };
-  const handleAddColumn = () => {
-    if (newColumnName.trim()) {
-      const newKey = newColumnName.toLowerCase();
-      setColumns([
-        ...columns,
-        {
-          key: newKey,
-          label: newColumnName,
-          type: "text",
-          width: "8%",
-          isNew: true,
-        },
-      ]);
-      setRows(rows.map((row) => ({ ...row, [newKey]: "" })));
 
-      // Add new column to columnVisibility with default visibility as true
-      setColumnVisibility((prev) => ({
-        ...prev,
-        [newKey]: true,
-      }));
+  const handleChange = (selectedOption) => {
+    setSalesOrder([]); // Reset sales orders before fetching new ones
+    getSalesOrderId(selectedOption);
+    setFormData({
+      ...formData,
+      customerName: selectedOption?.value || "",
+      salesOrderId: "",
+    });
+  };
 
-      setAddColumn(false);
-      setNewColumnName("");
+  const handleSalesOrderChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      salesOrderId: selectedOption?.value || "", // Set the salesOrderId correctly
+    });
+    if (selectedOption?.value) {
+      dispatch(getSaleOrderBySaleOrderId(selectedOption.value));
     }
   };
-  //To remove the newly added column
-  const handleColumnToggle = (key) => {
-    setColumnVisibility((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-    setColumns((prevColumn) =>
-      prevColumn.filter((column) => column.key != key)
-    );
+
+  const handleSaveNewDeliveryChallan = (event) => {
+    event.preventDefault();
+    dispatch(createDeliveryChallan(formData))
+      .unwrap()
+      .then((response) => {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          closeButton: false,
+        });
+        setTimeout(() => {
+          backToList();
+        }, 1000);
+      })
+      .catch((error) =>
+        toast.error(error, {
+          position: "top-center",
+          autoClose: 1000,
+          closeButton: false,
+        })
+      );
   };
 
-  const categoryOptions = [
-    { value: "electronics", label: "Electronics" },
-    { value: "furniture", label: "Furniture" },
-  ];
+  useEffect(() => {
+    if (saleOrderData?.itemDetails?.length) {
+      setFormData((prev) => ({
+        ...prev,
+        itemDetails: saleOrderData.itemDetails,
+      }));
+    }
+  }, [saleOrderData]);
 
-  const handleSaveNewDeliveryChallan = () => {};
+  useEffect(() => {
+    dispatch(getSaleOrderBySaleOrderId(formData.salesOrderId));
+  }, [dispatch, formData.salesOrderId]);
+
+  useEffect(() => {
+    if (allSaleOrder?.length) {
+      getCustomerNameFromSaleOrder();
+    }
+  }, [allSaleOrder]);
+
+  useEffect(() => {
+    dispatch(getAllSalesOrder());
+    dispatch(generateDeliveryChallan()).then((response) => {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        deliveryChallan: response.payload.data,
+      }));
+    });
+  }, [dispatch]);
+
   return (
     <div className="purchase-list">
       <h2>New Delivery Challans</h2>
@@ -128,8 +141,15 @@ const NewDeliveryChallan = ({ backToList }) => {
             <div className="form-group inventory-custom-dropdown">
               <Select
                 options={categoryOptions}
+                onChange={handleChange}
                 isSearchable={true}
                 classNamePrefix="custom-select"
+                value={
+                  formData.customerName && {
+                    value: formData.customerName,
+                    label: formData.customerName,
+                  }
+                }
               />
             </div>
           </Form.Group>
@@ -137,20 +157,26 @@ const NewDeliveryChallan = ({ backToList }) => {
             <Form.Label className="custom-label">Sales order</Form.Label>
             <div className="form-group inventory-custom-dropdown">
               <Select
-                options={categoryOptions}
+                options={salesOrder}
                 isSearchable={true}
                 classNamePrefix="custom-select"
+                value={
+                  salesOrder.find(
+                    (order) => order.value === formData.salesOrderId
+                  ) || ""
+                } // Set value correctly
+                onChange={handleSalesOrderChange}
               />
             </div>
           </Form.Group>
         </div>
         <hr />
-          <div className="sales-order-bill mb-4">
-            <div className="fw-bold">Shipping address</div>
-            <div>xxxxxxxxxxxx</div>
-            <div>xxxxxxxxxxxx</div>
-            <div>xxxxxxxxxxxx</div>
-          </div>
+        <div className="sales-order-bill mb-4">
+          <div className="fw-bold">Shipping address</div>
+          <div>xxxxxxxxxxxx</div>
+          <div>xxxxxxxxxxxx</div>
+          <div>xxxxxxxxxxxx</div>
+        </div>
         <div className="new-delivery-form mb-4 mt-5">
           <div className="col-md-4">
             <Form.Group>
@@ -160,7 +186,15 @@ const NewDeliveryChallan = ({ backToList }) => {
                   aria-label="Default"
                   aria-describedby="inputGroup-sizing-default"
                   className="custom-textfield"
-                  name="packageReceipt"
+                  name="deliveryChallan"
+                  value={formData.deliveryChallan}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      deliveryChallan: e.target.value,
+                    })
+                  }
+                  readOnly
                 />
               </InputGroup>
             </Form.Group>
@@ -175,8 +209,15 @@ const NewDeliveryChallan = ({ backToList }) => {
                   aria-label="Default"
                   aria-describedby="inputGroup-sizing-default"
                   className="custom-textfield"
-                  name="packageReceipt"
+                  name="deliveryChallanDate"
                   type="date"
+                  value={formData.deliveryChallanDate}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      deliveryChallanDate: e.target.value,
+                    })
+                  }
                 />
               </InputGroup>
             </Form.Group>
@@ -193,7 +234,15 @@ const NewDeliveryChallan = ({ backToList }) => {
                   aria-label="Default"
                   aria-describedby="inputGroup-sizing-default"
                   className="custom-textfield"
-                  name="packageReceipt"
+                  type="date"
+                  name="expectedDeliveryDate"
+                  value={formData.expectedDeliveryDate}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      expectedDeliveryDate: e.target.value,
+                    })
+                  }
                 />
               </InputGroup>
             </Form.Group>
@@ -203,7 +252,7 @@ const NewDeliveryChallan = ({ backToList }) => {
               <Form.Label className="custom-label">Challan type</Form.Label>
               <div className="form-group inventory-custom-dropdown mt-1">
                 <Select
-                  options={categoryOptions}
+                  options={challanTypeOptions}
                   isSearchable={true}
                   classNamePrefix="custom-select"
                   styles={{
@@ -212,152 +261,79 @@ const NewDeliveryChallan = ({ backToList }) => {
                       height: "45px",
                     }),
                   }}
+                  name="challanType"
+                  value={challanTypeOptions.find(
+                    (option) => option.value === formData.challanType
+                  )}
+                  onChange={(selectedOption) =>
+                    setFormData({
+                      ...formData,
+                      challanType: selectedOption.value,
+                    })
+                  }
                 />
               </div>
             </Form.Group>
           </div>
         </div>
-        <div className="sales-table-outer-border mt-5">
-          <div className="item-details">
-            <h3>Item details</h3>
-            <div
-              className="goBack-btn"
-              onClick={() => setAddColumn(!addColumn)}
-            >
-              <span className="me-1">
-                <EditOutlinedIcon />
-              </span>
-              Edit column
-            </div>
-          </div>
-          <table className="custom-table new-sales-table">
+        <div className="row invoice-table">
+          <Table className="table-content sales-invoice-table delivery-tableHeader">
             <thead>
               <tr>
-                {columns.map((column, index) => {
-                  if (!columnVisibility[column.key]) return null;
-                  return (
-                    <th
-                      key={index}
-                      className="sales-name-text"
-                      colSpan={column.colSpan || ""}
-                      style={{ width: column.width }}
-                    >
-                      <div className="sales-name-container">
-                        {column.label}
-                        {/* Show icon only for newly added columns */}
-                        {column.isNew && (
-                          <LiaMinusCircleSolid
-                            className="remove-icon"
-                            onClick={() => handleColumnToggle(column.key)}
-                          />
-                        )}
-                      </div>
-                    </th>
-                  );
-                })}
-                <th className="sales-name-text" style={{ width: "8%" }}>
-                  Amount
-                </th>
+                <th>#</th>
+                <th className="item-name-text">Item name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>GST</th>
+                <th>Amount</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((row, index) => (
-                <tr key={index}>
-                  {columns.map((column, colIndex) => {
-                    if (!columnVisibility[column.key]) return null;
-
-                    // Check if this is the first column (e.g., "Name" column)
-                    if (colIndex === 0) {
-                      return (
-                        <td
-                          key={colIndex}
-                          className="col-span-2"
-                          colSpan={column.colSpan || ""}
-                          style={{ width: column.width }}
-                        >
-                          <div className="form-group inventory-custom-dropdown">
-                            <Select
-                              options={categoryOptions}
-                              isSearchable={true}
-                              classNamePrefix="custom-select"
-                              menuPlacement="top"
-                              value={categoryOptions.find(
-                                (option) => option.value === row[column.key]
-                              )}
-                              onChange={(selectedOption) =>
-                                handleInputChange(
-                                  index,
-                                  column.key,
-                                  selectedOption.value
-                                )
-                              }
-                            />
-                          </div>
-                        </td>
-                      );
-                    }
-                    return (
-                      <td
-                        key={colIndex}
-                        className="col-span-2"
-                        colSpan={column.colSpan || ""}
-                        style={{ width: column.width }}
-                      >
-                        <input
-                          className="select-an-item"
-                          type={column.type}
-                          value={row[column.key] || ""}
-                          onChange={(e) =>
-                            handleInputChange(index, column.key, e.target.value)
-                          }
-                        />
-                      </td>
-                    );
-                  })}
-                  <td style={{ width: "8%" }}>
-                    <input
-                      type="number"
-                      value={row.amount.toFixed(2)}
-                      readOnly
-                    />
+              {saleOrderData?.itemDetails.length > 0 ? (
+                saleOrderData?.itemDetails?.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td className="item-name-text">{item.name}</td>
+                    <td>{item.quantity}</td>
+                    <td>{item.price}</td>
+                    <td>{item.discount}</td>
+                    <td>{item.gst}%</td>
+                    <td>{item.amount}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: "center" }}>
+                    No sale order data available.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
-          </table>
-          <button type="button" onClick={addRow} className="add-item-button">
-            Add an item +
-          </button>
+          </Table>
         </div>
         <div className="container-fluid mt-5">
-              <div className="row button-top-padding">
-                <div className="col-12 col-md-3 d-flex justify-content-between gap-2">
-                  <button
-                    type="submit"
-                    onClick={handleSaveNewDeliveryChallan}
-                    className="btn flex-grow-1"
-                    style={{ color: "white", backgroundColor: "#1F3F7F" }}
-                  >
-                    Save as draft
-                  </button>
-                  <button
-                    className="btn btn-danger flex-grow-1"
-                    onClick={backToList}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
+          <div className="row button-top-padding">
+            <div className="col-12 col-md-3 d-flex justify-content-between gap-2">
+              <button
+                type="submit"
+                onClick={handleSaveNewDeliveryChallan}
+                className="btn flex-grow-1"
+                style={{ color: "white", backgroundColor: "#1F3F7F" }}
+              >
+                Save as draft
+              </button>
+              <button
+                className="btn btn-danger flex-grow-1"
+                onClick={backToList}
+              >
+                Cancel
+              </button>
             </div>
+          </div>
+        </div>
       </div>
-      {setAddColumn && (
-        <AddCoulmnModal
-          addColumn={addColumn}
-          setAddColumn={setAddColumn}
-          setNewColumnName={setNewColumnName}
-          handleAddColumn={handleAddColumn}
-        />
-      )}
+      <ToastContainer />
     </div>
   );
 };

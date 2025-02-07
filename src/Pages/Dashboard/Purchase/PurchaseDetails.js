@@ -7,6 +7,7 @@ import DeleteOutlineSharpIcon from "@mui/icons-material/DeleteOutlineSharp";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { findPurchaseById } from "../../../Redux/features/findPurchaseByIdSlice";
+import { useReactToPrint } from "react-to-print";
 
 const PurchaseDetails = () => {
   const [openInvoice, setOpenInvoice] = useState(false);
@@ -16,6 +17,24 @@ const PurchaseDetails = () => {
   const { loading, data, error } = useSelector(
     (state) => state.findPurchaseById
   );
+  const componentRef = React.useRef(null);
+  
+    //React-to-print functionalities
+    const handleAfterPrint = React.useCallback(() => {
+      console.log("`onAfterPrint` called");
+    }, []);
+  
+    const handleBeforePrint = React.useCallback(() => {
+      console.log("`onBeforePrint` called");
+      return Promise.resolve();
+    }, []);
+  
+    const reactToPrintFn = useReactToPrint({
+      contentRef: componentRef,
+      documentTitle: "Purchase Details",
+      onAfterPrint: handleAfterPrint,
+      onBeforePrint: handleBeforePrint,
+    });
 
   const backToPurchaseDetails = () => {
     setOpenInvoice(!openInvoice);
@@ -63,7 +82,7 @@ const PurchaseDetails = () => {
                   Edit
                 </div>
                 <div className="divider"></div>
-                <div className="action-btn print-btn">
+                <div className="action-btn print-btn" onClick={reactToPrintFn}>
                   <PrintOutlinedIcon className="action-icon" />
                   Print
                 </div>
@@ -81,8 +100,8 @@ const PurchaseDetails = () => {
                     <p className="invoice-id">{data.partNumber}</p>
                   </div>
                   <div class="col-md-2 p-3 text-center invoice-card">
-                    <p>HNS code</p>
-                    <p className="invoice-id">{data.hnsCode}</p>
+                    <p>HSN code</p>
+                    <p className="invoice-id">{data.hsnCode}</p>
                   </div>
                   <div class="col-md-2 p-3 text-center invoice-card">
                     <p>Quantity</p>
@@ -111,7 +130,7 @@ const PurchaseDetails = () => {
                     <p className="invoice-id">{data.category}</p>
                   </div>
                 </div>
-                <CreateInvoice />
+                <CreateInvoice  ref={componentRef}/>
               </div>
             </>
           )}

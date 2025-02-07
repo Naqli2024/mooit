@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { GoPlusCircle } from "react-icons/go";
 import AddCoulmnModal from "./AddCoulmnModal";
 import { getAllSalesOrder } from "../../../../Redux/salesOrder/getSaleOrder";
-import { generateSalesOrderId } from "../../../../Helper/generateSalesOrderId";
+import { generateSalesOrderId } from "../../../../Redux/salesOrder/generateSalesOrderId";
 
 const OutBoundSaleOrderForm = ({ backToList, activeTab }) => {
   const { loading, saleOrder, error } = useSelector(
@@ -239,11 +239,10 @@ const OutBoundSaleOrderForm = ({ backToList, activeTab }) => {
     if (allSaleOrder && allSaleOrder.length > 0) {
       filterCusterName();
     }
-    const saleOrderId = generateSalesOrderId();
-    if (saleOrderId) {
-      setSaleOrderId(saleOrderId);
-    }
-  }, [allSaleOrder]);
+    dispatch(generateSalesOrderId())
+      .unwrap()
+      .then((response) => setSaleOrderId(response.data));
+  }, [allSaleOrder, dispatch]);
 
   useEffect(() => {
     if (saleOrderId) {
@@ -397,7 +396,9 @@ const OutBoundSaleOrderForm = ({ backToList, activeTab }) => {
                 >
                   <option value="select">select</option>
                   <option value="Express Delivery">Express Delivery</option>
-                  <option value="Consolidated Shipping">Consolidated Shipping</option>
+                  <option value="Consolidated Shipping">
+                    Consolidated Shipping
+                  </option>
                 </Form.Select>
               </Form.Group>
             </Col>

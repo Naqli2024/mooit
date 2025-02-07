@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -7,7 +7,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createPurchase } from "../../../Redux/features/purchaseSlice";
 import InputAdornment from "@mui/material/InputAdornment";
 import {
@@ -19,15 +19,22 @@ import {
 import MenuItem from "@mui/material/MenuItem";
 import EditModal from "./EditModal";
 import dayjs from "dayjs";
+import { getAllVendors } from "../../../Redux/vendor/vendorSlice";
+import { generateSkuForProduct } from "../../../Redux/features/generateSkuForProduct";
+import { generateHsnCode } from "../../../Redux/features/generateHsnCode";
+import { toast, ToastContainer } from "react-toastify";
 
 const CreatePurchase = ({ backToList }) => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  const { vendors } = useSelector((state) => state.vendor);
+  const { sku } = useSelector((state) => state.generateSku);
+  const { hsn } = useSelector((state) => state.generateHsnCode);
   const [purchaseData, setPurchaseData] = useState({
     productName: "",
     vendorName: "",
     partNumber: "",
-    hnsCode: "",
+    hsnCode: "",
     sku: "",
     quantity: "",
     MRP: "",
@@ -91,13 +98,22 @@ const CreatePurchase = ({ backToList }) => {
       ...purchaseData,
       extraFields: purchaseData.extraFields,
     };
-    console.log(payload);
-    dispatch(createPurchase(payload));
+    dispatch(createPurchase(payload))
+      .unwrap()
+      .then((response) => {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 2000,
+          closeButton: false,
+        });
+        setTimeout(() => backToList(), 2000);
+      })
+      .catch((error) => toast.error(error));
     setPurchaseData({
       productName: "",
       vendorName: "",
       partNumber: "",
-      hnsCode: "",
+      hsnCode: "",
       sku: "",
       quantity: "",
       MRP: "",
@@ -145,6 +161,28 @@ const CreatePurchase = ({ backToList }) => {
     setPurchaseData(updatedData);
   };
 
+  useEffect(() => {
+    dispatch(getAllVendors());
+
+    if (!sku) {
+      dispatch(generateSkuForProduct());
+    }
+
+    if (!hsn) {
+      dispatch(generateHsnCode());
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (sku?.data || hsn?.data) {
+      setPurchaseData((prev) => ({
+        ...prev,
+        sku: sku?.data || prev.sku,
+        hsnCode: hsn?.data || prev.hsnCode,
+      }));
+    }
+  }, [sku, hsn]);
+
   return (
     <>
       <h2>Purchase</h2>
@@ -181,10 +219,21 @@ const CreatePurchase = ({ backToList }) => {
                   value={purchaseData.vendorName}
                   onChange={handleInputChange}
                 >
-                  <option></option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                  <option value="">Select Vendor</option> {/* Default option */}
+                  {Array.isArray(vendors) && vendors.length > 0 ? (
+                    vendors &&
+                    vendors.map((vendor, index) => (
+                      <option
+                        key={vendor._id || index}
+                        value={`${vendor.basicInformation.firstName} ${vendor.basicInformation.lastName}`}
+                      >
+                        {vendor.basicInformation.firstName}{" "}
+                        {vendor.basicInformation.lastName}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>No vendors available</option>
+                  )}
                 </Form.Select>
               </Form.Group>
             </div>
@@ -221,16 +270,15 @@ const CreatePurchase = ({ backToList }) => {
               <TextField
                 className="textfield-spacing"
                 id="outlined-start-adornment"
-                label="HNS code"
-                name="hnsCode"
-                value={purchaseData.hnsCode}
+                label="HSN code"
+                name="hsnCode"
+                value={purchaseData.hsnCode}
                 onChange={handleInputChange}
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start"></InputAdornment>
-                    ),
-                  },
+                InputProps={{
+                  readOnly: true,
+                  startAdornment: (
+                    <InputAdornment position="start"></InputAdornment>
+                  ),
                 }}
               />
               <TextField
@@ -240,12 +288,11 @@ const CreatePurchase = ({ backToList }) => {
                 name="sku"
                 value={purchaseData.sku}
                 onChange={handleInputChange}
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start"></InputAdornment>
-                    ),
-                  },
+                InputProps={{
+                  readOnly: true,
+                  startAdornment: (
+                    <InputAdornment position="start"></InputAdornment>
+                  ),
                 }}
               />
               <TextField
@@ -636,6 +683,7 @@ const CreatePurchase = ({ backToList }) => {
         handleEditField={handleEditField}
         handleDeleteField={handleDeleteField}
       />
+      <ToastContainer />
     </>
   );
 };

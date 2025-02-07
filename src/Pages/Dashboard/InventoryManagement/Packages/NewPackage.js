@@ -45,7 +45,7 @@ const NewPackage = ({ backToList }) => {
         packageSlip: packageId || null,
         itemDetails: saleOrderData.itemDetails.map((item) => ({
           itemName: item.name || "",
-          sku: "657465",
+          sku: saleOrderData?.sku || "",
           ordered: item.quantity || 0,
           packed: 0,
           quantity: 0,
@@ -273,7 +273,7 @@ const NewPackage = ({ backToList }) => {
                         <tr key={index}>
                           <td className="item-name-text">
                             {itemDetail.itemName} <br />
-                            SKU: {itemDetail.sku}
+                            SKU: {saleOrderData?.sku}
                           </td>
                           <td style={{ textAlign: "center", width: "100px" }}>
                             <input

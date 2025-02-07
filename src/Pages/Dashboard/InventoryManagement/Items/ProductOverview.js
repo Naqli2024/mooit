@@ -31,9 +31,9 @@ const ProductOverview = ({sku}) => {
           <div className="col-md-3">{product && product.partNumber}</div>
         </div>
         <div className="overview-content">
-          <div className="col-md-5">HNS code</div>
+          <div className="col-md-5">HSN code</div>
           <div className="col-md-1">-</div>
-          <div className="col-md-3">{product && product.hnsCode}</div>
+          <div className="col-md-3">{product && product.hsnCode}</div>
         </div>
         <div className="overview-content">
           <div className="col-md-5">Brand name</div>

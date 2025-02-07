@@ -12,22 +12,33 @@ import {
   Slide,
 } from "@mui/material";
 import SubCategory from "./SubCategory";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { createCategory } from "../../../../Redux/category/categorySlice";
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
 const Category = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [openSubCategory, setOpenSubCategory] = useState(false);
+  const [categoryName, setCategoryName] = useState("");
+  const dispatch = useDispatch();
+
   const handleClickOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
+
   const handleOpenSubCategory = () => {
     setOpenSubCategory(true);
   };
+
   const categories = [
     { title: "Category 1", count: 100 },
     { title: "Category 2", count: 200 },
@@ -51,9 +62,34 @@ const Category = () => {
       setSelectedCategories(categories.map((_, index) => index));
     }
   };
+
   const backToList = () => {
     setOpenSubCategory(false);
   };
+
+  const handleCategoryName = (event) => {
+    event.preventDefault();
+    const payload = {
+      "categoryName": categoryName
+    }
+    dispatch(createCategory(payload))
+      .unwrap()
+      .then((response) =>
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 2000,
+          closeButton: false,
+        })
+      )
+      .catch((error) =>
+        toast.error(error, {
+          position: "top-center",
+          autoClose: 2000,
+          closeButton: false,
+        })
+      );
+  };
+
   return (
     <div>
       {openSubCategory ? (
@@ -96,6 +132,8 @@ const Category = () => {
                         aria-describedby="inputGroup-sizing-default"
                         className="custom-textfield"
                         name="packageReceipt"
+                        value={categoryName}
+                        onChange={(e) => setCategoryName(e.target.value)}
                       />
                     </InputGroup>
                   </Form.Group>
@@ -112,7 +150,12 @@ const Category = () => {
                 <Button
                   variant="contained"
                   className="btn-primary"
-                  sx={{ fontWeight: "normal",paddingTop: "5px",paddingBottom: "3px"}}
+                  sx={{
+                    fontWeight: "normal",
+                    paddingTop: "5px",
+                    paddingBottom: "3px",
+                  }}
+                  onClick={handleCategoryName}
                 >
                   Save
                 </Button>
@@ -122,7 +165,8 @@ const Category = () => {
                     backgroundColor: "#CFCFCF",
                     color: "black",
                     fontWeight: "normal",
-                    paddingTop: "5px",paddingBottom: "3px"
+                    paddingTop: "5px",
+                    paddingBottom: "3px",
                   }}
                 >
                   Cancel
@@ -147,6 +191,9 @@ const Category = () => {
                 <div
                   className="checkbox-container"
                   onClick={(event) => event.stopPropagation()}
+                  style={{
+                    opacity: selectedCategories.includes(index) ? 1 : 0,
+                  }}
                 >
                   <input
                     type="checkbox"

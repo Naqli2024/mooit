@@ -12,6 +12,7 @@ import { findPurchaseByItemName } from "../../../../Redux/features/findPurchaseS
 import Select from "react-select";
 import dayjs from "dayjs";
 import { createInventory } from "../../../../Redux/inventory/createInventorySlice";
+import { toast, ToastContainer } from "react-toastify";
 
 const CreateNewItems = ({ backToList }) => {
   const [categoryOption, setCategoryOption] = useState(null);
@@ -61,7 +62,17 @@ const CreateNewItems = ({ backToList }) => {
       },
       ...product,
     };
-    dispatch(createInventory(payload));
+    dispatch(createInventory(payload))
+    .unwrap()
+    .then((response) => {
+      toast.success(response.message, {
+        position: "top-center",
+        autoClose: 2000,
+        closeButton: false
+      });
+      setTimeout(() => backToList(), 2000)
+    })
+    .catch((error) => toast.error(error))
   };
 
   useEffect(() => {
@@ -140,11 +151,11 @@ const CreateNewItems = ({ backToList }) => {
                 <Form.Label className="custom-label">HNS code</Form.Label>
                 <InputGroup className="mt-2">
                   <Form.Control
-                    name="hnsCode"
+                    name="hsnCode"
                     aria-label="Default"
                     aria-describedby="inputGroup-sizing-default"
                     className="custom-textfield"
-                    value={product?.hnsCode || ""}
+                    value={product?.hsnCode || ""}
                     readOnly
                   />
                 </InputGroup>
@@ -468,6 +479,7 @@ const CreateNewItems = ({ backToList }) => {
           </div>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
@@ -6,23 +6,42 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import { Menu, MenuItem, IconButton, Breadcrumbs, Link } from "@mui/material";
+import { useReactToPrint } from "react-to-print";
+import { useDispatch, useSelector } from "react-redux";
+import { getSaleOrderBySaleOrderId } from "../../../../Redux/salesOrder/getSaleOrderByIdSlice";
+import { getShipmentDetails } from "../../../../Redux/shipment/shipmentSlice";
+import { toast, ToastContainer } from "react-toastify";
+import { deletedChallanBySaleOrderId } from "../../../../Redux/deliveryChallan/deliveryChallanSlice";
 
-const DeliveryChallanDetails = ({ backToList }) => {
+const DeliveryChallanDetails = ({ backToList, challan }) => {
   const [isDelivered, setIsDelivered] = useState(false);
   const [openMoreIcon, setMoreIcon] = React.useState(null);
   const [status, setStatus] = useState("Draft");
-  const handleStatusChange = (event) => {
-    const selectedValue = event.target.value;
-    if (selectedValue === "2") {
-      setStatus("Approve");
-    } else {
-      setStatus("Draft");
-    }
-  };
-  const handleDelivered = () => {
-    setStatus("Delivered");
-    setIsDelivered(true);
-  };
+  const dispatch = useDispatch();
+  const { saleOrderData } = useSelector(
+    (state) => state.getSaleOrderBySaleOrderId
+  );
+  const { data } = useSelector((state) => state.shipment);
+  console.log(data);
+  const componentRef = React.useRef(null);
+
+  //React-to-print functionalities
+  const handleAfterPrint = React.useCallback(() => {
+    console.log("`onAfterPrint` called");
+  }, []);
+
+  const handleBeforePrint = React.useCallback(() => {
+    console.log("`onBeforePrint` called");
+    return Promise.resolve();
+  }, []);
+
+  const reactToPrintFn = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: "Shipment Details",
+    onAfterPrint: handleAfterPrint,
+    onBeforePrint: handleBeforePrint,
+  });
+
   const open = Boolean(openMoreIcon);
   const handleClick = (event) => {
     if (event) {
@@ -32,6 +51,27 @@ const DeliveryChallanDetails = ({ backToList }) => {
   const handleClose = () => {
     setMoreIcon(null);
   };
+
+  const handleDelete = () => {
+    dispatch(deletedChallanBySaleOrderId(challan.salesOrderId))
+      .unwrap()
+      .then((response) => {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 2000,
+          CloseButton: false,
+        });
+        setTimeout(() => backToList(), 2000);
+        setMoreIcon(null);
+      })
+      .catch((error) => toast.error(error));
+  };
+
+  useEffect(() => {
+    dispatch(getSaleOrderBySaleOrderId(challan?.salesOrderId));
+    dispatch(getShipmentDetails(challan?.salesOrderId));
+  }, [dispatch]);
+
   return (
     <div className="purchase-list">
       <h2>Delivery Challans</h2>
@@ -47,33 +87,11 @@ const DeliveryChallanDetails = ({ backToList }) => {
           Edit
         </div>
         <div className="divider"></div>
-        <div className="action-btn print-btn">
+        <div className="action-btn print-btn" onClick={reactToPrintFn}>
           <PrintOutlinedIcon className="action-icon" />
           Print
         </div>
         <div className="divider"></div>
-        {!isDelivered && (
-          <>
-            {status === "Approve" ? (
-              <div className="sales-id-text ms-2 me-2" onClick={handleDelivered}>
-                Delivered
-              </div>
-            ) : (
-              <Form.Select
-                aria-label="Default select example"
-                className="salesOrder-dropdown-style"
-                defaultValue="1"
-                onChange={handleStatusChange}
-              >
-                <option value="1" disabled>
-                  Status
-                </option>
-                <option value="2">Approve</option>
-              </Form.Select>
-            )}
-            <div className="divider"></div>
-          </>
-        )}
         <React.Fragment>
           <Menu
             anchorEl={openMoreIcon}
@@ -83,10 +101,14 @@ const DeliveryChallanDetails = ({ backToList }) => {
           >
             <MenuItem onClick={handleClose}>Convert to Invoice</MenuItem>
             <MenuItem onClick={handleClose}>Reopen</MenuItem>
-            <MenuItem onClick={handleClose}>Delete</MenuItem>
+            <MenuItem onClick={handleDelete}>Delete</MenuItem>
           </Menu>
           <Breadcrumbs aria-label="breadcrumbs">
-            <IconButton className="more-icon-btn" size="large" onClick={handleClick}>
+            <IconButton
+              className="more-icon-btn"
+              size="large"
+              onClick={handleClick}
+            >
               <MoreVertOutlinedIcon />
             </IconButton>
           </Breadcrumbs>
@@ -103,13 +125,9 @@ const DeliveryChallanDetails = ({ backToList }) => {
               : "package-label"
           }
         >
-          {status === "Approve"
-            ? "Approved"
-            : status === "Delivered"
-            ? "Delivered"
-            : "Draft"}
+          {data && data.data.shipmentStatus}
         </div>
-        <div className="sales-invoice-detail">
+        <div className="sales-invoice-detail" ref={componentRef}>
           <div className="sales-invoice">
             <div className="sales-invoice-heading mt-2">
               <div>LOGO</div>
@@ -118,7 +136,9 @@ const DeliveryChallanDetails = ({ backToList }) => {
             </div>
             <div className="sales-order-date">
               <div className="detail-heading mb-1">Delivery Challan</div>
-              <div className="sales-id-text">Challan number: #CN-I706</div>
+              <div className="sales-id-text">
+                Challan number: {challan.deliveryChallan}
+              </div>
             </div>
           </div>
           <div className="sales-invoice mt-5">
@@ -128,7 +148,9 @@ const DeliveryChallanDetails = ({ backToList }) => {
               <div>xxxxxxxxxxxx</div>
             </div>
             <div className="sales-order-date mt-5">
-              <div className="mb-2 me-4">Order date: 23/04/2024</div>
+              <div className="mb-2 me-4">
+                Order date: {challan.deliveryChallanDate}
+              </div>
             </div>
           </div>
           <div className="row invoice-table">
@@ -145,35 +167,38 @@ const DeliveryChallanDetails = ({ backToList }) => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td className="item-name-text">xxxxxxxxxx</td>
-                  <td>27</td>
-                  <td>56,965</td>
-                  <td>5,000</td>
-                  <td>5%</td>
-                  <td>57,958</td>
-                </tr>
+                {challan?.itemDetails.map((item, index) => (
+                  <tr>
+                    <td>{index + 1}</td>
+                    <td className="item-name-text">{item.name}</td>
+                    <td>{item.quantity}</td>
+                    <td>{item.price}</td>
+                    <td>{item.discount}</td>
+                    <td>{item.gst}%</td>
+                    <td>{item.amount}</td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </div>
           <div className="sales-invoice-bottom-content mb-3">
             <div className="sales-invoice-total col-4">
               <div className="">Sub total</div>
-              <div className="col-2">500</div>
+              <div className="col-2">{saleOrderData?.subTotal}</div>
             </div>
             <div className="sales-invoice-total col-4">
               <div className="">Shipping charges</div>
-              <div className="col-2">500</div>
+              <div className="col-2">{saleOrderData?.shipmentCharges}</div>
             </div>
             <hr className="amount-divider" />
             <div className="sales-invoice-total col-4">
               <div className="fw-bold">Total amount</div>
-              <div className="fw-bold col-2">1000</div>
+              <div className="fw-bold col-2">{saleOrderData?.total}</div>
             </div>
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

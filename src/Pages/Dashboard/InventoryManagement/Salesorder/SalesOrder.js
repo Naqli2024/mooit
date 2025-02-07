@@ -163,9 +163,9 @@ const SalesOrder = () => {
                               ? sales.customerName
                               : sales.sourceDepartment}
                           </td>
-                          <td>{sales.status?.value}</td>
-                          <td>{sales.status?.value}</td>
-                          <td>{sales.status?.value}</td>
+                          <td>{sales.deliveryStatus === "Delivered" ? "Delivered" : sales.status?.value}</td>
+                          <td>{sales.packed}</td>
+                          <td>{sales.shipped}</td>
                           <td>{sales.total}</td>
                         </tr>
                       ))

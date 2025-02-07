@@ -9,7 +9,7 @@ export const createInventory = createAsyncThunk(
         "http://localhost:4000/api/create-inventory",
         payload
       );
-      return response.data.data;
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message || 'An unknown error occurred');
     }

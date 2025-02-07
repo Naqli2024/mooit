@@ -139,6 +139,7 @@ const ProductNewShipment = ({ backToList }) => {
         }, 3000); // 2-second delay for UI transition
       })
       .catch((error) => {
+        toast.dismiss()
         toast.error(error, {
           position: "top-center",
           autoClose: 2000,

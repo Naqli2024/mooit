@@ -18,6 +18,7 @@ const PackageDetails = ({ packageDetail, backToList }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.deletePackage);
   const { data } = useSelector((state) => state.shipment);
+  console.log(data)
   const [showShipmentStatus, setShowShipmentStatus] = useState(false);
 
   const totalQuantity =
@@ -45,7 +46,7 @@ const PackageDetails = ({ packageDetail, backToList }) => {
   });
 
   const handlePackageDelete = () => {
-    dispatch(deletePackageByPackageSlip(packageDetail.packageSlip))
+    dispatch(deletePackageByPackageSlip(packageDetail?.packageSlip))
       .unwrap()
       .then((response) => {
         toast.success(response.message, {
@@ -58,6 +59,7 @@ const PackageDetails = ({ packageDetail, backToList }) => {
         }, 2000);
       })
       .catch((error) => {
+        console.log(error)
         toast.error(error, {
           position: "top-center",
           autoClose: 3000,
@@ -67,13 +69,13 @@ const PackageDetails = ({ packageDetail, backToList }) => {
   };
 
   useEffect(() => {
-    if(packageDetail.salesOrderId) {
-      dispatch(getShipmentDetails(packageDetail.salesOrderId));
+    if(packageDetail?.salesOrderId) {
+      dispatch(getShipmentDetails(packageDetail?.salesOrderId));
     }
-  }, [dispatch, packageDetail.salesOrderId]);
+  }, [dispatch, packageDetail?.salesOrderId]);
 
   useEffect(() => {
-    if (!(data?.data.shipmentStatus) || data?.data?.shipmentStatus === "Not Shipped") {
+    if (!(data?.data?.shipmentStatus) || data?.data?.shipmentStatus === "Not Shipped") {
       setShowShipmentStatus(true);
     }
   }, [data]);
@@ -139,7 +141,7 @@ const PackageDetails = ({ packageDetail, backToList }) => {
           </div>
           <div className="sales-invoice-outer-card mt-5" ref={componentRef}>
             <div className={getShipmentClass(data?.data?.shipmentStatus || "Not Shipped")}>
-              {data?.data.shipmentStatus || "Not Shipped"}</div>
+              {data?.data?.shipmentStatus || "Not Shipped"}</div>
             <div className="sales-invoice-detail">
               <div className="sales-invoice">
                 <div></div>

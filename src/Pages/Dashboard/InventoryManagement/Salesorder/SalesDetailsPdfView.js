@@ -8,10 +8,10 @@ const SalesDetailsPdfView = React.forwardRef(
         <div
           className={
             saleOrderData?.status.value === "Approved"
-              ? "approve-text status-text"
+              ? "approve-text status-text sales-invoice-outer-card mb-1"
               : saleOrderData?.status.value === "Confirmed"
-              ? "confirm-text status-text"
-              : "draft-text status-text"
+              ? "confirm-text status-text sales-invoice-outer-card mb-1"
+              : "draft-text status-text sales-invoice-outer-card mb-1"
           }
         >
           <b>{status} </b>

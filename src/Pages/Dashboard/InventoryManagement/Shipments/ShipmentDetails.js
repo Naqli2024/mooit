@@ -110,7 +110,6 @@ const ShipmentDetails = ({ backToList, newShipmentData }) => {
     dispatch(deleteShipmentByShipmentOrder(newShipmentData?.shipmentOrder))
       .unwrap()
       .then((response) => {
-        toast.dismiss();
         toast.success(response.message, {
           position: "top-center",
           autoClose: 2000,

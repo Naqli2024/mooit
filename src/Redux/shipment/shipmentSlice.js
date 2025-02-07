@@ -40,7 +40,7 @@ export const getShipmentDetails = createAsyncThunk(
     try {
       const response = await axios.get(
         `http://localhost:4000/api/getShipmentDetails/${id}`
-      );console.log(response.data)
+      );
       return response.data;
       
     } catch (error) {

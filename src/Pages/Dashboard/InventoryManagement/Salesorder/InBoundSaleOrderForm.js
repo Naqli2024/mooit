@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSalesOrder } from "../../../../Redux/salesOrder/getSaleOrder";
-import { generateSalesOrderId } from "../../../../Helper/generateSalesOrderId";
 import { Col, Form, Row } from "react-bootstrap";
 import { createSaleOrder } from "../../../../Redux/salesOrder/createSaleOrder";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,6 +10,7 @@ import { GoPlusCircle } from "react-icons/go";
 import { LiaMinusCircleSolid } from "react-icons/lia";
 import AddCoulmnModal from "./AddCoulmnModal";
 import { ImSpinner3 } from "react-icons/im";
+import { generateSalesOrderId } from "../../../../Redux/salesOrder/generateSalesOrderId";
 
 const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
   const { loading, allSaleOrder, error } = useSelector(
@@ -218,14 +218,15 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    const saleOrderId = generateSalesOrderId();
-    if (saleOrderId) {
-      setSaleOrderId(saleOrderId);
-      setFormData((prevData) => ({
-        ...prevData,
-        salesOrderId: saleOrderId,
-      }));
-    }
+    dispatch(generateSalesOrderId())
+      .unwrap()
+      .then((response) => {
+        setSaleOrderId(response.data);
+        setFormData((prevData) => ({
+          ...prevData,
+          salesOrderId: response.data,
+        }));
+      });
   }, []);
 
   return (
@@ -354,9 +355,13 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
                     setFormData({ ...formData, deliveryMethod: e.target.value })
                   }
                 >
-                  <option value="select" readOnly>Select</option>
+                  <option value="select" readOnly>
+                    Select
+                  </option>
                   <option value="Express Delivery">Express Delivery</option>
-                  <option value="Consolidated Shipping">Consolidated Shipping</option>
+                  <option value="Consolidated Shipping">
+                    Consolidated Shipping
+                  </option>
                 </Form.Select>
               </Form.Group>
             </Col>

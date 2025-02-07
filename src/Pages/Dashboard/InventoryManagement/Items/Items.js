@@ -9,6 +9,7 @@ import CreateNewItems from "./CreateNewItems";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
 import { getInventories } from "../../../../Redux/inventory/getInventoriesSlice";
+import { getAllVendors } from "../../../../Redux/vendor/vendorSlice";
 
 const Items = () => {
   const [productDetails, setProductDetails] = useState(false);
@@ -22,6 +23,7 @@ const Items = () => {
   const { loading, inventories, error } = useSelector(
     (state) => state.getInventories
   );
+   const { vendors } = useSelector((state) => state.vendor);
   const [sku, setSKU] = useState("");
   const [querySearch, setQuerySearch] = useState("");
 
@@ -48,7 +50,7 @@ const Items = () => {
   const supplierOptions = [
     { label: "All", value: "All" },
     ...Array.from(
-      new Set(inventories?.map((inventories) => inventories.vendorName || ""))
+      new Set(vendors?.map((inventories) => `${inventories.basicInformation.firstName} ${inventories.basicInformation.lastName}` || ""))
     ).map((supplier) => ({
       label: supplier,
       value: supplier,
@@ -105,7 +107,8 @@ const Items = () => {
 
   useEffect(() => {
     dispatch(getInventories());
-  }, [dispatch, inventories]);
+    dispatch(getAllVendors());
+  }, [dispatch]);
 
   return (
     <div>
@@ -123,7 +126,7 @@ const Items = () => {
               <div className="col-md-4">
                 <InputGroup className="search-input">
                   <Form.Control
-                    className="text-field"
+                    className="search-icon-btn"
                     placeholder="Search here"
                     aria-label="Search"
                     value={querySearch}
@@ -174,7 +177,7 @@ const Items = () => {
               </div>
             ) : (
               <div className="inventory-dropdown">
-                <Form.Group className="col-md-2 inventory-category-dropdown">
+                <Form.Group className="col-md-3 inventory-category-dropdown">
                   <Form.Label className="custom-label">
                     Select a Category
                   </Form.Label>
@@ -188,7 +191,7 @@ const Items = () => {
                     />
                   </div>
                 </Form.Group>
-                <Form.Group className="col-md-2 inventory-category-dropdown">
+                <Form.Group className="col-md-3 inventory-category-dropdown">
                   <Form.Label className="custom-label">
                     Filter by Brand name
                   </Form.Label>
@@ -202,7 +205,7 @@ const Items = () => {
                     />
                   </div>
                 </Form.Group>
-                <Form.Group className="col-md-2 inventory-category-dropdown">
+                <Form.Group className="col-md-3 inventory-category-dropdown">
                   <Form.Label className="custom-label">
                     Filter by Supplier
                   </Form.Label>
@@ -219,7 +222,7 @@ const Items = () => {
               </div>
             )}
             <div className="inventory-product">
-              {filteredData &&
+              {filteredData?.length > 0 ? (
                 filteredData.map((filteredData) => (
                   <div
                     className={`inventory-card ${isChecked ? "checked" : ""}`}
@@ -246,7 +249,12 @@ const Items = () => {
                       />
                     )}
                   </div>
-                ))}
+                ))
+              ) : (
+                <div className="no-inventory">
+                  <p>No Inventory</p>
+                </div>
+              )}
             </div>
           </div>
         </>

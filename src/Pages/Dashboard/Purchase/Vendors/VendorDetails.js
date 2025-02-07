@@ -67,7 +67,7 @@ const VendorDetails = ({ backToList }) => {
           }`}
           onClick={() => setActiveTab("Purchase Order")}
         >
-          Purchase Order
+          Purchases
         </div>
         <div className="divider m-1"></div>
         <React.Fragment>
