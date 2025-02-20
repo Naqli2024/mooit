@@ -50,6 +50,30 @@ export const addProduct = createAsyncThunk(
   }
 );
 
+export const getAllCategories = createAsyncThunk(
+  'getAllCategories',
+  async(_, {rejectWithValue}) => {
+    try {
+      const {data} = await axios.get(`${baseUrl}/getAllCategories`);
+      return data.data
+    }catch(error) {
+      return rejectWithValue(handleApiError(error))
+    }
+  }
+)
+
+export const deleteCategory = createAsyncThunk(
+  'deleteCategory', 
+  async(id, {rejectWithValue}) => {
+    try {
+      const {data} = await axios.delete(`http://localhost:4000/api/deleteCategory/${id}`)
+      return data;
+    }catch(error) {
+      return rejectWithValue(handleApiError(error))
+    }
+  }
+)
+
 const categorySlice = createSlice({
   name: "category",
   initialState: {
@@ -72,7 +96,7 @@ const categorySlice = createSlice({
       state.category = null;
       state.error = action.payload;
     };
-    [createCategory, createSubCategory, addProduct].forEach((action) => {
+    [createCategory, createSubCategory, addProduct, getAllCategories, deleteCategory].forEach((action) => {
       builder
         .addCase(action.pending, handlePending)
         .addCase(action.fulfilled, handleFulFilled)

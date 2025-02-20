@@ -60,12 +60,12 @@ const SalesDetailsPdfView = React.forwardRef(
                   {saleOrderData?.itemDetails.map((item, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
-                      <td>{item.name}</td>
+                      <td>{item.itemName}</td>
                       <td>{item.quantity}</td>
                       <td>{item.price}</td>
                       <td>{item.discount}</td>
                       <td>{item.gst}</td>
-                      <td>{item.amount}</td>
+                      <td>{item.total}</td>
                     </tr>
                   ))}
                 </tbody>

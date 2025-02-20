@@ -76,6 +76,7 @@ const Items = () => {
   const backToList = () => {
     setProductDetails(false);
     setNewItems(false);
+    dispatch(getInventories());
   };
   const handleCardClick = (e, sku) => {
     if (e.target.type !== "checkbox") {

@@ -74,7 +74,7 @@ const SalesOrder = () => {
             ))) || (
             <div>
               <h2>Sales Order</h2>
-              <div className="purchase-textfield">
+              <div className="package-text-field">
                 <div className="col-md-4">
                   <div className="sales-search-field">
                     <InputGroup className="mb-3">
@@ -91,7 +91,7 @@ const SalesOrder = () => {
                 </div>
                 <button
                   type="button"
-                  className="btn create-purchase-btn"
+                  className="btn create-new-btn"
                   onClick={() => setSaleOrderForm(true)}
                 >
                   Create New

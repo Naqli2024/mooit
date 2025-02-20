@@ -2,7 +2,8 @@ import React, { useEffect, forwardRef } from "react";
 import Table from "react-bootstrap/Table";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { findPurchaseById } from "../../../Redux/features/findPurchaseByIdSlice";
+import { findPurchaseById } from "../../../../Redux/features/findPurchaseByIdSlice";
+
 
 const CreateInvoice = forwardRef((props, ref) => {
   const { id } = useParams();

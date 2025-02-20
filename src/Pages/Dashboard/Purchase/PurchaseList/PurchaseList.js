@@ -3,12 +3,12 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
 import CreatePurchase from "./CreatePurchase";
-import PurchaseDetails from "./PurchaseDetails";
 import Select from "react-select";
-import { getPurchaseDetails } from "../../../Redux/features/getPurchaseDetailsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getAllVendors } from "../../../Redux/vendor/vendorSlice";
+import { getAllVendors } from "../../../../Redux/vendor/vendorSlice";
+import { getPurchaseDetails } from "../../../../Redux/features/getPurchaseDetailsSlice";
+import PurchaseDetails from "./PurchaseDetails";
 
 const PurchaseList = () => {
   const [createPurchase, setCreatePurchase] = useState(false);
@@ -49,7 +49,7 @@ const PurchaseList = () => {
       new Set(
         vendors?.map(
           (item) =>
-            `${item.basicInformation.firstName} ${item.basicInformation.firstName}`
+            `${item.basicInformation.firstName} ${item.basicInformation.lastName}`
         )
       )
     ).map((vendor) => ({
@@ -224,7 +224,7 @@ const PurchaseList = () => {
               </tbody>
             </Table>
           </div>
-          <div className="mt-4">
+          <div className="mt-4 me-5">
             <div className="col d-flex justify-content-end">
               <button
                 type="button"

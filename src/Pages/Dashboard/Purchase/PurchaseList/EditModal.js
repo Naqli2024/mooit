@@ -107,7 +107,7 @@ const EditModal = ({
                   aria-label="delete"
                   onClick={() => handleDeleteField(field)}
                 >
-                  <DeleteOutlineSharpIcon className="delete-icon" />
+                  <DeleteOutlineSharpIcon/>
                 </IconButton>
               </div>
             </div>
@@ -140,7 +140,7 @@ const EditModal = ({
             </div>
           )}
           {/* Save changes button */}
-          <div className="container mt-3">
+          <div className="mt-3">
             <div className="col d-flex justify-content-center">
               <button onClick={handleSaveChanges} className="btn submit-btn">
                 Save Changes

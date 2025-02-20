@@ -217,7 +217,6 @@
   background-color: #f0edfa !important;
 }
 .sidebar {
-  flex: 0 0 20%;
   background-color: #fff !important;
   max-height: 780px;
   overflow-y: auto;
@@ -248,7 +247,15 @@
   font-weight: bold;
 }
 .sidebar-logo {
-  margin: 15px 15px 15px 30px;
+  margin: 15px 15px 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sidebar-logo svg {
+  font-size: 25px !important;
+  color: #1877F2;
+  cursor: pointer;
 }
 .sidebar-footer {
   margin-top: auto;
@@ -256,6 +263,12 @@
 .side-links {
   margin: 0 !important;
   padding-left: 15px;
+}
+.side-links .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 16px;
 }
 .dropdown-arrow {
   transition: transform 0.3s ease;
@@ -781,7 +794,6 @@
   color: white !important;
   margin-bottom: 10px;
   cursor: pointer;
-  margin-right: 50px;
   font-size: 14px;
 }
 @media (max-width: 480px) {
@@ -912,8 +924,9 @@
   color: #928f8f;
   cursor: pointer;
   margin-top: 30px;
-  padding: 5px;
+  padding: 10px;
   font-size: 14px;
+  text-align: center;
 }
 .print-barcode span svg {
   font-size: 30px !important;
@@ -1250,10 +1263,6 @@
   font-size: 16px;
   font-weight: bold;
   width: 100%;
-}
-.search-icon-btn {
-  border: 1px solid rgba(112, 112, 112, 0.5);
-  font-size: 14px;
 }
 .search-btn {
   display: flex;
@@ -1654,7 +1663,6 @@
 .sales-order-table th,
 td {
   text-align: start !important;
-  padding: 15px 20px !important;
 }
 /****************SaleOrder Form***************/
 .saleOrder-form {
@@ -2506,7 +2514,6 @@ td {
   display: flex;
   flex-wrap: wrap;
   padding: 20px 50px;
-  justify-content: space-between;
   gap: 15px;
 }
 .category-card {
@@ -2522,6 +2529,8 @@ td {
   margin-right: 10%;
   margin-bottom: 5%;
   position: relative;
+  width: 100%;
+  max-width: 20%;
 }
 .checkbox-container {
   position: absolute;
@@ -2826,3 +2835,346 @@ hr {
    margin: 20px 20px !important;
   }
 }
+/**************Customer***************/
+.overview-content p,
+.vendor-content p {
+  margin: 0;
+}
+.customer-name {
+  margin-left: 10px;
+}
+@media (max-width: 1500px) {
+  .customer-name {
+    margin-left: 30px;
+  }
+}
+@media (max-width: 1200px) {
+  .customer-name {
+    margin-left: 0;
+  }
+}
+/**************BarCodeGenerator***************/
+.dialog-height-width {
+  display: flex;
+  gap: 40px;
+}
+.barcode-dialog-content {
+  display: flex;
+}
+.dialog-vertical-divider {
+  width: 1px;
+  background-color: #CDCDCD;
+  margin: 20px 20px;
+}
+.barcode-divider {
+  height: 2px;
+  background-color: black;
+  margin: 10px 0;
+}
+.barcode-divider-template2 {
+  width: 3px;
+  height: 100%;
+  background-color: black;
+  margin: 0;
+  padding: 0;
+}
+.barcode-dialog-left-content {
+  width: 100%;
+  max-width: 100%;
+}
+.barcode-dialog-right-content {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.dialog-add-field-btn {
+  border: 1px solid rgba(112, 112, 112, 0.3);
+  width: fit-content;
+  padding: 2px 10px;
+  border-radius: 7px;
+}
+.barcode-ticket {
+  border: 1px solid rgba(112, 112, 112, 0.5);
+  background-color: #F4EBE2;
+  margin: 40px 0px;
+  padding: 20px;
+  width: 100%;
+
+  clip-path: polygon(
+    0% 5%, 2% 0%, 4% 5%, 6% 0%, 8% 5%, 10% 0%, 12% 5%, 14% 0%, 16% 5%, 18% 0%,
+    20% 5%, 22% 0%, 24% 5%, 26% 0%, 28% 5%, 30% 0%, 32% 5%, 34% 0%, 36% 5%, 38% 0%,
+    40% 5%, 42% 0%, 44% 5%, 46% 0%, 48% 5%, 50% 0%, 52% 5%, 54% 0%, 56% 5%, 58% 0%,
+    60% 5%, 62% 0%, 64% 5%, 66% 0%, 68% 5%, 70% 0%, 72% 5%, 74% 0%, 76% 5%, 78% 0%,
+    80% 5%, 82% 0%, 84% 5%, 86% 0%, 88% 5%, 90% 0%, 92% 5%, 94% 0%, 96% 5%, 98% 0%,
+    100% 5%, 100% 95%, 98% 100%, 96% 95%, 94% 100%, 92% 95%, 90% 100%, 88% 95%, 86% 100%, 84% 95%,
+    82% 100%, 80% 95%, 78% 100%, 76% 95%, 74% 100%, 72% 95%, 70% 100%, 68% 95%, 66% 100%, 64% 95%,
+    62% 100%, 60% 95%, 58% 100%, 56% 95%, 54% 100%, 52% 95%, 50% 100%, 48% 95%, 46% 100%, 44% 95%,
+    42% 100%, 40% 95%, 38% 100%, 36% 95%, 34% 100%, 32% 95%, 30% 100%, 28% 95%, 26% 100%, 24% 95%,
+    22% 100%, 20% 95%, 18% 100%, 16% 95%, 14% 100%, 12% 95%, 10% 100%, 8% 95%, 6% 100%, 4% 95%,
+    2% 100%, 0% 95%
+  );
+}
+.dialog-cancel-icon {
+  display: flex;
+  justify-content: space-between;
+}
+.dialog-cancel-icon span svg{
+  font-size: 30px !important;
+  cursor: pointer;
+}
+@media (max-width: 1200px) {
+  .barcode-dialog-content {
+    flex-direction: column;
+  }
+}
+.barcode-ticket-template2 {
+  display: flex;
+  padding: 10px 0px !important
+}
+.template2-barocde-align {
+  display: flex;
+  align-items: center;
+  gap:0px !important
+}
+.template2-barocde-align svg {
+  transform: rotate(-90deg) !important;
+  transform-origin: center;
+  display: block;
+}
+.barcode-template2-dotted-border {
+  border-bottom: 2px dashed #cacaca;
+}
+.barcode-ticket-template2 {
+  transform: rotate(360deg) !important;
+  transform-origin: center;
+}
+.template-2-p {
+  padding-top: 10px !important;
+}
+.barcode-template-2 {
+  padding-top: 35px;
+}
+.circular-border {
+  width: 2px;
+  height: 100%;
+  background: none;
+  border-left: 8px dotted #cacaca;
+  position: relative;
+}
+/**************SalesReturn***************/
+.sales-return {
+  margin: 20px 30px;
+}
+.new-sales-return-table th {
+  background-color: #DCDCDC;
+  color: black;
+}
+.new-sales-return-table {
+  margin: 0;
+}
+.new-sales-return-checkbox p {
+  display: flex;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.sales-order-date p,
+.sales-invoice-detail p,
+.shipments-carrier p,
+.sales-invoice p,
+.sales-address p,
+.sales-bottom-content p,
+.sales-invoice-bottom-content p,
+.shipment-order-row p {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.closed-label {
+  padding: 2px;
+  padding-left: 7px;
+  padding-right: 7px;
+  background-color: #009A1F;
+  color: white;
+  justify-content: center;
+  border-radius: 2px;
+}
+.refunded-text {
+  color: #009A1F;
+  margin-left: 5px;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+/**************CreditNote***************/
+.link-invoice {
+  margin: 20px 80px;
+}
+.fixed-input {
+width: 120px !important;
+min-width: 90px !important;
+max-width: 90px !important;
+}
+.table-item-cancel {
+position: relative;
+top: -40px;
+color: red;
+cursor: pointer;
+}
+.sales-return-table td,
+.sales-return-table th {
+width: calc(100% / 7);
+}
+.remaining-credit {
+display: flex;
+justify-content: space-between;
+background-color: #E8EBF2;
+padding: 7px;
+border-radius: 5px;
+margin-top: 10px;
+margin-bottom: 60px;
+}
+.delivery-tableHeader .amount-credit {
+text-align: right !important;
+padding-right: 40px !important;
+}
+.hold-label {
+background-color: #1A3A01;
+color: white;
+padding: 5px;
+padding-right: 20px;
+padding-left: 20px;
+font-size: 14px;
+width: fit-content;
+border-top-left-radius: 5px;
+}
+.credit-note-bottom-content {
+margin-left: auto;
+padding: 30px;
+width: 100%;
+max-width: 35%;
+height: 100%;
+max-height: 50%;
+margin-top: 0 !important;
+}
+.credit-note-notes {
+display: flex;
+justify-content: space-between;
+}
+@media (max-width: 1500px) {
+.delivery-tableWrapper{
+  overflow-x: auto !important;
+}
+}
+@media (max-width: 768px) {
+.credit-note-notes {
+  flex-direction: column !important;
+}
+.credit-note-bottom-content {
+  margin-top: 20px !important;
+  padding: 0px !important;
+}
+.link-invoice {
+  margin: 20px 0px;
+}
+}
+@media (max-width: 1300px) {
+.credit-note-bottom-content {
+  width: 100%;
+  max-width: 100% !important;
+  margin-top: 10%;
+}
+.link-invoice {
+  margin: 20px 30px;
+}
+}
+@media (max-width: 600px) {
+.credit-note-bottom-content {
+  margin-bottom: 7px !important;
+}
+}
+/**************SalesInvoice***************/
+.salesInvoice-form {
+  margin: 30px 30px;
+}
+.paid-label {
+  background-color: #D9EADB;
+  color: #04700F;
+  padding: 5px;
+  padding-right: 20px;
+  padding-left: 20px;
+  font-size: 14px;
+  width: fit-content;
+  border-top-left-radius: 5px;
+}
+.sales-in-outbound-table .draft-status {
+  background-color: #E4E4E4;
+  color: #707070;
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  line-height: 0.5px;
+}
+.sales-in-outbound-table .overdue-status {
+  background-color: #FCE7D2;
+  color: #F37F0A;
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  line-height: 0.5px;
+}
+.sales-in-outbound-table .paid-status {
+  background-color: #D0ECD4;
+  color: #049C19;
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  line-height: 0.5px;
+}
+.sales-in-outbound-table .pending-status {
+  background-color: #ECD1D1;
+  color: #9B0707;
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  line-height: 0.5px;
+}
+.sales-in-outbound-table .half-paid-status {
+  background-color: #F2ECD1;
+  color: #BC9805;
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  line-height: 0.5px;
+}
+.half-paid-label {
+  background-color: #F2ECD1;
+  color: #BC9805;
+  padding: 5px;
+  padding-right: 20px;
+  padding-left: 20px;
+  font-size: 14px;
+  width: fit-content;
+  border-top-left-radius: 5px;
+}
+.pending-label {
+  background-color: #ECD1D1;
+  color: #9B0707;
+  padding: 5px;
+  padding-right: 20px;
+  padding-left: 20px;
+  font-size: 14px;
+  width: fit-content;
+  border-top-left-radius: 5px;
+}
+.credit-note-id {
+  color: #3969CA;
+  cursor: pointer;
+  pointer-events: auto;
+  text-decoration: underline;
+}
+

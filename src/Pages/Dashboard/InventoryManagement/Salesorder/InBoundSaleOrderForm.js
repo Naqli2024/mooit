@@ -11,13 +11,22 @@ import { LiaMinusCircleSolid } from "react-icons/lia";
 import AddCoulmnModal from "./AddCoulmnModal";
 import { ImSpinner3 } from "react-icons/im";
 import { generateSalesOrderId } from "../../../../Redux/salesOrder/generateSalesOrderId";
+import { useNavigate } from "react-router-dom";
+import { getAllSourceDepartment } from "../../../../Redux/sourceDepartment/sourceDepartmentSlice";
+import { getPurchaseByproductName } from "../../../../Redux/features/getPurchaseByProductName";
+import { getPurchaseDetails } from "../../../../Redux/features/getPurchaseDetailsSlice";
 
 const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
   const { loading, allSaleOrder, error } = useSelector(
     (state) => state.getAllSalesorder
   );
+  const { purchaseDetails, purchaseByproductName } = useSelector((state) => ({
+    purchaseDetails: state.getPurchaseDetails?.data,
+    purchaseByproductName: state.getPurchaseByproductName?.data,
+  }));
+  const { sourceDepartment } = useSelector((state) => state.sourceDepartment);
   const [rows, setRows] = useState([
-    { name: "", quantity: 1, price: 0.0, discount: 0, gst: 0, amount: 0 },
+    { itemName: "", quantity: 1, price: 0.0, discount: 0, gst: 0, total: 0 },
   ]);
   const [storeName, setStoreName] = useState([
     { value: "", label: "" },
@@ -25,8 +34,6 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
   ]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [addStore, setAddStore] = useState(false);
-  const [newStoreName, setNewStoreName] = useState("");
-  const [addColumn, setAddColumn] = useState(false);
   const [newColumnName, setNewColumnName] = useState("");
   const [saleOrderId, setSaleOrderId] = useState("");
   const [formData, setFormData] = useState({
@@ -45,12 +52,9 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
     total: 0,
   });
   const dispatch = useDispatch();
-  const addRow = () => {
-    setRows([
-      ...rows,
-      { name: "", quantity: 1, price: 0.0, discount: 0, gst: 0, amount: 0 },
-    ]);
-  };
+  const navigate = useNavigate();
+  const [AddColumn, setAddColumn] = useState(false);
+  const [openShipmentCharges, setShipmentCharges] = useState(0);
   const [columnVisibility, setColumnVisibility] = useState({
     name: true,
     quantity: true,
@@ -59,113 +63,108 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
     gst: true,
   });
   const [columns, setColumns] = useState([
-    { key: "name", label: "Name", width: "22%", type: "text", colSpan: 2 },
-    { key: "quantity", label: "Quantity", width: "6%", type: "number" },
-    { key: "price", label: "Price", width: "8%", type: "number" },
-    { key: "discount", label: "Discount", width: "6%", type: "number" },
-    { key: "gst", label: "GST", width: "6%", type: "number" },
+    {
+      id: "itemName",
+      label: "Item Name",
+      width: "22%",
+      type: "text",
+      isStatic: true,
+    },
+    {
+      id: "quantity",
+      label: "Quantity",
+      width: "6%",
+      type: "text",
+      isStatic: true,
+    },
+    { id: "price", label: "Price", width: "8%", type: "text", isStatic: true },
+    {
+      id: "discount",
+      label: "Discount",
+      width: "6%",
+      type: "text",
+      isStatic: true,
+    },
+    { id: "gst", label: "GST", width: "6%", type: "text", isStatic: true },
+    { id: "total", label: "Total", width: "6%", type: "text", isStatic: true },
   ]);
 
-  // Items details table row custom funcitonality with amount calculation
-  const handleInputChange = (index, field, value) => {
-    const updatedRows = [...rows];
-    updatedRows[index][field] = value;
-    updatedRows[index].amount =
-      updatedRows[index].price -
-      updatedRows[index].discount +
-      (updatedRows[index].price * updatedRows[index].gst) / 100;
-
-    setRows(updatedRows);
-
-    //calculate total and subTotal dynamically
-    const newSubTotal = updatedRows.reduce((sum, row) => sum + row.amount, 0);
-    setFormData((prev) => ({
-      ...prev,
-      itemDetails: updatedRows,
-      subTotal: newSubTotal,
-      total: newSubTotal + Number(prev.shipmentCharges),
-    }));
+  const addRow = () => {
+    const newRow = columns.reduce((acc, col) => {
+      acc[col.id] = col.isStatic ? (col.id === "quantity" ? 1 : 0) : "";
+      return acc;
+    }, {});
+    setRows([...rows, newRow]);
   };
 
   const handleChange = (selectedOption) => {
-    if (selectedOption.value == "add_store") {
+    if (selectedOption && selectedOption.value == "add_store") {
       setAddStore(!addStore);
+      navigate("/admin/source-department");
       setSelectedOption(null);
     } else {
       setSelectedOption(selectedOption);
+      setFormData((prev) => ({ ...prev, sourceDepartment: selectedOption.value }));
     }
   };
 
-  const handleStoreNameChange = (e) => {
-    setNewStoreName(e.target.value);
-  };
-
-  // To add the new customer option(dropdown) and make it to selectedOption
-  const handleAddStore = () => {
-    const trimmedName = newStoreName.trim();
-    if (trimmedName) {
-      setStoreName((prev) => {
-        const addStoreOption = prev.find(
-          (option) => option.value === "add_store"
-        );
-        return [
-          ...prev.filter((option) => option.value !== "add_store"),
-          { value: trimmedName, label: trimmedName },
-          addStoreOption,
-        ];
-      });
-      setSelectedOption({ value: trimmedName, label: trimmedName });
-      setFormData((prev) => ({ ...prev, storeDepartment: trimmedName }));
-      setAddStore(!addStore);
-    }
-  };
-
-  // Add the shipment charges and recalculate the total amount instantly
-  const handleShipmentCharges = (e) => {
-    const newShipmentCharges = Number(e.target.value);
-    setFormData({
-      ...formData,
-      shipmentCharges: newShipmentCharges,
-      total: formData.subTotal + newShipmentCharges,
-    });
-  };
-
-  //To remove the newly added column
-  const handleColumnToggle = (key) => {
-    setColumnVisibility((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-    setColumns((prevColumn) =>
-      prevColumn.filter((column) => column.key != key)
+  const removeColumn = (columnId) => {
+    setColumns((prev) => prev.filter((col) => col.id !== columnId));
+    setRows((prev) =>
+      prev.map((row) => {
+        const newRow = { ...row };
+        delete newRow[columnId];
+        return newRow;
+      })
     );
+  };
+
+  const handleProductChange = (index, selectedItem) => {
+    const product = purchaseDetails.find((p) => p.productName === selectedItem);
+    const newRows = [...rows];
+
+    if (product) {
+      newRows[index] = {
+        ...newRows[index],
+        itemName: selectedItem,
+        price: product.unitPrice,
+        gst: product.GST,
+      };
+      setRows(newRows);
+    }
   };
 
   //To add new column action for handling dynamic behavior
   const handleAddColumn = () => {
     if (newColumnName.trim()) {
-      const newKey = newColumnName.toLowerCase();
-      setColumns([
-        ...columns,
-        {
-          key: newKey,
-          label: newColumnName,
-          type: "text",
-          width: "8%",
-          isNew: true,
-        },
-      ]);
-      setRows(rows.map((row) => ({ ...row, [newKey]: "" })));
+      const colName = newColumnName.toLowerCase();
+      const newColumn = {
+        id: colName,
+        label: newColumnName,
+        type: "text",
+        isStatic: false,
+        width: "6%",
+      };
 
-      // Add new column to columnVisibility with default visibility as true
-      setColumnVisibility((prev) => ({
-        ...prev,
-        [newKey]: true,
-      }));
+      // Find the index of the "total" column
+      const totalIndex = columns.findIndex((col) => col.id === "total");
 
-      setAddColumn(false);
-      setNewColumnName("");
+      // Insert the new column before the "total" column
+      const updatedColumns = [
+        ...columns.slice(0, totalIndex),
+        newColumn,
+        ...columns.slice(totalIndex),
+      ];
+
+      setColumns(updatedColumns);
+      setRows((prev) =>
+        prev.map((row) => ({
+          ...row,
+          [colName]: "",
+        }))
+      );
     }
+    setAddColumn(!AddColumn);
   };
 
   //Submit the form to create a saleOrder with toast response
@@ -200,6 +199,7 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
           autoClose: 3000,
           closeButton: false,
         });
+        setTimeout(() => backToList(), 3000)
       })
       .catch((e) => {
         toast.error(
@@ -212,10 +212,33 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
       });
   };
 
+  //filter the customerName from getAllSaleOrder data
+  const filterStoreName = () => {
+    if (!Array.isArray(sourceDepartment)) return;
+
+    const filterStoreNames = sourceDepartment.map((dept) => ({
+      label: dept.departmentName,
+      value: dept.departmentName,
+    }));
+
+    setStoreName([
+      ...filterStoreNames,
+      { value: "add_store", label: "+ Add Store" },
+    ]);
+  };
+
   //Fetching sale order details from api by getAllSaleOrder action
   useEffect(() => {
     dispatch(getAllSalesOrder());
+    dispatch(getAllSourceDepartment());
+    dispatch(getPurchaseDetails());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (sourceDepartment?.length > 0) {
+      filterStoreName();
+    }
+  }, [sourceDepartment]);
 
   useEffect(() => {
     dispatch(generateSalesOrderId())
@@ -229,6 +252,36 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
       });
   }, []);
 
+  useEffect(() => {
+    const updatedRows = rows.map((row) => ({
+      ...row,
+      total: row.price * (1 + row.gst / 100) * row.quantity - row.discount,
+    }));
+
+    // Only set rows if they actually change
+    if (JSON.stringify(updatedRows) !== JSON.stringify(rows)) {
+      setRows(updatedRows);
+    }
+
+    const newSubTotal = updatedRows.reduce((acc, row) => acc + row.total, 0);
+
+    setFormData((prevFormData) => {
+      const openShipmentChargesNumber = parseFloat(openShipmentCharges || 0);
+      return {
+        ...prevFormData,
+        subTotal: newSubTotal,
+        total: newSubTotal + openShipmentChargesNumber,
+        itemDetails: updatedRows,
+      };
+    });
+  }, [rows, openShipmentCharges]);
+
+  useEffect(() => {
+    if (addStore) {
+      navigate("/admin/source-department");
+    }
+  }, [addStore]);
+
   return (
     <>
       <h2>Sales Order</h2>
@@ -241,7 +294,7 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
       <div className="saleOrder-form">
         <Form onSubmit={handleSubmit}>
           <Row>
-            {!addStore ? (
+            {!addStore && (
               <Form.Group className="mb-5">
                 <Form.Label className="custom-label ">
                   Source Department
@@ -256,32 +309,6 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
                   className="sales-order-label"
                 />
               </Form.Group>
-            ) : (
-              <div>
-                <Form.Control
-                  type="text"
-                  value={newStoreName}
-                  onChange={handleStoreNameChange}
-                  placeholder="Enter new store name"
-                  className="mt-2"
-                />
-                <div className="mt-2">
-                  <button
-                    type="button"
-                    className="btn btn-primary me-2 btn-add-customer"
-                    onClick={handleAddStore}
-                  >
-                    Add
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-add-customer"
-                    onClick={() => setAddStore(!addStore)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
             )}
           </Row>
           {/* <div className="sales-address">
@@ -385,28 +412,26 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
           </Row>
 
           <Row>
-            <div className="sales-table-outer-border">
+            <div className="sales-table-outer-border mt-5">
               <div className="item-details">
                 <h3>Item details</h3>
                 <div
                   className="goBack-btn"
-                  onClick={() => setAddColumn(!addColumn)}
+                  onClick={() => setAddColumn(!AddColumn)}
                 >
-                  <span className="me-2">
+                  <span className="me-1">
                     <GoPlusCircle />
                   </span>
                   Add column
                 </div>
               </div>
-
               <table className="custom-table new-sales-table">
                 <thead>
                   <tr>
                     {columns.map((column, index) => {
-                      if (!columnVisibility[column.key]) return null;
                       return (
                         <th
-                          key={index}
+                          key={column.id}
                           className="sales-name-text"
                           colSpan={column.colSpan || ""}
                           style={{ width: column.width }}
@@ -414,55 +439,88 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
                           <div className="sales-name-container">
                             {column.label}
                             {/* Show icon only for newly added columns */}
-                            {column.isNew && (
+                            {!column.isStatic && (
                               <LiaMinusCircleSolid
                                 className="remove-icon"
-                                onClick={() => handleColumnToggle(column.key)}
+                                onClick={() => removeColumn(column.id)}
                               />
                             )}
                           </div>
                         </th>
                       );
                     })}
-                    <th className="sales-name-text" style={{ width: "8%" }}>
-                      Amount
-                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {rows.map((row, index) => (
                     <tr key={index}>
-                      {columns.map((column, colIndex) => {
-                        if (!columnVisibility[column.key]) return null;
+                      {columns.map((col) => {
+                        if (col.id === "itemName") {
+                          return (
+                            <td key={col.id}>
+                              <select
+                                value={row.itemName}
+                                onChange={(e) =>
+                                  handleProductChange(index, e.target.value)
+                                }
+                              >
+                                <option value="">Select Item</option>
+                                {purchaseDetails?.map((product, i) => (
+                                  <option key={i} value={product.productName}>
+                                    {product.productName}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          );
+                        }
+
+                        if (["price", "gst", "total"].includes(col.id)) {
+                          return (
+                            <td key={col.id}>
+                              <input
+                                value={
+                                  col.id === "total"
+                                    ? row[col.id]?.toFixed(2)
+                                    : row[col.id]
+                                }
+                                readOnly
+                              />
+                            </td>
+                          );
+                        }
+
+                        if (["quantity", "discount"].includes(col.id)) {
+                          return (
+                            <td key={col.id}>
+                              <input
+                                type="number"
+                                value={row[col.id]}
+                                onChange={(e) => {
+                                  const newRows = [...rows];
+                                  newRows[index][col.id] = parseFloat(
+                                    e.target.value
+                                  );
+                                  setRows(newRows);
+                                }}
+                              />
+                            </td>
+                          );
+                        }
+
                         return (
-                          <td
-                            key={colIndex}
-                            className="col-span-2"
-                            colSpan={column.colSpan || ""}
-                            style={{ width: column.width }}
-                          >
+                          <td key={col.id}>
                             <input
-                              className="select-an-item"
-                              type={column.type}
-                              value={row[column.key] || ""}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  index,
-                                  column.key,
-                                  e.target.value
-                                )
-                              }
+                              value={row[col.id] || ""}
+                              onChange={(e) => {
+                                const newRows = [...rows];
+                                newRows[index][col.id] = e.target.value;
+                                setRows(newRows);
+                              }}
                             />
                           </td>
                         );
                       })}
-                      <td style={{ width: "8%" }}>
-                        <input
-                          type="number"
-                          value={row.amount.toFixed(2)}
-                          readOnly
-                        />
-                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -488,8 +546,14 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
                 <input
                   type="text"
                   className="form-control"
-                  value={formData.shipmentCharges}
-                  onChange={handleShipmentCharges}
+                  value={openShipmentCharges}
+                  onChange={(e) => {
+                    setShipmentCharges(parseFloat(e.target.value) || 0);
+                    setFormData((prev) => ({
+                      ...prev,
+                      shipmentCharges: parseFloat(e.target.value) || 0,
+                    }));
+                  }}
                 />
               </div>
             </div>
@@ -522,7 +586,7 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
       <ToastContainer />
       {setAddColumn && (
         <AddCoulmnModal
-          addColumn={addColumn}
+          addColumn={AddColumn}
           setAddColumn={setAddColumn}
           setNewColumnName={setNewColumnName}
           handleAddColumn={handleAddColumn}

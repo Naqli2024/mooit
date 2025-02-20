@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 export const generateShipmentOrder = createAsyncThunk(
   "generateShipmentOrder",
@@ -41,7 +40,7 @@ export const getShipmentDetails = createAsyncThunk(
       const response = await axios.get(
         `http://localhost:4000/api/getShipmentDetails/${id}`
       );
-      return response.data;
+      return response.data.data;
       
     } catch (error) {
       return rejectWithValue(

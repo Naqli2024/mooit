@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { InputGroup, Form } from "react-bootstrap";
 import {
@@ -12,9 +12,10 @@ import {
   Slide,
 } from "@mui/material";
 import SubCategory from "./SubCategory";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { createCategory } from "../../../../Redux/category/categorySlice";
+import { createCategory, deleteCategory, getAllCategories } from "../../../../Redux/category/categorySlice";
+import Loader from "../../../../Helper/Loader";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -26,6 +27,9 @@ const Category = () => {
   const [openSubCategory, setOpenSubCategory] = useState(false);
   const [categoryName, setCategoryName] = useState("");
   const dispatch = useDispatch();
+  const {loading, category} = useSelector((state) => state.category);
+const [categories, setCategories] = useState([]);
+const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -33,20 +37,15 @@ const Category = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setCategoryName("")
   };
 
-  const handleOpenSubCategory = () => {
+  const handleOpenSubCategory = (index) => {
+    const clickedCategory = categories[index]; 
+    setSelectedCategory(clickedCategory); 
     setOpenSubCategory(true);
   };
 
-  const categories = [
-    { title: "Category 1", count: 100 },
-    { title: "Category 2", count: 200 },
-    { title: "Category 3", count: 150 },
-    { title: "Category 4", count: 150 },
-    { title: "Category 5", count: 150 },
-    { title: "Category 6", count: 150 },
-  ];
   const handleCheckboxChange = (categoryIndex) => {
     setSelectedCategories((prevSelected) =>
       prevSelected.includes(categoryIndex)
@@ -67,6 +66,15 @@ const Category = () => {
     setOpenSubCategory(false);
   };
 
+  const handleCategoryClick = (id) => {
+    dispatch(deleteCategory(id))
+    .unwrap()
+    .then((response) => {
+      toast.success(response.message, {position: "top-center", autoClose: 2000, closeButton: false})
+    })
+    .catch((error) => toast.error(error, {position: "top-center", autoClose: 2000, closeButton: false}))
+  }
+
   const handleCategoryName = (event) => {
     event.preventDefault();
     const payload = {
@@ -74,12 +82,15 @@ const Category = () => {
     }
     dispatch(createCategory(payload))
       .unwrap()
-      .then((response) =>
+      .then((response) => {
         toast.success(response.message, {
           position: "top-center",
           autoClose: 2000,
           closeButton: false,
         })
+        setCategoryName("")
+        setOpen(false);
+      }
       )
       .catch((error) =>
         toast.error(error, {
@@ -90,10 +101,46 @@ const Category = () => {
       );
   };
 
+  useEffect(() => {
+    dispatch(getAllCategories());
+  },[dispatch])
+
+  useEffect(() => {
+    if (category && category.length > 0) {
+      const transformedCategories = category.map(cat => {
+        // Capitalize category name
+        const capitalizedTitle = cat.categoryName.charAt(0).toUpperCase() + cat.categoryName.slice(1);
+  
+        // Filter subcategories that have at least one product
+        const validSubCategories = cat.subCategories
+          .map(sub => ({
+            ...sub,
+            name: sub.name.charAt(0).toUpperCase() + sub.name.slice(1),  // Capitalize subcategory name
+            productList: sub.productList ? sub.productList.map(prod => prod.charAt(0).toUpperCase() + prod.slice(1)) : []  // Capitalize products in subcategories
+          }));
+  
+        // Collect all products from valid subcategories
+        const allProducts = validSubCategories.flatMap(sub => sub.productList);
+  
+        return {
+          title: capitalizedTitle,  
+          count: validSubCategories.length, 
+          subCategories: validSubCategories, 
+          productList: allProducts, 
+          productListCount: allProducts.length,
+          _id: cat._id
+        };
+      });
+  
+      setCategories(transformedCategories);
+    }
+  }, [category]);
+
   return (
     <div>
+      {loading && <Loader />}
       {openSubCategory ? (
-        <SubCategory backToList={backToList} />
+        <SubCategory backToList={backToList} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}/>
       ) : (
         <div className="purchase-list">
           <h2>Category</h2>
@@ -191,9 +238,6 @@ const Category = () => {
                 <div
                   className="checkbox-container"
                   onClick={(event) => event.stopPropagation()}
-                  style={{
-                    opacity: selectedCategories.includes(index) ? 1 : 0,
-                  }}
                 >
                   <input
                     type="checkbox"
@@ -203,7 +247,7 @@ const Category = () => {
                 </div>
                 {selectedCategories.includes(index) && (
                   <div className="delete-icon">
-                    <RiDeleteBin6Line size={20} />
+                    <RiDeleteBin6Line size={20} onClick={() => handleCategoryClick(category._id)}/>
                   </div>
                 )}
                 <div className="fw-bold mb-4">{category.title}</div>

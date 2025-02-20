@@ -63,16 +63,18 @@ const CreateNewItems = ({ backToList }) => {
       ...product,
     };
     dispatch(createInventory(payload))
-    .unwrap()
-    .then((response) => {
-      toast.success(response.message, {
-        position: "top-center",
-        autoClose: 2000,
-        closeButton: false
-      });
-      setTimeout(() => backToList(), 2000)
-    })
-    .catch((error) => toast.error(error))
+      .unwrap()
+      .then((response) => {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 2000,
+          closeButton: false,
+        });
+        setTimeout(() => {
+          backToList()
+        }, 2000);
+      })
+      .catch((error) => toast.error(error));
   };
 
   useEffect(() => {

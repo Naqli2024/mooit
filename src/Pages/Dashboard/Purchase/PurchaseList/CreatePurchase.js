@@ -8,21 +8,24 @@ import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { useDispatch, useSelector } from "react-redux";
-import { createPurchase } from "../../../Redux/features/purchaseSlice";
+import { createPurchase } from "../../../../Redux/features/purchaseSlice";
 import InputAdornment from "@mui/material/InputAdornment";
 import {
   operationType,
   shelf,
   storageCondition,
   wareHouses,
-} from "../../../Data/ProductData";
+} from "../../../../Data/ProductData";
 import MenuItem from "@mui/material/MenuItem";
 import EditModal from "./EditModal";
 import dayjs from "dayjs";
-import { getAllVendors } from "../../../Redux/vendor/vendorSlice";
-import { generateSkuForProduct } from "../../../Redux/features/generateSkuForProduct";
-import { generateHsnCode } from "../../../Redux/features/generateHsnCode";
+import { getAllVendors } from "../../../../Redux/vendor/vendorSlice";
+import { generateSkuForProduct } from "../../../../Redux/features/generateSkuForProduct";
+import { generateHsnCode } from "../../../../Redux/features/generateHsnCode";
 import { toast, ToastContainer } from "react-toastify";
+import { getPurchaseDetails } from "../../../../Redux/features/getPurchaseDetailsSlice";
+import { getAllCategories } from "../../../../Redux/category/categorySlice";
+import PrintBarcodeDialog from "./PrintBarcodeDialog";
 
 const CreatePurchase = ({ backToList }) => {
   const [open, setOpen] = useState(false);
@@ -30,6 +33,11 @@ const CreatePurchase = ({ backToList }) => {
   const { vendors } = useSelector((state) => state.vendor);
   const { sku } = useSelector((state) => state.generateSku);
   const { hsn } = useSelector((state) => state.generateHsnCode);
+  const { category } = useSelector((state) => state.category);
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [openBarcodeDialog, setOpenBarcodeDialog] = useState(false);
+
   const [purchaseData, setPurchaseData] = useState({
     productName: "",
     vendorName: "",
@@ -37,6 +45,8 @@ const CreatePurchase = ({ backToList }) => {
     hsnCode: "",
     sku: "",
     quantity: "",
+    manufacturer: "",
+    manufacturedDate: "",
     MRP: "",
     purchaseRate: "",
     unitPrice: "",
@@ -44,6 +54,7 @@ const CreatePurchase = ({ backToList }) => {
     advanceAmount: "",
     brandName: "",
     category: "",
+    subCategory: "",
     wareHouse: "",
     rack: "",
     shelf: "",
@@ -106,7 +117,10 @@ const CreatePurchase = ({ backToList }) => {
           autoClose: 2000,
           closeButton: false,
         });
-        setTimeout(() => backToList(), 2000);
+        setTimeout(() => {
+          backToList();
+          dispatch(getPurchaseDetails());
+        }, 2000);
       })
       .catch((error) => toast.error(error));
     setPurchaseData({
@@ -115,6 +129,8 @@ const CreatePurchase = ({ backToList }) => {
       partNumber: "",
       hsnCode: "",
       sku: "",
+      manufacturer: "",
+      manufacturedDate: "",
       quantity: "",
       MRP: "",
       purchaseRate: "",
@@ -171,7 +187,7 @@ const CreatePurchase = ({ backToList }) => {
     if (!hsn) {
       dispatch(generateHsnCode());
     }
-  }, [dispatch]);
+  }, [dispatch, hsn, sku]);
 
   useEffect(() => {
     if (sku?.data || hsn?.data) {
@@ -181,7 +197,36 @@ const CreatePurchase = ({ backToList }) => {
         hsnCode: hsn?.data || prev.hsnCode,
       }));
     }
-  }, [sku, hsn]);
+  }, [sku?.data, hsn?.data]);
+
+  useEffect(() => {
+    dispatch(getAllCategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (category?.length) {
+      setCategories(
+        category.map((data) => ({
+          label: data.categoryName,
+          value: data.categoryName,
+        }))
+      );
+    }
+  }, [category]);
+
+  useEffect(() => {
+    if (purchaseData.category) {
+      const selectedCategory = category?.find(
+        (c) => c.categoryName === purchaseData.category
+      );
+      setSubCategories(
+        selectedCategory?.subCategories?.map((sub) => ({
+          label: sub.name,
+          value: sub.name,
+        })) || []
+      );
+    }
+  }, [purchaseData.category, category]);
 
   return (
     <>
@@ -315,6 +360,40 @@ const CreatePurchase = ({ backToList }) => {
               <TextField
                 className="textfield-spacing"
                 id="outlined-start-adornment"
+                label="Manufacturer"
+                name="manufacturer"
+                value={purchaseData.manufacturer}
+                onChange={handleInputChange}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start"></InputAdornment>
+                    ),
+                  },
+                }}
+              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Box sx={{ width: "100%" }}>
+                  <DatePicker
+                    sx={{ width: "100%" }}
+                    label="Manufactured date"
+                    name="manufacturedDate"
+                    value={
+                      purchaseData?.manufacturedDate
+                        ? dayjs(purchaseData.manufacturedDate)
+                        : null
+                    }
+                    onChange={(newValue) =>
+                      handleInputChange({
+                        target: { name: "manufacturedDate", value: newValue },
+                      })
+                    }
+                  />
+                </Box>
+              </LocalizationProvider>
+              <TextField
+                className="textfield-spacing"
+                id="outlined-start-adornment"
                 label="MRP"
                 name="MRP"
                 value={purchaseData.MRP}
@@ -342,6 +421,8 @@ const CreatePurchase = ({ backToList }) => {
                   },
                 }}
               />
+            </div>
+            <div className="row all-textfield-spacing">
               <TextField
                 className="textfield-spacing"
                 id="outlined-start-adornment"
@@ -372,8 +453,6 @@ const CreatePurchase = ({ backToList }) => {
                   },
                 }}
               />
-            </div>
-            <div className="row all-textfield-spacing">
               <TextField
                 className="textfield-spacing"
                 id="outlined-start-adornment"
@@ -404,21 +483,43 @@ const CreatePurchase = ({ backToList }) => {
                   },
                 }}
               />
-              <TextField
-                className="textfield-spacing"
-                id="outlined-start-adornment"
-                label="Category"
-                name="category"
-                value={purchaseData.category}
-                onChange={handleInputChange}
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start"></InputAdornment>
-                    ),
-                  },
-                }}
-              />
+            </div>
+            <div className="row all-textfield-spacing">
+              <div className="textfield-spacing">
+                <TextField
+                  id="outlined-select-category"
+                  select
+                  label="Category"
+                  className="textfield-spacing"
+                  name="category"
+                  value={purchaseData.category || ""}
+                  onChange={handleInputChange}
+                >
+                  {categories.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </div>
+              <div className="textfield-spacing">
+                <TextField
+                  id="outlined-select-subCategory"
+                  select
+                  label="Sub Category"
+                  className="textfield-spacing"
+                  name="subCategory"
+                  value={purchaseData.subCategory || ""}
+                  onChange={handleInputChange}
+                  disabled={!purchaseData.category}
+                >
+                  {subCategories.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </div>
               <div className="textfield-spacing">
                 <TextField
                   id="outlined-select-warehouse"
@@ -436,8 +537,6 @@ const CreatePurchase = ({ backToList }) => {
                   ))}
                 </TextField>
               </div>
-            </div>
-            <div className="row all-textfield-spacing">
               <TextField
                 className="textfield-spacing"
                 id="outlined-start-adornment"
@@ -453,6 +552,8 @@ const CreatePurchase = ({ backToList }) => {
                   },
                 }}
               />
+            </div>
+            <div className="row all-textfield-spacing">
               <div className="textfield-spacing">
                 <TextField
                   id="outlined-select-shelf"
@@ -503,8 +604,6 @@ const CreatePurchase = ({ backToList }) => {
                   ))}
                 </TextField>
               </div>
-            </div>
-            <div className="row all-textfield-spacing">
               <div className="textfield-spacing">
                 <TextField
                   id="outlined-select-shelf"
@@ -522,6 +621,8 @@ const CreatePurchase = ({ backToList }) => {
                   ))}
                 </TextField>
               </div>
+            </div>
+            <div className="row invoice-textfield-spacing">
               <TextField
                 className="textfield-spacing"
                 id="outlined-start-adornment"
@@ -579,8 +680,6 @@ const CreatePurchase = ({ backToList }) => {
                   </Box>
                 </LocalizationProvider>
               </div>
-            </div>
-            <div className="row invoice-textfield-spacing">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Box className="Invoice-date-textfield" sx={{ width: "24%" }}>
                   <DatePicker
@@ -600,6 +699,8 @@ const CreatePurchase = ({ backToList }) => {
                   />
                 </Box>
               </LocalizationProvider>
+            </div>
+            <div className="row invoice-textfield-spacing">
               <TextField
                 className="textfield-spacing"
                 id="outlined-start-adornment"
@@ -658,12 +759,20 @@ const CreatePurchase = ({ backToList }) => {
               )
             )}
           </Box>
-          <button className="print-barcode">
+          <div
+            className="print-barcode"
+            onClick={() => setOpenBarcodeDialog(true)}
+          >
             <span>
               <LocalPrintshopIcon />
             </span>
             Print Barcode
-          </button>
+          </div>
+          <PrintBarcodeDialog
+            open={openBarcodeDialog}
+            handleClose={() => setOpenBarcodeDialog(false)}
+            purchaseData={purchaseData}
+          />
           <div className="container mt-4">
             <div className="col d-flex justify-content-center">
               <button type="submit" className="btn submit-btn">

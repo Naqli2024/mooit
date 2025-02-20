@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { InputGroup, Form } from "react-bootstrap";
+import { InputGroup, Form, Button } from "react-bootstrap";
 import MenuItem from "@mui/material/MenuItem";
+import PersonIcon from "@mui/icons-material/Person";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useDispatch, useSelector } from "react-redux";
-import { createNewVendor, updateOrCreateVendor } from "../../../../Redux/vendor/vendorSlice";
+import {
+  createNewCustomer,
+  updateOrCreateCustomer,
+} from "../../../../Redux/customer/customerSlice";
 import { toast } from "react-toastify";
 import Loader from "../../../../Helper/Loader";
-import CreateNewAddress from "./CreateNewAddress";
+import CreateNewCustomerAddress from "./CreateNewCustomerAddress";
 
-const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
-  const { basicInformation } = vendorDetails;
+const CreateNewCustomerBasicInformation = ({ backToList, customerDetails }) => {
+  const { basicInformation } = customerDetails;
+  const dispatch = useDispatch();
+  const { loading, customers, error } = useSelector((state) => state.customers);
+  const [address, setNewAddress] = useState(false);
+
   const [formData, setFormData] = useState({
     basicInformation: {
       honorifics: "Mr",
@@ -24,9 +32,24 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
       gst: "",
     },
   });
-  const dispatch = useDispatch();
-  const { loading, vendors, error } = useSelector((state) => state.vendor);
-  const [address, setNewAddress] = useState(false);
+
+  useEffect(() => {
+    if (basicInformation) {
+      setFormData({
+        basicInformation: basicInformation || {
+          honorifics: "Mr",
+          firstName: "",
+          lastName: "",
+          companyName: "",
+          emailId: "",
+          Mobile: "",
+          landLine: "",
+          website: "",
+          gst: "",
+        },
+      });
+    }
+  }, [basicInformation]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -41,12 +64,9 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (vendorDetails?._id) {
+    if (customerDetails?._id) {
       dispatch(
-        updateOrCreateVendor({
-          id: vendorDetails?._id,
-          data: formData,
-        })
+        updateOrCreateCustomer({ id: customerDetails._id, data: formData })
       )
         .unwrap()
         .then((response) => {
@@ -55,19 +75,7 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
             autoClose: 2000,
             closeButton: false,
           });
-          setFormData({
-            basicInformation: {
-              honorifics: "Mr",
-              firstName: "",
-              lastName: "",
-              companyName: "",
-              emailId: "",
-              Mobile: "",
-              landLine: "",
-              website: "",
-              gst: "",
-            },
-          });
+          resetForm();
         })
         .catch((error) => {
           toast.error(error, {
@@ -77,7 +85,7 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
           });
         });
     } else {
-      dispatch(createNewVendor(formData))
+      dispatch(createNewCustomer(formData))
         .unwrap()
         .then((response) => {
           toast.success(response.message, {
@@ -98,23 +106,21 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
     }
   };
 
-  useEffect(() => {
-    if (basicInformation) {
-      setFormData({
-        basicInformation: basicInformation || {
-          honorifics: "Mr",
-          firstName: "",
-          lastName: "",
-          companyName: "",
-          emailId: "",
-          Mobile: "",
-          landLine: "",
-          website: "",
-          gst: "",
-        },
-      });
-    }
-  }, [basicInformation]);
+  const resetForm = () => {
+    setFormData({
+      basicInformation: {
+        honorifics: "Mr",
+        firstName: "",
+        lastName: "",
+        companyName: "",
+        emailId: "",
+        Mobile: "",
+        landLine: "",
+        website: "",
+        gst: "",
+      },
+    });
+  };
 
   return (
     <div>
@@ -125,14 +131,15 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
           autoClose: 1000,
           closeButton: false,
         })}
+
       {address ? (
-        <CreateNewAddress vendors={vendors} />
+        <CreateNewCustomerAddress customers={customers} />
       ) : (
         <div className="new-vendor-info">
           <div className="col-md-8 mb-5">
             <Form.Group className="new-vendor-field">
               <Form.Label className="col-md-3">Name</Form.Label>
-              <div className="">
+              <div className="col-md-1 col-sm-12">
                 <FormControl sx={{ minWidth: 60 }}>
                   <Select
                     className="package-filter"
@@ -141,31 +148,23 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
                     value={formData.basicInformation.honorifics}
                     onChange={handleChange}
                     inputProps={{ "aria-label": "Without label" }}
-                    sx={{
-                      height: "40px",
-                    }}
+                    sx={{ height: "40px" }}
                   >
-                    <MenuItem value="mr">Mr</MenuItem>
-                    <MenuItem value="mrs">Mrs</MenuItem>
+                    <MenuItem value="Mr">Mr</MenuItem>
+                    <MenuItem value="Mrs">Mrs</MenuItem>
                   </Select>
                 </FormControl>
               </div>
-              <InputGroup className="ms-3">
+              <InputGroup className="customer-name">
                 <Form.Control
-                  aria-label="Default"
-                  aria-describedby="inputGroup-sizing-default"
-                  className="custom-textfield"
                   name="firstName"
                   placeholder="First name"
                   value={formData.basicInformation.firstName}
                   onChange={handleChange}
                 />
               </InputGroup>
-              <InputGroup className="ms-3">
+              <InputGroup className="customer-name">
                 <Form.Control
-                  aria-label="Default"
-                  aria-describedby="inputGroup-sizing-default"
-                  className="custom-textfield"
                   name="lastName"
                   placeholder="Last name"
                   value={formData.basicInformation.lastName}
@@ -174,14 +173,12 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
               </InputGroup>
             </Form.Group>
           </div>
+
           <div className="col-md-8 mb-5">
             <Form.Group className="new-vendor-field">
               <Form.Label className="col-md-3">Company name</Form.Label>
               <InputGroup>
                 <Form.Control
-                  aria-label="Default"
-                  aria-describedby="inputGroup-sizing-default"
-                  className="custom-textfield"
                   name="companyName"
                   value={formData.basicInformation.companyName}
                   onChange={handleChange}
@@ -189,14 +186,12 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
               </InputGroup>
             </Form.Group>
           </div>
+
           <div className="col-md-8 mb-5">
             <Form.Group className="new-vendor-field">
               <Form.Label className="col-md-3">Email id</Form.Label>
               <InputGroup>
                 <Form.Control
-                  aria-label="Default"
-                  aria-describedby="inputGroup-sizing-default"
-                  className="custom-textfield"
                   name="emailId"
                   value={formData.basicInformation.emailId}
                   onChange={handleChange}
@@ -204,27 +199,33 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
               </InputGroup>
             </Form.Group>
           </div>
+
           <div className="col-md-8 mb-5">
             <Form.Group className="new-vendor-field">
-              <Form.Label className="col-md-3">Mobile</Form.Label>
+              <Form.Label className="col-md-3">Website</Form.Label>
               <InputGroup>
                 <Form.Control
-                  aria-label="Default"
-                  aria-describedby="inputGroup-sizing-default"
-                  className="custom-textfield"
+                  name="website"
+                  value={formData.basicInformation.website}
+                  onChange={handleChange}
+                />
+              </InputGroup>
+            </Form.Group>
+          </div>
+
+          <div className="col-md-8 mb-5">
+            <Form.Group className="new-vendor-field">
+              <Form.Label className="col-md-3">Mobile no</Form.Label>
+              <InputGroup>
+                <Form.Control
                   name="Mobile"
                   value={formData.basicInformation.Mobile}
                   onChange={handleChange}
                 />
               </InputGroup>
-              <Form.Label className="col-md-3 landline-field">
-                Landline
-              </Form.Label>
-              <InputGroup>
+              <Form.Label className="landline-field me-4">Landline</Form.Label>
+              <InputGroup className="customer-name">
                 <Form.Control
-                  aria-label="Default"
-                  aria-describedby="inputGroup-sizing-default"
-                  className="custom-textfield"
                   name="landLine"
                   value={formData.basicInformation.landLine}
                   onChange={handleChange}
@@ -232,32 +233,7 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
               </InputGroup>
             </Form.Group>
           </div>
-          <div className="col-md-8 mb-5">
-            <Form.Group className="new-vendor-field">
-              <Form.Label className="col-md-3">Website</Form.Label>
-              <InputGroup>
-                <Form.Control
-                  aria-label="Default"
-                  aria-describedby="inputGroup-sizing-default"
-                  className="custom-textfield"
-                  name="website"
-                  value={formData.basicInformation.website}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-              <Form.Label className="col-md-3 landline-field">GST</Form.Label>
-              <InputGroup>
-                <Form.Control
-                  aria-label="Default"
-                  aria-describedby="inputGroup-sizing-default"
-                  className="custom-textfield"
-                  name="gst"
-                  value={formData.basicInformation.gst}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-            </Form.Group>
-          </div>
+
           <hr />
           <div className="container-fluid p-4">
             <div className="col-12 col-md-3 d-flex justify-content-between gap-2">
@@ -276,11 +252,11 @@ const CreateNewBasicInformation = ({ backToList, vendorDetails }) => {
                 Cancel
               </button>
             </div>
-          </div>{" "}
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-export default CreateNewBasicInformation;
+export default CreateNewCustomerBasicInformation;

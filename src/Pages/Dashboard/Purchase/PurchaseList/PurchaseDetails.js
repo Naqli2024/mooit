@@ -6,8 +6,10 @@ import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
 import DeleteOutlineSharpIcon from "@mui/icons-material/DeleteOutlineSharp";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { findPurchaseById } from "../../../Redux/features/findPurchaseByIdSlice";
 import { useReactToPrint } from "react-to-print";
+import { findPurchaseById } from "../../../../Redux/features/findPurchaseByIdSlice";
+import { toast, ToastContainer } from "react-toastify";
+import { deletePurchaseById } from "../../../../Redux/features/deletePurchaseById";
 
 const PurchaseDetails = () => {
   const [openInvoice, setOpenInvoice] = useState(false);
@@ -18,23 +20,23 @@ const PurchaseDetails = () => {
     (state) => state.findPurchaseById
   );
   const componentRef = React.useRef(null);
-  
-    //React-to-print functionalities
-    const handleAfterPrint = React.useCallback(() => {
-      console.log("`onAfterPrint` called");
-    }, []);
-  
-    const handleBeforePrint = React.useCallback(() => {
-      console.log("`onBeforePrint` called");
-      return Promise.resolve();
-    }, []);
-  
-    const reactToPrintFn = useReactToPrint({
-      contentRef: componentRef,
-      documentTitle: "Purchase Details",
-      onAfterPrint: handleAfterPrint,
-      onBeforePrint: handleBeforePrint,
-    });
+
+  //React-to-print functionalities
+  const handleAfterPrint = React.useCallback(() => {
+    console.log("`onAfterPrint` called");
+  }, []);
+
+  const handleBeforePrint = React.useCallback(() => {
+    console.log("`onBeforePrint` called");
+    return Promise.resolve();
+  }, []);
+
+  const reactToPrintFn = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: "Purchase Details",
+    onAfterPrint: handleAfterPrint,
+    onBeforePrint: handleBeforePrint,
+  });
 
   const backToPurchaseDetails = () => {
     setOpenInvoice(!openInvoice);
@@ -42,6 +44,26 @@ const PurchaseDetails = () => {
 
   const backToList = () => {
     navigate("/admin/purchase-list");
+  };
+
+  const hanldePurchaseDelete = (id) => {
+    dispatch(deletePurchaseById(id))
+      .unwrap()
+      .then((response) => {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 2000,
+          closeButton: false,
+        });
+        setTimeout(() => backToList(), 2000);
+      })
+      .catch((error) =>
+        toast.error(error, {
+          position: "top-center",
+          autoClose: 2000,
+          closeButton: false,
+        })
+      );
   };
 
   useEffect(() => {
@@ -87,7 +109,10 @@ const PurchaseDetails = () => {
                   Print
                 </div>
                 <div className="divider"></div>
-                <div className="action-btn delete-btn">
+                <div
+                  className="action-btn delete-btn"
+                  onClick={() => hanldePurchaseDelete(data._id)}
+                >
                   <DeleteOutlineSharpIcon className="action-icon" />
                   Delete
                 </div>
@@ -130,12 +155,13 @@ const PurchaseDetails = () => {
                     <p className="invoice-id">{data.category}</p>
                   </div>
                 </div>
-                <CreateInvoice  ref={componentRef}/>
+                <CreateInvoice ref={componentRef} />
               </div>
             </>
           )}
         </>
       )}
+      <ToastContainer />
     </div>
   );
 };

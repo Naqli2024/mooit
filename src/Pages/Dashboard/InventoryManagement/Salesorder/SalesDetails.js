@@ -358,12 +358,12 @@ const SalesDetails = ({ backToList, saleOrderData }) => {
                       {saleOrderData?.itemDetails.map((items, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{items.name}</td>
+                          <td>{items.itemName}</td>
                           <td>{items.quantity}</td>
                           <td>{items.price}</td>
                           <td>{items.discount}</td>
                           <td>{items.gst}</td>
-                          <td>{items.amount}</td>
+                          <td>{items.total}</td>
                         </tr>
                       ))}
                     </tbody>

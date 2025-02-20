@@ -22,7 +22,6 @@ const DeliveryChallanDetails = ({ backToList, challan }) => {
     (state) => state.getSaleOrderBySaleOrderId
   );
   const { data } = useSelector((state) => state.shipment);
-  console.log(data);
   const componentRef = React.useRef(null);
 
   //React-to-print functionalities
@@ -125,7 +124,7 @@ const DeliveryChallanDetails = ({ backToList, challan }) => {
               : "package-label"
           }
         >
-          {data && data.data.shipmentStatus}
+          {data && data?.data?.shipmentStatus}
         </div>
         <div className="sales-invoice-detail" ref={componentRef}>
           <div className="sales-invoice">

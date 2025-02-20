@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { InputGroup, Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { getAllCustomers, updateOrCreateCustomer } from "../../../../Redux/customer/customerSlice";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../../../Helper/Loader";
-import { updateOrCreateVendor } from "../../../../Redux/vendor/vendorSlice";
 
-const CreateNewAddress = ({ backToList, vendors }) => {
+const CreateNewCustomerAddress = ({ backToList, customers }) => {
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.vendor);
+  const { loading, error } = useSelector((state) => state.customers);
 
   const [formData, setFormData] = useState({
     billingAddress: {
@@ -28,11 +28,11 @@ const CreateNewAddress = ({ backToList, vendors }) => {
     },
   });
 
-  // Update formData when vendors is available
+  // Update formData when customers is available
   useEffect(() => {
-    if (vendors) {
+    if (customers) {
       setFormData({
-        billingAddress: vendors.billingAddress || {
+        billingAddress: customers.billingAddress || {
           country: "",
           state: "",
           city: "",
@@ -40,7 +40,7 @@ const CreateNewAddress = ({ backToList, vendors }) => {
           zipCode: "",
           phoneNo: "",
         },
-        shippingAddress: vendors.shippingAddress || {
+        shippingAddress: customers.shippingAddress || {
           country: "",
           state: "",
           city: "",
@@ -50,7 +50,7 @@ const CreateNewAddress = ({ backToList, vendors }) => {
         },
       });
     }
-  }, [vendors]);
+  }, [customers]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -71,10 +71,10 @@ const CreateNewAddress = ({ backToList, vendors }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (vendors) {
+    if (customers) {
       dispatch(
-        updateOrCreateVendor({
-          id: vendors?.data?._id || vendors?._id,
+        updateOrCreateCustomer({
+          id: customers?.data?._id || customers?._id,
           data: formData,
         })
       )
@@ -117,11 +117,12 @@ const CreateNewAddress = ({ backToList, vendors }) => {
   return (
     <div>
       {loading && <Loader />}
-      {error && toast.error(error, {
-            position: "top-center",
-            autoClose: 2000,
-            closeButton: false,
-          })}
+      {error &&
+        toast.error(error, {
+          position: "top-center",
+          autoClose: 2000,
+          closeButton: false,
+        })}
       <div className="vendor-address-overview new-vendor-address">
         {/* Billing Address */}
         <div className="new-vendor-address-left-content">
@@ -177,10 +178,9 @@ const CreateNewAddress = ({ backToList, vendors }) => {
           )}
         </div>
       </div>
-
       <hr />
       <div className="container-fluid p-4">
-        <div className="col-12 col-md-2 d-flex justify-content-between gap-2">
+        <div className="col-12 col-md-3 d-flex justify-content-between gap-2">
           <button
             type="submit"
             className="btn flex-grow-1"
@@ -196,4 +196,4 @@ const CreateNewAddress = ({ backToList, vendors }) => {
   );
 };
 
-export default CreateNewAddress;
+export default CreateNewCustomerAddress;

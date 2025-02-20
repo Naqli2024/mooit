@@ -18,8 +18,8 @@ const PackageDetails = ({ packageDetail, backToList }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.deletePackage);
   const { data } = useSelector((state) => state.shipment);
-  console.log(data)
   const [showShipmentStatus, setShowShipmentStatus] = useState(false);
+  console.log(data)
 
   const totalQuantity =
     packageDetail &&
