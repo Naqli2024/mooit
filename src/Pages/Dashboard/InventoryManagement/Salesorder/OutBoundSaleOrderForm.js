@@ -467,7 +467,9 @@ const OutBoundSaleOrderForm = ({ backToList, activeTab }) => {
                         if (col.id === "itemName") {
                           return (
                             <td key={col.id}>
-                              <select
+                              <Form.Select
+                              aria-label="Default select example"
+                              className="sales-order-label"
                                 value={row.itemName}
                                 onChange={(e) =>
                                   handleProductChange(index, e.target.value)
@@ -479,7 +481,7 @@ const OutBoundSaleOrderForm = ({ backToList, activeTab }) => {
                                     {product.productName}
                                   </option>
                                 ))}
-                              </select>
+                              </Form.Select>
                             </td>
                           );
                         }
@@ -571,20 +573,31 @@ const OutBoundSaleOrderForm = ({ backToList, activeTab }) => {
               <div className="col-md-3 fw-normal">{formData.total}</div>
             </div>
           </div>
-          <div className="new-sales-btn mt-5 mb-5">
-            <button type="submit" className="btn btn-primary save-download-btn">
-              Save & Download
-            </button>
-            <button type="submit" className="btn save-draft-btn">
-              Save as draft
-            </button>
-            <button
-              onClick={backToList}
-              className="btn btn-danger sales-cancel-btn"
-            >
-              Cancel
-            </button>
-          </div>
+          <div className="container-fluid">
+              <div className="row justify-content-start mt-5">
+                <div className="col-12 col-md-5 d-md-flex justify-content-between gap-3">
+                  <button
+                    type="submit"
+                    className="btn flex-grow-1 mt-2"
+                    style={{ color: "white", backgroundColor: "#1F3F7F"}}
+                  >
+                    Save & Download
+                  </button>
+                  <button 
+                    type="submit"
+                    className="btn save-draft-btn flex-grow-1 mt-2 ms-sm-2 me-sm-2"
+                  >
+                    Save as draft
+                  </button>
+                  <button
+                    className="btn btn-danger flex-grow-1 mt-2"
+                    onClick={backToList}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
         </Form>
       </div>
       {loading && (

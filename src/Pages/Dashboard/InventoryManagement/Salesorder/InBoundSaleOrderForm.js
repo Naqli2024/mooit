@@ -327,7 +327,7 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
           </div> */}
 
           <Row className="row-cols-custom mb-4 mt-4">
-            <Col>
+            <Col md="3" sm="12" xs="12">
               <Form.Group className="mb-3">
                 <Form.Label>Sales Order ID</Form.Label>
                 <Form.Control
@@ -341,7 +341,7 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
               </Form.Group>
             </Col>
 
-            <Col>
+            <Col md="3" sm="12" xs="12">
               <Form.Group className="mb-3">
                 <Form.Label>Sales Order Date</Form.Label>
                 <Form.Control
@@ -355,7 +355,7 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
               </Form.Group>
             </Col>
 
-            <Col>
+            <Col md="3" sm="12" xs="12">
               <Form.Group className="mb-3">
                 <Form.Label>Shipment Date</Form.Label>
                 <Form.Control
@@ -371,7 +371,7 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
           </Row>
 
           <Row className="row-cols-custom mb-4">
-            <Col>
+            <Col md="3" sm="12" xs="12">
               <Form.Group className="mb-3">
                 <Form.Label>Delivery Method</Form.Label>
                 <Form.Select
@@ -393,7 +393,7 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
               </Form.Group>
             </Col>
 
-            <Col>
+            <Col md="3" sm="12" xs="12">
               <Form.Group className="mb-3">
                 <Form.Label>Sales Person</Form.Label>
                 <Form.Control
@@ -408,7 +408,7 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
             </Col>
 
             {/* Add an empty column */}
-            <Col></Col>
+            <Col md="3" sm="12" xs="12"></Col>
           </Row>
 
           <Row>
@@ -458,7 +458,9 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
                         if (col.id === "itemName") {
                           return (
                             <td key={col.id}>
-                              <select
+                              <Form.Select
+                                aria-label="Default select example"
+                                className="sales-order-label"
                                 value={row.itemName}
                                 onChange={(e) =>
                                   handleProductChange(index, e.target.value)
@@ -470,7 +472,7 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
                                     {product.productName}
                                   </option>
                                 ))}
-                              </select>
+                              </Form.Select>
                             </td>
                           );
                         }
@@ -562,20 +564,31 @@ const InBoundSaleOrderForm = ({ backToList, activeTab }) => {
               <div className="col-md-3 fw-normal">{formData.total}</div>
             </div>
           </div>
-          <div className="new-sales-btn mt-5 mb-5">
-            <button type="submit" className="btn btn-primary save-download-btn">
-              Save & Download
-            </button>
-            <button type="submit" className="btn save-draft-btn">
-              Save as draft
-            </button>
-            <button
-              onClick={backToList}
-              className="btn btn-danger sales-cancel-btn"
-            >
-              Cancel
-            </button>
-          </div>
+          <div className="container-fluid">
+              <div className="row justify-content-start mt-5">
+                <div className="col-12 col-md-5 d-md-flex justify-content-between gap-3">
+                  <button
+                    type="submit"
+                    className="btn flex-grow-1 mt-2"
+                    style={{ color: "white", backgroundColor: "#1F3F7F" }}
+                  >
+                    Save & Download
+                  </button>
+                  <button 
+                    type="submit"
+                    className="btn save-draft-btn flex-grow-1 mt-2 ms-sm-2 me-sm-2"
+                  >
+                    Save as draft
+                  </button>
+                  <button
+                    className="btn btn-danger flex-grow-1 mt-2"
+                    onClick={backToList}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
         </Form>
       </div>
       {loading && (

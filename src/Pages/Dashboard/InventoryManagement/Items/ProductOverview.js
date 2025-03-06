@@ -21,27 +21,27 @@ const ProductOverview = ({sku}) => {
     <div className="product-overview">
       <div className=" col-md-3 overview-left-content">
         <div className="overview-content">
-          <div className="col-md-5">SKU</div>
+          <div className="col-md-5 text-secondary">SKU</div>
           <div className="col-md-1">-</div>
           <div className="col-md-3">{product && product.sku}</div>
         </div>
         <div className="overview-content">
-          <div className="col-md-5">Part number</div>
+          <div className="col-md-5 text-secondary">Part number</div>
           <div className="col-md-1">-</div>
           <div className="col-md-3">{product && product.partNumber}</div>
         </div>
         <div className="overview-content">
-          <div className="col-md-5">HSN code</div>
+          <div className="col-md-5 text-secondary">HSN code</div>
           <div className="col-md-1">-</div>
           <div className="col-md-3">{product && product.hsnCode}</div>
         </div>
         <div className="overview-content">
-          <div className="col-md-5">Brand name</div>
+          <div className="col-md-5 text-secondary">Brand name</div>
           <div className="col-md-1">-</div>
           <div className="col-md-3">{product && product.brandName}</div>
         </div>
         <div className="overview-content">
-          <div className="col-md-5">Category</div>
+          <div className="col-md-5 text-secondary">Category</div>
           <div className="col-md-1">-</div>
           <div className="col-md-3">{product && product.category}</div>
         </div>

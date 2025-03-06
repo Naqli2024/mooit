@@ -842,6 +842,12 @@
     overflow-x: auto;
   }
 }
+@media (max-width: 1200px) {
+  .purchase-textfield .text-field{
+    flex-direction: column;
+    width: 100% !important;
+  }
+}
 /*************Create Purchase************/
 .create-purchase {
   margin: 0;
@@ -1274,7 +1280,7 @@
   background-color: #1f3f7f !important;
   color: white !important;
   cursor: pointer;
-  width: 10%;
+  width: 15%;
   height: fit-content;
   font-size: 14px;
   white-space: nowrap;
@@ -1553,7 +1559,10 @@
   overflow-x: auto;
   margin-top: 20px;
 }
-.history-table-head th {
+.history-table tr:last-child td {
+  border-bottom: none;
+}
+.history-table th {
   background-color: #eceef4 !important;
   color: #000;
 }
@@ -2031,6 +2040,12 @@ td {
   .sales-invoice-outer-card {
     margin-left: 5% !important;
     margin-right: 5% !important;
+  }
+}
+@media (max-width: 1550px) {
+  .sales-invoice-outer-card {
+    margin-left: 10% !important;
+    margin-right: 10% !important;
   }
 }
 /***************OutBoundSaleOrder****************/
@@ -3064,6 +3079,11 @@ justify-content: space-between;
 .delivery-tableWrapper{
   overflow-x: auto !important;
 }
+}
+@media (max-width: 1780px) {
+  .delivery-tableWrapper{
+    overflow-x: auto !important;
+  }
 }
 @media (max-width: 768px) {
 .credit-note-notes {

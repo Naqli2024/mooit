@@ -10,6 +10,7 @@ import ReviseInvoice from "./ReviseInvoice";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllInvoices } from "../../../../Redux/salesInvoiceSlice/salesInvoice";
 import SalesInvoiceDetails from "./SalesInvoiceDetails";
+import { useLocation } from "react-router-dom";
 
 const SalesInvoice = () => {
   const [filter, setFilter] = React.useState("");
@@ -20,18 +21,23 @@ const SalesInvoice = () => {
   const [querySearch, setQuerySearch] = useState("");
   const [invoiceDetails, setInvoiceDetails] = useState(false);
   const [salesInvoice, setSalesInvoice] = useState(null);
+  const location = useLocation();
 
   const handleChange = (event) => {
     setFilter(event.target.value);
   };
 
   const filteredData = Array.isArray(salesInvoiceData)
-    ? salesInvoiceData.filter((invoice) =>
+  ? salesInvoiceData
+      .filter((invoice) =>
         ["invoiceId", "salesOrderId", "customerName"].some((key) =>
           invoice?.[key]?.toString().toLowerCase().includes(querySearch.toLowerCase())
         )
       )
-    : [];
+      .filter((invoice) =>
+        filter === "All" || filter === "" || invoice?.status === filter || invoice?.paymentStatus === filter
+      )
+  : [];
 
   const handleInvoiceDetails = (data) => {
     if (data?.PaymentStatus === "Paid") {
@@ -44,12 +50,22 @@ const SalesInvoice = () => {
 
   const backToList = () => {
     setOpenNewSalesInvoice(false);
-    dispatch(getAllInvoices());
-  }
+    setInvoiceDetails(false);
+    
+    setTimeout(() => {
+      dispatch(getAllInvoices());
+    }, 100);
+  };
 
   useEffect(() => {
     dispatch(getAllInvoices());
-  }, [dispatch, backToList]);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if(location.state?.openNewSalesInvoice) {
+      setOpenNewSalesInvoice(true)
+    }
+  },[location.state]);
 
   return (
     <div>
@@ -61,8 +77,8 @@ const SalesInvoice = () => {
         <ReviseInvoice backToList={() => setOpenReviseInvoice(false)} />
       ) : invoiceDetails ? (
         <SalesInvoiceDetails
-          backToList={() => setInvoiceDetails(false)}
-          salesInvoice={salesInvoice} // ✅ Correctly passing salesInvoice
+          backToList={backToList}
+          salesInvoice={salesInvoice} 
         />
       ) : (
         <div className="purchase-list">
@@ -90,7 +106,7 @@ const SalesInvoice = () => {
                     inputProps={{ "aria-label": "Without label" }}
                     sx={{ fontSize: "14px" }}
                   >
-                    <MenuItem sx={{ fontSize: "14px" }} value="">
+                     <MenuItem sx={{ fontSize: "14px" }} value="">
                       <em>Status</em>
                     </MenuItem>
                     <MenuItem sx={{ fontSize: "14px" }} value="All">
@@ -98,9 +114,6 @@ const SalesInvoice = () => {
                     </MenuItem>
                     <MenuItem sx={{ fontSize: "14px" }} value="Draft">
                       Draft
-                    </MenuItem>
-                    <MenuItem sx={{ fontSize: "14px" }} value="Overdue">
-                      Overdue
                     </MenuItem>
                     <MenuItem sx={{ fontSize: "14px" }} value="Paid">
                       Paid
@@ -110,9 +123,6 @@ const SalesInvoice = () => {
                     </MenuItem>
                     <MenuItem sx={{ fontSize: "14px" }} value="HalfPaid">
                       HalfPaid
-                    </MenuItem>
-                    <MenuItem sx={{ fontSize: "14px" }} value="Void">
-                      Void
                     </MenuItem>
                   </Select>
                 </FormControl>

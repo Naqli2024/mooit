@@ -146,7 +146,7 @@ const SalesInvoiceDetails = ({ backToList, salesInvoice }) => {
     dispatch(
       editSalesInvoice({
         invoiceId: salesInvoice?.invoiceId,
-        paymentAmount: amount,
+        partialAmount: amount,
         paymentMode: paymentMode,
         paymentStatus: "HalfPaid",
       })
@@ -406,20 +406,20 @@ const SalesInvoiceDetails = ({ backToList, salesInvoice }) => {
               <p>xxxxxxxxxxxx</p>
             </div>
             <div className="sales-order-date me-5">
-              <div className="d-flex mb-3 me-5">
-                <p className="col-8">SO#</p>
+              <div className="d-flex mb-3">
+                <p className="col-5">SO#</p>
                 <p className="col-2">:</p>
-                <p className="col-2">{salesInvoice?.salesOrderId}</p>
+                <p className="col-6">{salesInvoice?.salesOrderId}</p>
               </div>
-              <div className="d-flex mb-3 me-5">
-                <p className="col-8">Invoice date</p>
+              <div className="d-flex mb-3">
+                <p className="col-5">Invoice date</p>
                 <p className="col-2">:</p>
-                <p className="col-2">{salesInvoice?.invoiceDate}</p>
+                <p className="col-6">{salesInvoice?.invoiceDate}</p>
               </div>
-              <div className="d-flex mb-3 me-5">
-                <p className="col-8">Due date</p>
+              <div className="d-flex mb-3">
+                <p className="col-5">Due date</p>
                 <p className="col-2">:</p>
-                <p className="col-2">{salesInvoice?.dueDate}</p>
+                <p className="col-6">{salesInvoice?.dueDate}</p>
               </div>
             </div>
           </div>
@@ -462,33 +462,33 @@ const SalesInvoiceDetails = ({ backToList, salesInvoice }) => {
           </div>
         </div>
         <div className="credit-note-bottom-content me-5">
-          <div className="open-inventory mb-3">
+          <div className="open-inventory p-2">
             <p className="col-md-8">Subtotal</p>
             <p className="col-md-3 d-flex justify-content-center">
               {salesInvoice?.subTotal}
             </p>
           </div>
-          <div className="open-inventory mb-3">
+          <div className="open-inventory p-2">
             <p className="col-md-8">Shipping charges</p>
             <p className="col-md-3 d-flex justify-content-center">
               {salesInvoice?.shippingCharges}
             </p>
           </div>
-          <div className="open-inventory mb-3">
+          <div className="open-inventory p-2">
             <p className="col-md-8">VAT%</p>
             <p className="col-md-3 d-flex justify-content-center">
               {salesInvoice?.VAT}
             </p>
           </div>
-          {paymentStatus === "HalfPaid" && (
-            <div className="open-inventory mb-3">
+          {salesInvoice?.paymentStatus === "HalfPaid" && (
+            <div className="open-inventory p-2">
               <p className="col-md-8">Partial amount</p>
               <p className="col-md-3 d-flex justify-content-center text-danger">
-                -1000
+                -{salesInvoice?.partialAmount}
               </p>
             </div>
           )}
-          <div className="open-inventory fw-bold">
+          <div className="open-inventory fw-bold p-2">
             <p className="col-md-8">Total amount</p>
             <p className="col-md-3 d-flex justify-content-center">
               {salesInvoice?.totalAmount}

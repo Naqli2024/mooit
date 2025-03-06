@@ -19,6 +19,7 @@ import {
   processSaleOrderItems,
 } from "../../../../Helper/filterCustomerByName";
 import { toast, ToastContainer } from "react-toastify";
+import { getInvoiceDetails } from "../../../../Redux/salesInvoiceSlice/salesInvoice";
 
 const NewSalesReturn = ({ backToList, openNewSalesReturn }) => {
   const [openNewSalesReturnDetails, setOpenNewSalesReturnDetails] =
@@ -31,6 +32,7 @@ const NewSalesReturn = ({ backToList, openNewSalesReturn }) => {
   const { loading, salesReturnData, error } = useSelector(
     (state) => state.salesReturn
   );
+  const {salesInvoiceData} = useSelector((state) => state.salesInvoice)
   const { allSaleOrder } = useSelector((state) => state.getAllSalesorder);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [selectSaleOrderId, setSelectSaleOrderId] = useState([]);
@@ -120,6 +122,7 @@ const NewSalesReturn = ({ backToList, openNewSalesReturn }) => {
 
   // Handle sales order selection change
   const handleSalesOrderChange = (selectedOption) => {
+    dispatch(getInvoiceDetails(selectedOption.value));
     setSelectedSalesOrder(selectedOption);
     if (selectedOption?.value) {
       dispatch(getSaleOrderBySaleOrderId(selectedOption.value));
@@ -179,6 +182,16 @@ const NewSalesReturn = ({ backToList, openNewSalesReturn }) => {
       }));
     }
   }, [companyName]);
+
+  useEffect(() => {
+    if(salesInvoiceData) {
+      setFormData((prevState) => ({
+        ...prevState,
+        invoiceNumber: salesInvoiceData?.invoiceId,
+        invoiceDate: salesInvoiceData?.invoiceDate
+      }))
+    }
+  },[salesInvoiceData])
 
   // Update formData when salesReturnData changes
   useEffect(() => {

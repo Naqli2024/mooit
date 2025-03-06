@@ -1,14 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Table from "react-bootstrap/Table";
 import LinkInvoiceDetails from "./LinkInvoiceDetails";
+import { useDispatch } from "react-redux";
+import { getCustomerDetailsByName } from "../../../../Redux/customer/customerSlice";
+import { toast, ToastContainer } from "react-toastify";
+import { editSalesInvoice, updateInvoiceWithCredits } from "../../../../Redux/salesInvoiceSlice/salesInvoice";
 
-const LinkInvoice = ({ backToList }) => {
-  const [openLinkToInvoiceDetails, setOpenLinkToInvoiceDetails] = useState(false);
+const LinkInvoice = ({ backToList, creditNoteData }) => {
+  const [openLinkToInvoiceDetails, setOpenLinkToInvoiceDetails] =
+    useState(false);
+  const [invoiceDetails, setInvoiceDetails] = useState();
+  const dispatch = useDispatch();
+  const [amountToCredit, setAmountToCredit] = useState(0);
+  const [amounts, setAmounts] = useState([]);
+  const creditBalance = invoiceDetails?.creditBalance || 0;
+  // Calculate "Amount to Credit" total
+  const amountToCreditTotal = amounts.reduce((sum, val) => sum + val, 0);
+
+  // Calculate "Remaining Credit"
+  const remainingCredit = creditBalance - amountToCreditTotal;
 
   const handleSubmit = () => {
-    setOpenLinkToInvoiceDetails(true);
+    if (!invoiceDetails?.salesList) return;
+  
+    const payload = invoiceDetails.salesList
+      .map((item, index) => {
+        const creditAmount = amounts?.[index] || 0; 
+        if (creditAmount > 0) {
+          return {
+            invoiceId: item.invoiceId, 
+            invoiceCorrected: true,
+            creditsUsed: creditAmount, 
+          };
+        }
+        return null; 
+      })
+      .filter(entry => entry !== null); 
+
+    dispatch(updateInvoiceWithCredits(payload)) 
+    .unwrap()
+    .then((response)=> {
+      toast.success(response.message, {position: "top-center",autoClose: 2000, closeButton: false});
+      setTimeout(() => setOpenLinkToInvoiceDetails(true), 2000)
+    })
+    .catch((error) => toast.error(error))
   };
+
+  const handleAmountChange = (index, value) => {
+    const newAmounts = [...amounts];
+    newAmounts[index] = parseFloat(value) || 0;
+    setAmounts(newAmounts);
+  };
+
+  useEffect(() => {
+    const payload = {
+      customerName: creditNoteData?.customerName,
+      companyName: creditNoteData?.companyName,
+    };
+    dispatch(getCustomerDetailsByName(payload))
+      .unwrap()
+      .then((response) => setInvoiceDetails(response));
+  });
 
   return (
     <div>
@@ -18,7 +71,7 @@ const LinkInvoice = ({ backToList }) => {
         />
       ) : (
         <div className="purchase-list">
-          <h2>Draw credit from CN-0034</h2>
+          <h2>Draw credit from {creditNoteData?.creditNoteId}</h2>
           <div className="link-invoice">
             <button onClick={backToList} className="goBack-btn ms-0">
               <span>
@@ -28,7 +81,7 @@ const LinkInvoice = ({ backToList }) => {
             </button>
             <div className="d-flex justify-content-end me-3">
               <p>
-                Remaining credit:<span className="fw-bold">50</span>
+                Total credit: <span className="fw-bold">{creditBalance}</span>
               </p>
             </div>
             <div className="table-container">
@@ -45,39 +98,46 @@ const LinkInvoice = ({ backToList }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>IN-43259595</td>
-                    <td>24/4/2024</td>
-                    <td>23,454</td>
-                    <td className="text-center ">
-                      <input
-                        type="text"
-                        className="mx-auto text-end d-inline-block"
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>IN-43259595</td>
-                    <td>24/4/2024</td>
-                    <td>23,454</td>
-                    <td className="text-center">
-                      <input
-                        type="text"
-                        className="mx-auto text-end d-inline-block"
-                      />
-                    </td>
-                  </tr>
+                  {invoiceDetails?.paymentStatus !== "Paid" &&
+                  Array.isArray(invoiceDetails?.salesList) &&
+                  invoiceDetails.salesList.length > 0 ? (
+                    invoiceDetails.salesList.map((item, index) => (
+                      <tr key={index}>
+                        <td>{item.invoiceId}</td>
+                        <td>{item.invoiceDate}</td>
+                        <td>{item.totalAmount}</td>
+                        <td className="text-center">
+                          <input
+                            type="text"
+                            className="mx-auto text-end d-inline-block"
+                            value={amounts?.[index] || ""}
+                            onChange={(e) =>
+                              handleAmountChange(index, e.target.value)
+                            }
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="text-center">
+                        No Invoice Available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </Table>
             </div>
             <div className="sales-invoice-bottom-content mb-5 me-0 me-3 d-flex justify-content-end mb-3">
               <div className="sales-invoice-total col-md-4 gap-2">
                 <p className="">Amount to credit</p>
-                <p className="col-md-2 fw-bold ms-2">0.00</p>
+                <p className="col-md-2 fw-bold ms-2">
+                  {amountToCreditTotal.toFixed(2)}
+                </p>
               </div>
               <div className="remaining-credit col-md-4 gap-2">
                 <p className="">Remaining credit</p>
-                <p className="col-md-2 fw-bold">50</p>
+                <p className="col-md-2 fw-bold">{remainingCredit.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -103,6 +163,7 @@ const LinkInvoice = ({ backToList }) => {
           </div>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

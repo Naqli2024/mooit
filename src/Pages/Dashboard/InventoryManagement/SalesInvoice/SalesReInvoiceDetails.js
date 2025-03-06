@@ -145,19 +145,19 @@ const SalesReInvoiceDetails = ({ backToList }) => {
             </div>
             <div className="sales-order-date mt-5 me-5">
               <div className="d-flex mb-3">
-                <p className="col-7">SO#</p>
+                <p className="col-5">SO#</p>
                 <p className="col-2">:</p>
-                <p className="col-2">34634465</p>
+                <p className="col-6">34634465</p>
               </div>
               <div className="d-flex mb-3">
-                <p className="col-7">Invoice date</p>
+                <p className="col-5">Invoice date</p>
                 <p className="col-2">:</p>
-                <p className="col-2">23/04/2024</p>
+                <p className="col-6">23-04-2024</p>
               </div>
               <div className="d-flex">
-                <p className="col-7">Due date</p>
+                <p className="col-5">Due date</p>
                 <p className="col-2">:</p>
-                <p className="col-2">23/04/2024</p>
+                <p className="col-6">23-04-2024</p>
               </div>
             </div>
           </div>

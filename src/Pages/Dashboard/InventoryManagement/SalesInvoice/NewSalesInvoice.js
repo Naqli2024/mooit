@@ -20,6 +20,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { getSaleOrderBySaleOrderId } from "../../../../Redux/salesOrder/getSaleOrderByIdSlice";
 import { filterCustomerAndSalesId } from "../../../../Helper/filterCustomerAndSalesId";
 import Loader from "../../../../Helper/Loader";
+import { useLocation } from "react-router-dom";
 
 const NewSalesInvoice = ({ backToList }) => {
   const [openSalesInvoiceDetails, setOpenSalesInvoiceDetails] = useState(false);
@@ -29,13 +30,18 @@ const NewSalesInvoice = ({ backToList }) => {
   const { customers } = useSelector((state) => state.customers);
   const { allSaleOrder } = useSelector((state) => state.getAllSalesorder);
   // Get data from Redux store
-  const { loading, salesInvoiceData } = useSelector((state) => state.salesInvoice);
+  const { loading, salesInvoiceData } = useSelector(
+    (state) => state.salesInvoice
+  );
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [selectSaleOrderId, setSelectSaleOrderId] = useState([]);
   const [selectedSalesOrder, setSelectedSalesOrder] = useState(null);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [salesInvoice, setSalesInvoice] = useState();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const creditNoteData = location.state?.reInvoice;
+  console.log(creditNoteData);
 
   const {
     register,
@@ -111,9 +117,11 @@ const NewSalesInvoice = ({ backToList }) => {
   // Fetch Invoice ID and Order No on component mount
   useEffect(() => {
     dispatch(getAllSalesOrder());
-    dispatch(generateInvoiceId());
-    dispatch(generateOrderNo());
-  }, [dispatch]);
+    if (!creditNoteData || Object.keys(creditNoteData).length ===0) {
+      dispatch(generateInvoiceId());
+      dispatch(generateOrderNo());
+    }
+  }, [dispatch, creditNoteData]);
 
   // Update formData when customer or salesOrder changes
   useEffect(() => {
@@ -148,7 +156,7 @@ const NewSalesInvoice = ({ backToList }) => {
 
   // Update formData when invoiceId or orderNo changes
   useEffect(() => {
-    if (salesInvoiceData) {
+    if (salesInvoiceData && !creditNoteData) {
       setFormData((prevFormData) => ({
         ...prevFormData,
         invoiceId: salesInvoiceData.invoiceId || prevFormData.invoiceId,
@@ -157,43 +165,47 @@ const NewSalesInvoice = ({ backToList }) => {
     }
   }, [salesInvoiceData]);
 
-// useEffect: Set item details and compute totalAmount based on VAT %
-useEffect(() => {
-  if (saleOrderData) {
-    setFormData((prevFormData) => {
-      const vatAmount = (saleOrderData.total * prevFormData.VAT) / 100;
+  // useEffect: Set item details and compute totalAmount based on VAT %
+  useEffect(() => {
+    if (saleOrderData) {
+      setFormData((prevFormData) => {
+        const vatAmount = (saleOrderData.total * prevFormData.VAT) / 100;
+        return {
+          ...prevFormData,
+          itemDetails: saleOrderData?.itemDetails || [],
+          subTotal: saleOrderData?.subTotal || 0,
+          shippingCharges: saleOrderData?.shipmentCharges || 0,
+          totalAmount:
+            (saleOrderData.subTotal || 0) +
+            (saleOrderData.shipmentCharges || 0) +
+            vatAmount,
+        };
+      });
+    }
+  }, [saleOrderData]);
+
+  // VAT input onChange: Recalculates totalAmount
+  const handleVATChange = (e) => {
+    const vatValue = parseFloat(e.target.value) || 0;
+    setFormData((prev) => {
+      const vatAmount = (prev.subTotal * vatValue) / 100;
       return {
-        ...prevFormData,
-        itemDetails: saleOrderData?.itemDetails || [],
-        subTotal: saleOrderData?.subTotal || 0,
-        shippingCharges: saleOrderData?.shipmentCharges || 0,
-        totalAmount: (saleOrderData.subTotal || 0) + 
-        (saleOrderData.shipmentCharges || 0) + 
-        vatAmount,
+        ...prev,
+        VAT: vatValue,
+        totalAmount: prev.subTotal + prev.shippingCharges + vatAmount,
       };
     });
-  }
-}, [saleOrderData]);
-
-// VAT input onChange: Recalculates totalAmount
-const handleVATChange = (e) => {
-  const vatValue = parseFloat(e.target.value) || 0; 
-  setFormData((prev) => {
-    const vatAmount = (prev.subTotal * vatValue) / 100; 
-    return {
-      ...prev,
-      VAT: vatValue,
-      totalAmount: prev.subTotal + prev.shippingCharges + vatAmount,
-    };
-  });
-};
+  };
 
   return (
     <div>
       {loading && <Loader />}
       {openSalesInvoiceDetails ? (
         <SalesInvoiceDetails
-          backToList={() => {setOpenSalesInvoiceDetails(false); dispatch(getAllInvoices)}}
+          backToList={() => {
+            setOpenSalesInvoiceDetails(false);
+            dispatch(getAllInvoices);
+          }}
           salesInvoice={salesInvoice}
         />
       ) : (

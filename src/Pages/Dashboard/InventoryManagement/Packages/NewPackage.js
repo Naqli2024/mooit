@@ -256,6 +256,27 @@ const NewPackage = ({ backToList }) => {
                   </Form.Group>
                 </div>
               </div>
+              <div className="new-package-name-sales mb-4">
+              <div className="col-md-4 mt-4">
+                <Form.Group>
+                  <div className="d-flex align-items-center">
+                    <Form.Label className="custom-label mb-0">
+                      Movement type
+                    </Form.Label>
+                  </div>
+                  <InputGroup className="mt-2">
+                    <Form.Select
+                      className="custom-textfield"
+                    >
+                      <option value="">Select Movement type</option>
+                      <option value="warehouse1">Internal Permission Movement</option>
+                      <option value="warehouse1">Outside Shipped</option>
+                      <option value="warehouse2">Counter Dispatch</option>
+                    </Form.Select>
+                  </InputGroup>
+                </Form.Group>
+              </div>
+            </div>
               <div className="row invoice-table mt-5">
                 <Table className="table-content sales-invoice-table delivery-tableHeader">
                   <thead>

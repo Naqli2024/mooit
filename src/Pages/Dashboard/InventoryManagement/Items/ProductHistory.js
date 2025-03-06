@@ -57,7 +57,7 @@ const ProductHistory = () => {
       </div>
       <div className="history-table">
         {selectedTable === "purchase" && (
-          <Table bordered className="custom-table">
+          <Table>
             <thead className="history-table-head">
               <tr>
                 <th>Date</th>
@@ -79,7 +79,7 @@ const ProductHistory = () => {
           </Table>
         )}
         {selectedTable === "sales" && (
-          <Table bordered className="custom-table">
+          <Table>
             <thead className="history-table-head">
               <tr>
                 <th>Date</th>

@@ -29,6 +29,7 @@ import categorySlice from "./category/categorySlice";
 import customerSlice from "./customer/customerSlice";
 import salesReturnSlice from "./salesReturn/salesReturnSlice";
 import salesInvoiceSlice from "./salesInvoiceSlice/salesInvoice";
+import creditNoteSlice from "./creditNote/creditNoteSlice";
 
 const store = configureStore({
   reducer: {
@@ -61,7 +62,8 @@ const store = configureStore({
     category: categorySlice,
     customers: customerSlice,
     salesReturn: salesReturnSlice,
-    salesInvoice: salesInvoiceSlice
+    salesInvoice: salesInvoiceSlice,
+    creditNote: creditNoteSlice
   },
 });
 

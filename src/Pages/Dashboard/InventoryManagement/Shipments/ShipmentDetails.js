@@ -348,11 +348,10 @@ const ShipmentDetails = ({ backToList, newShipmentData }) => {
         sx={{
           "& .MuiDialog-paper": {
             width: "400px",
-            padding: "10px",
           },
         }}
       >
-        <DialogTitle>
+        <DialogTitle className="purchase-list" sx={{padding:"0"}}>
           <h2>Set as Delivered</h2>
         </DialogTitle>
         <DialogContent>

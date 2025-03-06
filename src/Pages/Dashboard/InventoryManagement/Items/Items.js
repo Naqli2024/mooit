@@ -127,7 +127,7 @@ const Items = () => {
               <div className="col-md-4">
                 <InputGroup className="search-input">
                   <Form.Control
-                    className="search-icon-btn"
+                    className="text-field search-icon-btn"
                     placeholder="Search here"
                     aria-label="Search"
                     value={querySearch}

@@ -75,9 +75,9 @@ const SalesOrder = () => {
             <div>
               <h2>Sales Order</h2>
               <div className="package-text-field">
-                <div className="col-md-4">
-                  <div className="sales-search-field">
-                    <InputGroup className="mb-3">
+                <div className="d-md-flex">
+                  <div className="shipment-search-field">
+                    <InputGroup>
                       <Form.Control
                         className="text-field"
                         placeholder="Search sales orderId"

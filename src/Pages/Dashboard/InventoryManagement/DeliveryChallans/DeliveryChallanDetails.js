@@ -180,19 +180,19 @@ const DeliveryChallanDetails = ({ backToList, challan }) => {
               </tbody>
             </Table>
           </div>
-          <div className="sales-invoice-bottom-content mb-3">
-            <div className="sales-invoice-total col-4">
-              <div className="">Sub total</div>
-              <div className="col-2">{saleOrderData?.subTotal}</div>
+          <div className="credit-note-bottom-content">
+            <div className="open-inventory mb-3">
+              <div className="col-md-8">Sub total</div>
+              <div className="col-md-3">{saleOrderData?.subTotal}</div>
             </div>
-            <div className="sales-invoice-total col-4">
-              <div className="">Shipping charges</div>
-              <div className="col-2">{saleOrderData?.shipmentCharges}</div>
+            <div className="open-inventory mb-3">
+              <div className="col-md-8">Shipping charges</div>
+              <div className="col-md-3">{saleOrderData?.shipmentCharges}</div>
             </div>
-            <hr className="amount-divider" />
-            <div className="sales-invoice-total col-4">
-              <div className="fw-bold">Total amount</div>
-              <div className="fw-bold col-2">{saleOrderData?.total}</div>
+            <hr/>
+            <div className="open-inventory mb-3">
+              <div className="col-md-8 fw-bold">Total amount</div>
+              <div className="col-md-3 fw-bold">{saleOrderData?.total}</div>
             </div>
           </div>
         </div>

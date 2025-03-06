@@ -74,8 +74,8 @@ const SalesReturnInvoice = ({ backToList, returnData }) => {
           Edit
         </div>
         <div className="divider"></div>
-        <div className="action-btn print-btn">
-          <PrintOutlinedIcon className="action-icon" onClick={reactToPrintFn}/>
+        <div className="action-btn print-btn" onClick={reactToPrintFn}>
+          <PrintOutlinedIcon className="action-icon" />
           Print
         </div>
         <div className="divider"></div>

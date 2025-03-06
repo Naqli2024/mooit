@@ -1,5 +1,6 @@
 import { FaTachometerAlt, FaShoppingCart, FaBoxes, FaWarehouse, FaFileInvoice, FaUsers } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
+
 export const dashboardItems = [
   { item: "Dashboard", path: "dashboard", icon: <MdDashboard size={20} /> },
   {
@@ -31,13 +32,5 @@ export const dashboardItems = [
     ],
   },
   { item: "Warehouse management", path: "warehouse-management", icon: <FaWarehouse /> },
-  { item: "Invoice",
-    path: "invoice",
-    icon: <FaFileInvoice />,
-    submenus: [
-      {item: "Sales invoice", path: "sales-invoice"},
-      {item: "Purchase invoice", path: "purchase-invoice"}
-    ]
-  },
   { item: "User", path: "user", icon: <FaUsers /> },
 ];

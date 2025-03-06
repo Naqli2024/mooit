@@ -123,8 +123,8 @@ const PurchaseList = () => {
       ) : (
         <>
           <h2>Purchase</h2>
-          <div className="row purchase-textfield">
-            <div className="col-md-3">
+          <div className="row purchase-textfield col-12">
+            <div className="col-md-3 text-field">
               <InputGroup className="mb-3">
                 <Form.Control
                   className="text-field"
@@ -153,7 +153,7 @@ const PurchaseList = () => {
                 }}
               />
             </div>
-            <div className="col-md-3 text-field">
+            <div className="col-md-3 mb-3 text-field">
               <Select
                 options={brandOptions}
                 value={brandOption}

@@ -73,7 +73,7 @@ const Sales = () => {
                 />
               </InputGroup>
             </div>
-            <div className="col-md-4 ms-3 d-flex align-items-center">
+            <div className="col-md-4 ms-md-3 d-flex align-items-center">
               <FormControl sx={{ minWidth: 120 }}>
                 <Select
                   value={filter}

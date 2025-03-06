@@ -11,12 +11,12 @@ const handleApiError = (error) => {
   );
 };
 
-export const createSalesReturn = createAsyncThunk(
-  "createSalesReturn",
+export const createCreditNote = createAsyncThunk(
+  "createCreditNote",
   async (payload, { rejectWithValue }) => {
     try {
       const { data } = await axios.post(
-        `${baseUrl}/create-salesReturn`,
+        `${baseUrl}/create-creditNote`,
         payload
       );
       return data;
@@ -26,23 +26,11 @@ export const createSalesReturn = createAsyncThunk(
   }
 );
 
-export const generateSalesReturnNumber = createAsyncThunk(
-  "generateSalesReturnNumber",
+export const generateCreditNoteId = createAsyncThunk(
+  "generateCreditNoteId",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(`${baseUrl}/generateSalesReturnNumber`);
-      return data;
-    } catch (error) {
-      return rejectWithValue(handleApiError(error));
-    }
-  }
-);
-
-export const getAllSalesReturn = createAsyncThunk(
-  "getAllSalesReturn",
-  async (_, { rejectWithValue }) => {
-    try {
-      const { data } = await axios.get(`${baseUrl}/getAllSalesReturn`);
+      const { data } = await axios.get(`${baseUrl}/generateCreditNoteId`);
       return data.data;
     } catch (error) {
       return rejectWithValue(handleApiError(error));
@@ -50,12 +38,24 @@ export const getAllSalesReturn = createAsyncThunk(
   }
 );
 
-export const deleteSalesReturnBySalesReturnId = createAsyncThunk(
-  "deleteSalesReturnBySalesReturnId",
+export const getAllCreditNotes = createAsyncThunk(
+  "getAllCreditNotes",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`${baseUrl}/getAllCreditNotes`);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  }
+);
+
+export const deleteCreditNoteByCreditNoteId = createAsyncThunk(
+  "deleteCreditNoteByCreditNoteId",
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `${baseUrl}/deleteSalesReturnBySalesReturnId/${id}`
+        `${baseUrl}/deleteCreditNoteByCreditNoteId/${id}`
       );
       return response.data;
     } catch (error) {
@@ -64,12 +64,24 @@ export const deleteSalesReturnBySalesReturnId = createAsyncThunk(
   }
 );
 
-export const getSalesReturnBySalesOrderId = createAsyncThunk(
-  "getSalesReturnBySalesOrderId",
+export const updateCreditNote = createAsyncThunk(
+  "updateCreditNote",
+  async ({creditNoteId, payload}, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.put(`${baseUrl}/updateCreditNote/${creditNoteId}`, payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  }
+);
+
+export const getCreditNoteDetailsByCreditNoteId = createAsyncThunk(
+  "getCreditNoteDetailsByCreditNoteId",
   async (id, { rejectWithValue }) => {
     try {
-      const {data} = await axios.get(
-        `${baseUrl}/getSalesReturnBySalesOrderId/${id}`
+      const { data } = await axios.get(
+        `http://localhost:4000/api/getCreditNoteDetailsByCreditNoteId/${id}`
       );
       return data.data;
     } catch (error) {
@@ -78,11 +90,11 @@ export const getSalesReturnBySalesOrderId = createAsyncThunk(
   }
 );
 
-const salesReturnSlice = createSlice({
-  name: "salesReturn",
+const creditNoteSlice = createSlice({
+  name: "creditNoteSlice",
   initialState: {
     loading: false,
-    salesReturnData: null,
+    creditNote: null,
     error: false,
   },
   reducers: {},
@@ -92,20 +104,21 @@ const salesReturnSlice = createSlice({
     };
     const handleFulFilled = (state, action) => {
       state.loading = false;
-      state.salesReturnData = action.payload;
+      state.creditNote = action.payload;
       state.error = null;
     };
     const handleRejected = (state, action) => {
       state.loading = false;
-      state.salesReturnData = state.customers || {};
+      state.creditNote = {};
       state.error = action.payload;
     };
     [
-      createSalesReturn,
-      generateSalesReturnNumber,
-      getAllSalesReturn,
-      getSalesReturnBySalesOrderId,
-      deleteSalesReturnBySalesReturnId,
+        createCreditNote,
+        generateCreditNoteId,
+        getAllCreditNotes,
+        deleteCreditNoteByCreditNoteId,
+        updateCreditNote,
+        getCreditNoteDetailsByCreditNoteId
     ].forEach((action) => {
       builder
         .addCase(action.pending, handlePending)
@@ -115,4 +128,4 @@ const salesReturnSlice = createSlice({
   },
 });
 
-export default salesReturnSlice.reducer;
+export default creditNoteSlice.reducer;

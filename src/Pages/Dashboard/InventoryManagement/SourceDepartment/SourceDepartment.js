@@ -5,6 +5,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import NewDepartment from "./NewDepartment";
 import { InputGroup, Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { FaSearch } from "react-icons/fa";
 import {
   deleteSourceDepartmentByDepartmentCode,
   getAllSourceDepartment,
@@ -64,7 +65,7 @@ const SourceDepartment = () => {
       ) : (
         <div className="purchase-list">
           <h2>Source department</h2>
-          <div className="package-text-field">
+          <div className="sales-return search-btn">
             <div className="col-md-4">
               <InputGroup className="search-input">
                 <Form.Control
@@ -74,6 +75,10 @@ const SourceDepartment = () => {
                   value={querySearch}
                   onChange={(e) => setQuerySearch(e.target.value)}
                 />
+                <div className="divider"></div>
+                <Button variant="outline-secondary" className="search-icon-btn">
+                  <FaSearch />
+                </Button>
               </InputGroup>
             </div>
             <button
@@ -84,7 +89,7 @@ const SourceDepartment = () => {
               Create new
             </button>
           </div>
-          <div className="table-container mx-5 mt-5">
+          <div className="table-container mx-4 mt-5">
             <Table bordered className="custom-table sales-in-outbound-table">
               <thead>
                 <tr>

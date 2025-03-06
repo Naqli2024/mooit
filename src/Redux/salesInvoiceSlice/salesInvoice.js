@@ -88,6 +88,34 @@ export const generateOrderNo = createAsyncThunk(
   }
 );
 
+export const getInvoiceDetails = createAsyncThunk(
+  "getInvoiceDetails",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:4000/api/getInvoiceDetails/${id}`
+      );
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  }
+);
+
+export const updateInvoiceWithCredits = createAsyncThunk(
+  'updateInvoiceWithCredits',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.put(
+        `http://localhost:4000/api/updateInvoiceWithCredits`, payload
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  }
+)
+
 const salesInvoiceSlice = createSlice({
   name: "salesInvoice",
   initialState: {
@@ -117,6 +145,8 @@ const salesInvoiceSlice = createSlice({
       deleteSalesInvoiceByInvoiceId,
       editSalesInvoice,
       generateOrderNo,
+      getInvoiceDetails,
+      updateInvoiceWithCredits
     ].forEach((action) => {
       builder
         .addCase(action.pending, handlePending)

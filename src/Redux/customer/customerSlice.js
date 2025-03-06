@@ -74,6 +74,18 @@ export const deleteCustomerById = createAsyncThunk(
   }
 );
 
+export const getCustomerDetailsByName = createAsyncThunk(
+  'getCustomerDetailsByName',
+  async(payload, {rejectWithValue}) => {
+    try {
+      const {data} = await axios.post(`${baseUrl}/getCustomerDetailsByName`, payload);
+      return data.data;
+    }catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  }
+)
+
 const customerSlice = createSlice({
   name: "customer",
   initialState: {
@@ -102,6 +114,7 @@ const customerSlice = createSlice({
       getCustomerDetailsById,
       updateOrCreateCustomer,
       deleteCustomerById,
+      getCustomerDetailsByName
     ].forEach((action) => {
       builder
         .addCase(action.pending, handlePending)

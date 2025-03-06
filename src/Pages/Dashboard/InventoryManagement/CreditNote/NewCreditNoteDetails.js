@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import { Menu, MenuItem, IconButton, Breadcrumbs } from "@mui/material";
@@ -24,8 +24,22 @@ import { refundDialogSchema } from "../../../../Helper/validation";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SalesReInvoice from "./SalesReInvoice";
+import { useDispatch, useSelector } from "react-redux";
+import { getInvoiceDetails } from "../../../../Redux/salesInvoiceSlice/salesInvoice";
+import {
+  deleteCreditNoteByCreditNoteId,
+  getCreditNoteDetailsByCreditNoteId,
+  updateCreditNote,
+} from "../../../../Redux/creditNote/creditNoteSlice";
+import { toast, ToastContainer } from "react-toastify";
+import { useReactToPrint } from "react-to-print";
+import { useNavigate } from "react-router-dom";
 
-const NewCreditNoteDetails = ({ backToList }) => {
+const NewCreditNoteDetails = ({
+  backToList,
+  creditNote,
+  setShowCreditDetails,
+}) => {
   const [openMoreIcon, setOpenMoreIcon] = React.useState(null);
   const [openRefunds, setOpenRefunds] = React.useState(null);
   const openIcon = Boolean(openMoreIcon);
@@ -37,6 +51,16 @@ const NewCreditNoteDetails = ({ backToList }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [isFutureCredit, setIsFutureCredit] = useState(false);
   const [openSalesReInvoice, setOpenSalesReInvoice] = useState(false);
+  const { salesInvoiceData } = useSelector((state) => state.salesInvoice);
+  const dispatch = useDispatch();
+  const componentRef = React.useRef(null);
+  const [creditNoteData, setCreditNoteData] = useState();
+  const [refundStatus, setRefundStatus] = useState({
+    refundDate: "",
+    paymentMode: "",
+    amount: 0,
+  });
+  const navigate = useNavigate();
 
   const {
     register,
@@ -49,10 +73,44 @@ const NewCreditNoteDetails = ({ backToList }) => {
   const handleDialogSubmit = async () => {
     const isValid = await trigger(["refundDate", "paymentMode", "amount"]);
     if (!isValid) return;
-    setOpenDialog(false);
-    setIsFutureCredit(false);
-    setOpenLinkInvoiceDetails(true);
+    dispatch(
+      updateCreditNote({
+        creditNoteId: creditNote?.creditNoteId,
+        payload: {
+          refundStatus: "Direct refund",
+          refund: refundStatus,
+        },
+      })
+    )
+      .unwrap()
+      .then((response) => {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          closeButton: false,
+        });
+        setCreditNoteData(response.data);
+        setOpenDialog(false);
+        backToList();
+      })
+      .catch((error) => toast.error(error));
   };
+
+  const handleAfterPrint = React.useCallback(() => {
+    console.log("`onAfterPrint` called");
+  }, []);
+
+  const handleBeforePrint = React.useCallback(() => {
+    console.log("`onBeforePrint` called");
+    return Promise.resolve();
+  }, []);
+
+  const reactToPrintFn = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: "Package Details",
+    onAfterPrint: handleAfterPrint,
+    onBeforePrint: handleBeforePrint,
+  });
 
   const handleClick = (event) => {
     setOpenMoreIcon(event.currentTarget);
@@ -72,45 +130,164 @@ const NewCreditNoteDetails = ({ backToList }) => {
   };
 
   const handleFutureCredit = () => {
-    handleRefundCloseMenu();
-    setIsFutureCredit(true);
-    setOpenLinkInvoiceDetails(true);
+    dispatch(
+      updateCreditNote({
+        creditNoteId: creditNote?.creditNoteId,
+        payload: {
+          creditAmount: creditNote?.refundAmount,
+          refundStatus: "On-Hold",
+          status: "On-Hold",
+        },
+      })
+    )
+      .unwrap()
+      .then((response) => {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 2000,
+          closeButton: false,
+        });
+        setTimeout(() => {
+          handleRefundCloseMenu();
+          backToList();
+          setShowCreditDetails(false)
+        }, 2000);
+      })
+      .catch((error) => toast.error(error));
   };
 
   const handleLinkToInvoice = () => {
-    handleRefundCloseMenu();
-    setOpenLinkInvoice(true);
+    dispatch(
+      updateCreditNote({
+        creditNoteId: creditNote?.creditNoteId,
+        payload: {
+          creditAmount: creditNote?.refundAmount,
+          refundStatus: "Link to invoice",
+          status: "Closed",
+        },
+      })
+    )
+      .unwrap()
+      .then((response) => {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 2000,
+          closeButton: false,
+        });
+        setCreditNoteData(response.data);
+        setTimeout(() => {
+          handleRefundCloseMenu();
+          setOpenLinkInvoice(true);
+        }, 2000);
+      })
+      .catch((error) => toast.error(error))
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteCreditNoteByCreditNoteId(creditNote?.creditNoteId))
+      .then((response) => {
+        toast.success(response.payload.message, {
+          position: "top-center",
+          autoClose: 2000,
+          closeButton: false,
+        });
+        // Close the options menu
+        setOpenMoreIcon(null);
+        setTimeout(() => {
+          backToList();
+        }, 2000);
+      })
+      .catch((error) => {
+        toast.error(error.message || "Something went wrong!");
+        setOpenMoreIcon(null);
+      });
   };
 
   const handleStatusChange = (event) => {
     const selectedValue = event.target.value;
-    if (selectedValue === "2") {
-      setStatus("Approved");
-    } else if (selectedValue === "3") {
-      setStatus("Rejected");
-    } else {
-      setStatus("Draft");
-    }
+    const updatedStatus = selectedValue === "Approved" ? "Approved" : "Reject";
+
+    dispatch(
+      updateCreditNote({
+        creditNoteId: creditNote?.creditNoteId,
+        payload: { status: updatedStatus },
+      })
+    )
+      .unwrap()
+      .then((response) => {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          closeButton: false,
+        });
+
+        // Update local state immediately
+        setStatus(updatedStatus);
+
+        // Optionally refetch data after updating the store
+        dispatch(getCreditNoteDetailsByCreditNoteId(creditNote?.creditNoteId));
+
+        if (updatedStatus === "Reject") {
+          setTimeout(() => backToList(), 1000);
+        }
+      })
+      .catch((error) => toast.error(error));
   };
 
   const handleOpenCreateInvoice = () => {
-    setOpenSalesReInvoice(true);
-  }
+    navigate('/admin/sales-invoice', {state: {openNewSalesInvoice: true, reInvoice: creditNote}})
+  };
+
+  const handleCreditNoteComplete = () => {
+    dispatch(
+      updateCreditNote({
+        creditNoteId: creditNote?.creditNoteId,
+        payload: {
+          status: "Closed",
+        },
+      })
+    )
+      .unwrap()
+      .then((response) => {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          closeButton: false,
+        });
+        setTimeout(() => setStatus("Closed"), 1000);
+      })
+      .catch((error) => toast.error(error));
+  };
+
+  useEffect(() => {
+    if (creditNote) {
+      dispatch(getInvoiceDetails(creditNote?.salesOrderId));
+      setStatus(creditNote?.status);
+    }
+  }, [creditNote]);
 
   return (
     <div>
       {openLinkInvoice ? (
-        <LinkInvoice backToList={() => setOpenLinkInvoice(false)} />
+        <LinkInvoice backToList={() => setOpenLinkInvoice(false)} creditNoteData={creditNoteData}/>
       ) : openLinkInvoiceDetails ? (
         <LinkInvoiceDetails
           isFutureCredit={isFutureCredit}
           backToList={() => setOpenLinkInvoiceDetails(false)}
+          creditNoteData={creditNoteData}
         />
-      ) : openSalesReInvoice ? (<SalesReInvoice backToList={()=>setOpenSalesReInvoice(false)}/>)
-       : (
+      ) : openSalesReInvoice ? (
+        <SalesReInvoice backToList={() => setOpenSalesReInvoice(false)} />
+      ) : (
         <div className="purchase-list">
-          <h2>CN-00001</h2>
-          <button onClick={backToList} className="goBack-btn">
+          <h2>{creditNote?.creditNoteId}</h2>
+          <button
+            onClick={() => {
+              backToList();
+              setShowCreditDetails(false);
+            }}
+            className="goBack-btn"
+          >
             <span>
               <ArrowBackIosIcon />
             </span>
@@ -122,14 +299,27 @@ const NewCreditNoteDetails = ({ backToList }) => {
               Edit
             </div>
             <div className="divider"></div>
-            <div className="action-btn print-btn">
+            <div className="action-btn print-btn" onClick={reactToPrintFn}>
               <PrintOutlinedIcon className="action-icon" />
               Print
             </div>
             <div className="divider"></div>
-            {!isConfirmed && (
+            {creditNote?.refundStatus &&
+              creditNote.status != "Closed" &&
+              creditNote.status != "On-Hold" && (
+                <>
+                  <div
+                    className="ms-2 me-2 cursor-pointer"
+                    onClick={() => handleCreditNoteComplete()}
+                  >
+                    Mark as completed
+                  </div>
+                  <div className="divider"></div>
+                </>
+              )}
+            {!creditNote?.refundStatus && (
               <>
-                {status === "Approved" ? (
+                {creditNote?.status === "Approved" && status === "Approved" ? (
                   <React.Fragment>
                     <Menu
                       anchorEl={openRefunds}
@@ -171,14 +361,19 @@ const NewCreditNoteDetails = ({ backToList }) => {
                     <option value="1" disabled>
                       Status
                     </option>
-                    <option value="2">Approve</option>
-                    <option value="3">Reject</option>
+                    <option value="Approved">Approve</option>
+                    <option value="Reject">Reject</option>
                   </Form.Select>
                 )}
                 <div className="divider"></div>
               </>
             )}
-            <div className="ms-2 me-2 cursor-pointer" onClick={handleOpenCreateInvoice}>Create invoice</div>
+            <div
+              className="ms-2 me-2 cursor-pointer"
+              onClick={handleOpenCreateInvoice}
+            >
+              Create invoice
+            </div>
             <div className="divider"></div>
             <React.Fragment>
               <Menu
@@ -189,9 +384,7 @@ const NewCreditNoteDetails = ({ backToList }) => {
               >
                 <MenuItem onClick={() => setOpenMoreIcon(null)}>Void</MenuItem>
                 <hr className="mt-0 mb-0" />
-                <MenuItem onClick={() => setOpenMoreIcon(null)}>
-                  Delete
-                </MenuItem>
+                <MenuItem onClick={handleDelete}>Delete</MenuItem>
               </Menu>
               <Breadcrumbs aria-label="breadcrumbs">
                 <IconButton
@@ -215,7 +408,7 @@ const NewCreditNoteDetails = ({ backToList }) => {
               }}
             >
               <DialogTitle className="purchase-list" sx={{ padding: 0 }}>
-                <h2>Direct Refund (CN-0001)</h2>
+                <h2>Direct Refund ({creditNote?.creditNoteId})</h2>
               </DialogTitle>
               <DialogContent>
                 <div className="mt-3 col-md-7">
@@ -236,6 +429,13 @@ const NewCreditNoteDetails = ({ backToList }) => {
                         name="packageReceipt"
                         type="date"
                         {...register("refundDate")}
+                        value={refundStatus.refundDate}
+                        onChange={(e) =>
+                          setRefundStatus({
+                            ...refundStatus,
+                            refundDate: e.target.value,
+                          })
+                        }
                       />
                     </InputGroup>
                   </Form.Group>
@@ -256,6 +456,13 @@ const NewCreditNoteDetails = ({ backToList }) => {
                         className="custom-textfield"
                         name="paymentMode"
                         {...register("paymentMode")}
+                        value={refundStatus.paymentMode}
+                        onChange={(e) =>
+                          setRefundStatus({
+                            ...refundStatus,
+                            paymentMode: e.target.value,
+                          })
+                        }
                       >
                         <option value="">Payment mode</option>
                         <option value="cash">Cash</option>
@@ -286,11 +493,20 @@ const NewCreditNoteDetails = ({ backToList }) => {
                           aria-describedby="inputGroup-sizing-default"
                           className="custom-textfield"
                           {...register("amount")}
+                          value={refundStatus.amount}
+                          onChange={(e) =>
+                            setRefundStatus({
+                              ...refundStatus,
+                              amount: Number(e.target.value) || 0,
+                            })
+                          }
                         />
                       </InputGroup>
                     </Form.Group>
                   </div>
-                  <div className="ms-3 mt-4">Refund amount:12,000</div>
+                  <div className="ms-3 mt-4">
+                    Refund amount: {creditNote?.refundAmount}
+                  </div>
                 </div>
               </DialogContent>
               <DialogActions
@@ -331,7 +547,7 @@ const NewCreditNoteDetails = ({ backToList }) => {
             </Dialog>
             <div className="divider"></div>
           </div>
-          <div className="sales-invoice-outer-card mt-5">
+          <div className="sales-invoice-outer-card mt-5" ref={componentRef}>
             <p
               className={
                 status === "Approved" ? "challan-approve" : "package-label"
@@ -346,7 +562,7 @@ const NewCreditNoteDetails = ({ backToList }) => {
                 </div>
                 <div className="sales-order-date me-5">
                   <p className="detail-heading mb-1">Credit notes</p>
-                  <p className="sales-id-text">#CN54675</p>
+                  <p className="sales-id-text">{creditNote?.creditNoteId}</p>
                 </div>
               </div>
               <div className="sales-invoice mt-5">
@@ -357,24 +573,24 @@ const NewCreditNoteDetails = ({ backToList }) => {
                 </div>
                 <div className="sales-order-date me-4">
                   <div className="d-flex mb-3">
-                    <p className="col-6">Date</p>
+                    <p className="col-5">Date</p>
                     <p className="col-2">:</p>
-                    <p className="col-5">23/04/2024</p>
+                    <p className="col-6">{creditNote?.creditNoteDate}</p>
                   </div>
                   <div className="d-flex mb-3">
-                    <p className="col-6">SO#</p>
+                    <p className="col-5">SO#</p>
                     <p className="col-2">:</p>
-                    <p className="col-5">82545532</p>
+                    <p className="col-6">{creditNote?.salesOrderId}</p>
                   </div>
                   <div className="d-flex mb-3">
-                    <p className="col-6">Invoice</p>
+                    <p className="col-5">Invoice</p>
                     <p className="col-2">:</p>
-                    <p className="col-5">#3654363</p>
+                    <p className="col-6">{salesInvoiceData?.invoiceId}</p>
                   </div>
                   <div className="d-flex mb-3">
-                    <p className="col-6">Invoice date</p>
+                    <p className="col-5">Invoice date</p>
                     <p className="col-2">:</p>
-                    <p className="col-5">23/04/2024</p>
+                    <p className="col-6">{salesInvoiceData?.invoiceDate}</p>
                   </div>
                 </div>
               </div>
@@ -393,16 +609,27 @@ const NewCreditNoteDetails = ({ backToList }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td className="item-name-text">xxxxxxx</td>
-                      <td>xxxxxxxxx</td>
-                      <td>40</td>
-                      <td>400</td>
-                      <td>17%</td>
-                      <td>5%</td>
-                      <td>5000</td>
-                    </tr>
+                    {creditNote?.itemDetails &&
+                    creditNote?.itemDetails.length > 0 ? (
+                      creditNote?.itemDetails.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td className="item-name-text">{item.itemName}</td>
+                          <td>{item.reason}</td>
+                          <td>{item.quantity}</td>
+                          <td>{item.price}</td>
+                          <td>{item.discount}</td>
+                          <td>{item.gst}%</td>
+                          <td>{item.total}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td>
+                          <td colSpan={8}>No items to display</td>
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
               </div>
@@ -410,22 +637,23 @@ const NewCreditNoteDetails = ({ backToList }) => {
             <div className="credit-note-notes mb-3">
               <div className="ms-4 mt-4">
                 <p className="fw-bold">Notes</p>
-                <p>xxxxxxxxxx</p>
+                <p>{creditNote?.notes}</p>
               </div>
               <div className="credit-note-bottom-content">
                 <div className="open-inventory ms-4">
                   <p className="fw-bold">Total amount</p>
-                  <p className="fw-bold col-2">5000</p>
+                  <p className="fw-bold col-2">{creditNote?.subTotal}</p>
                 </div>
                 <div className="open-inventory ms-4">
                   <p className="fw-bold">Refund amount</p>
-                  <p className="fw-bold col-2">500</p>
+                  <p className="fw-bold col-2">{creditNote?.refundAmount}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

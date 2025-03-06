@@ -84,10 +84,10 @@ const Packages = () => {
           <h2>Packages</h2>
           <div className="package-text-field">
             <div className="d-md-flex">
-              <div className="sales-search-field">
+              <div className="shipment-search-field">
                 <InputGroup>
                   <Form.Control
-                    placeholder="Search by package Id, Customer, Sales Id"
+                    placeholder="Search by Package Id, Customer, Sales Id"
                     aria-label="Default"
                     aria-describedby="inputGroup-sizing-default"
                     value={querySearch}

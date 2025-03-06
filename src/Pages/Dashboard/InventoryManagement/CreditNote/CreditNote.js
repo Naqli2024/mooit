@@ -1,20 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputGroup, Form, Button } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import Table from "react-bootstrap/Table";
 import NewCreditNote from "./NewCreditNote";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCreditNotes } from "../../../../Redux/creditNote/creditNoteSlice";
+import InvoiceCell from "./InvoiceCell";
+import Loader from "../../../../Helper/Loader";
+import NewCreditNoteDetails from "./NewCreditNoteDetails";
 
 const CreditNote = () => {
   const [openNewCreditNote, setOpenNewCreditNote] = useState(false);
+  const dispatch = useDispatch();
+  const { loading, creditNote } = useSelector((state) => state.creditNote);
+  const [querySearch, setQuerySearch] = useState("");
+  const [creditNoteData, setCreditNoteData] = useState();
+  const [showCreditDetails, setShowCreditDetails] = useState(false);
 
   const backToList = () => {
     setOpenNewCreditNote(false);
+    dispatch(getAllCreditNotes());
   };
+
+  const filteredData = Array.isArray(creditNote)
+    ? creditNote.filter((credit) =>
+        ["creditNoteId", "salesOrderId", "customerName"].some((key) =>
+          credit?.[key]?.toLowerCase().includes(querySearch.toLowerCase())
+        )
+      )
+    : [];
+
+  const handleCreditNote = (item) => {
+    setCreditNoteData(item);
+    setShowCreditDetails(true);
+  };
+
+  useEffect(() => {
+    dispatch(getAllCreditNotes());
+  }, [dispatch]);
 
   return (
     <div>
-      {openNewCreditNote ? (
-        <NewCreditNote backToList={()=>setOpenNewCreditNote(false)}/>
+      {loading && <Loader />}
+      {showCreditDetails ? (
+        <NewCreditNoteDetails backToList={backToList} creditNote={creditNoteData} setShowCreditDetails={setShowCreditDetails} />
+      ) : openNewCreditNote ? (
+        <NewCreditNote backToList={backToList} setShowCreditDetails={setShowCreditDetails} />
       ) : (
         <div className="purchase-list">
           <h2>Credit note</h2>
@@ -25,6 +56,8 @@ const CreditNote = () => {
                   className="text-field search-icon-btn"
                   placeholder="Search here"
                   aria-label="Search"
+                  value={querySearch}
+                  onChange={(e) => setQuerySearch(e.target.value)}
                 />
                 <div className="divider"></div>
                 <Button variant="outline-secondary" className="search-icon-btn">
@@ -35,7 +68,7 @@ const CreditNote = () => {
             <button
               type="button"
               className="btn create-new-btn"
-              onClick={()=>setOpenNewCreditNote(true)}
+              onClick={() => setOpenNewCreditNote(true)}
             >
               Create new
             </button>
@@ -50,21 +83,35 @@ const CreditNote = () => {
                   <th>Scenario</th>
                   <th>Status</th>
                   <th>Invoice</th>
-                  <th>Amount</th>
-                  <th>Balance amount</th>
+                  <th>Credit amount</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="purchase-id">CN-9595</td>
-                  <td>24/4/2024</td>
-                  <td>John doe</td>
-                  <td>Invoice mistake</td>
-                  <td>Draft</td>
-                  <td>IN-86754</td>
-                  <td>50</td>
-                  <td>0.00</td>
-                </tr>
+                {filteredData.length > 0 ? (
+                  filteredData.map((item, index) => (
+                    <tr key={item.creditNoteId || index}>
+                      <td
+                        className="purchase-id"
+                        onClick={() => handleCreditNote(item)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {item.creditNoteId}
+                      </td>
+                      <td>{item.creditNoteDate}</td>
+                      <td>{item.customerName}</td>
+                      <td></td>
+                      <td>{item.status}</td>
+                      <td>
+                        <InvoiceCell salesOrderId={item.salesOrderId} />
+                      </td>
+                      <td>{item.refundAmount}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7}>No credit note found</td>
+                  </tr>
+                )}
               </tbody>
             </Table>
           </div>

@@ -151,24 +151,24 @@ const NewSalesReturnDetails = ({ backToList, isChecked, returnData, openNewSales
                     <p>Refund Status - <span className="text-danger">Pending</span></p>
                   </div>
                   <div className="d-flex mb-3">
-                    <p className="col-7">Date</p>
+                    <p className="col-5">Date</p>
                     <p className="col-2">:</p>
-                    <p className="col-5">{returnData?.salesReturnDate}</p>
+                    <p className="col-6">{returnData?.salesReturnDate}</p>
                   </div>
                   <div className="d-flex mb-3">
-                    <p className="col-7">SO#</p>
+                    <p className="col-5">SO#</p>
                     <p className="col-2">:</p>
-                    <p className="col-3">{returnData?.salesOrderId}</p>
+                    <p className="col-6">{returnData?.salesOrderId}</p>
                   </div>
                   <div className="d-flex mb-3">
-                    <p className="col-7">Invoice</p>
+                    <p className="col-5">Invoice</p>
                     <p className="col-2">:</p>
-                    <p className="col-5">{returnData?.invoiceNumber}</p>
+                    <p className="col-6">{returnData?.invoiceNumber}</p>
                   </div>
                   <div className="d-flex">
-                    <p className="col-7">Invoice date</p>
+                    <p className="col-5">Invoice date</p>
                     <p className="col-2">:</p>
-                    <p className="col-2">{returnData?.invoiceDate}</p>
+                    <p className="col-6">{returnData?.invoiceDate}</p>
                   </div>
                 </div>
               </div>
