@@ -30,6 +30,11 @@ import customerSlice from "./customer/customerSlice";
 import salesReturnSlice from "./salesReturn/salesReturnSlice";
 import salesInvoiceSlice from "./salesInvoiceSlice/salesInvoice";
 import creditNoteSlice from "./creditNote/creditNoteSlice";
+import {employeeReducer} from "./employee/employeeSlice";
+import empJobRoles from "./employee/employeeJobRoles";
+import {generateEmployeeIdReducer} from "./employee/employeeSlice";
+import createAccountReducer from "./auth/authSlice";
+import passwordSlice from "./auth/updatePassword"
 
 const store = configureStore({
   reducer: {
@@ -63,7 +68,12 @@ const store = configureStore({
     customers: customerSlice,
     salesReturn: salesReturnSlice,
     salesInvoice: salesInvoiceSlice,
-    creditNote: creditNoteSlice
+    creditNote: creditNoteSlice,
+    employee: employeeReducer,
+    empJobRoles: empJobRoles,
+    generateEmployeeId: generateEmployeeIdReducer,
+    createAccount: createAccountReducer,
+    password: passwordSlice
   },
 });
 

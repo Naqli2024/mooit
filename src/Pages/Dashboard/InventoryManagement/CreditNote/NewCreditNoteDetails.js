@@ -39,6 +39,7 @@ const NewCreditNoteDetails = ({
   backToList,
   creditNote,
   setShowCreditDetails,
+  fromSalesInvoice,
 }) => {
   const [openMoreIcon, setOpenMoreIcon] = React.useState(null);
   const [openRefunds, setOpenRefunds] = React.useState(null);
@@ -150,7 +151,7 @@ const NewCreditNoteDetails = ({
         setTimeout(() => {
           handleRefundCloseMenu();
           backToList();
-          setShowCreditDetails(false)
+          setShowCreditDetails(false);
         }, 2000);
       })
       .catch((error) => toast.error(error));
@@ -180,7 +181,7 @@ const NewCreditNoteDetails = ({
           setOpenLinkInvoice(true);
         }, 2000);
       })
-      .catch((error) => toast.error(error))
+      .catch((error) => toast.error(error));
   };
 
   const handleDelete = () => {
@@ -235,7 +236,9 @@ const NewCreditNoteDetails = ({
   };
 
   const handleOpenCreateInvoice = () => {
-    navigate('/admin/sales-invoice', {state: {openNewSalesInvoice: true, reInvoice: creditNote}})
+    navigate("/admin/sales-invoice", {
+      state: { openNewSalesInvoice: true, reInvoice: creditNote },
+    });
   };
 
   const handleCreditNoteComplete = () => {
@@ -269,7 +272,10 @@ const NewCreditNoteDetails = ({
   return (
     <div>
       {openLinkInvoice ? (
-        <LinkInvoice backToList={() => setOpenLinkInvoice(false)} creditNoteData={creditNoteData}/>
+        <LinkInvoice
+          backToList={() => setOpenLinkInvoice(false)}
+          creditNoteData={creditNoteData}
+        />
       ) : openLinkInvoiceDetails ? (
         <LinkInvoiceDetails
           isFutureCredit={isFutureCredit}
@@ -280,273 +286,280 @@ const NewCreditNoteDetails = ({
         <SalesReInvoice backToList={() => setOpenSalesReInvoice(false)} />
       ) : (
         <div className="purchase-list">
-          <h2>{creditNote?.creditNoteId}</h2>
-          <button
-            onClick={() => {
-              backToList();
-              setShowCreditDetails(false);
-            }}
-            className="goBack-btn"
-          >
-            <span>
-              <ArrowBackIosIcon />
-            </span>
-            Back
-          </button>
-          <div className="edit-print-del-btn mb-3">
-            <div className="action-btn edit-btn">
-              <EditOutlinedIcon className="action-icon" />
-              Edit
-            </div>
-            <div className="divider"></div>
-            <div className="action-btn print-btn" onClick={reactToPrintFn}>
-              <PrintOutlinedIcon className="action-icon" />
-              Print
-            </div>
-            <div className="divider"></div>
-            {creditNote?.refundStatus &&
-              creditNote.status != "Closed" &&
-              creditNote.status != "On-Hold" && (
-                <>
-                  <div
-                    className="ms-2 me-2 cursor-pointer"
-                    onClick={() => handleCreditNoteComplete()}
-                  >
-                    Mark as completed
-                  </div>
-                  <div className="divider"></div>
-                </>
-              )}
-            {!creditNote?.refundStatus && (
-              <>
-                {creditNote?.status === "Approved" && status === "Approved" ? (
-                  <React.Fragment>
-                    <Menu
-                      anchorEl={openRefunds}
-                      open={openRefund}
-                      onClose={() => setOpenRefunds(null)}
-                      aria-labelledby="with-menu-demo-breadcrumbs"
-                    >
-                      <MenuItem onClick={handleOpenDialog}>
-                        Direct refund
-                      </MenuItem>
-                      <hr className="mt-0 mb-0" />
-                      <MenuItem onClick={handleFutureCredit}>
-                        Future credit
-                      </MenuItem>
-                      <hr className="mt-0 mb-0" />
-                      <MenuItem onClick={handleLinkToInvoice}>
-                        Link to invoice
-                      </MenuItem>
-                    </Menu>
-                    <Breadcrumbs aria-label="breadcrumbs">
-                      <div
-                        className="more-icon-btn ms-2 me-2 text-dark cursor-pointer"
-                        onClick={handleRefundClick}
-                      >
-                        Refunds
-                        <span className="ms-2">
-                          <KeyboardArrowDownIcon />
-                        </span>
-                      </div>
-                    </Breadcrumbs>
-                  </React.Fragment>
-                ) : (
-                  <Form.Select
-                    aria-label="Default select example"
-                    className="salesOrder-dropdown-style"
-                    defaultValue="1"
-                    onChange={handleStatusChange}
-                  >
-                    <option value="1" disabled>
-                      Status
-                    </option>
-                    <option value="Approved">Approve</option>
-                    <option value="Reject">Reject</option>
-                  </Form.Select>
-                )}
-                <div className="divider"></div>
-              </>
-            )}
-            <div
-              className="ms-2 me-2 cursor-pointer"
-              onClick={handleOpenCreateInvoice}
-            >
-              Create invoice
-            </div>
-            <div className="divider"></div>
-            <React.Fragment>
-              <Menu
-                anchorEl={openMoreIcon}
-                open={openIcon}
-                onClose={() => setOpenMoreIcon(null)}
-                aria-labelledby="with-menu-demo-breadcrumbs"
-              >
-                <MenuItem onClick={() => setOpenMoreIcon(null)}>Void</MenuItem>
-                <hr className="mt-0 mb-0" />
-                <MenuItem onClick={handleDelete}>Delete</MenuItem>
-              </Menu>
-              <Breadcrumbs aria-label="breadcrumbs">
-                <IconButton
-                  className="more-icon-btn"
-                  size="large"
-                  onClick={handleClick}
-                >
-                  <MoreVertOutlinedIcon />
-                </IconButton>
-              </Breadcrumbs>
-            </React.Fragment>
-            <Dialog
-              open={openDialog}
-              onClose={() => setOpenDialog(false)}
-              aria-describedby="alert-dialog-slide-description"
-              sx={{
-                "& .MuiDialog-paper": {
-                  width: "600px",
-                  maxWidth: "80vw",
-                },
-              }}
-            >
-              <DialogTitle className="purchase-list" sx={{ padding: 0 }}>
-                <h2>Direct Refund ({creditNote?.creditNoteId})</h2>
-              </DialogTitle>
-              <DialogContent>
-                <div className="mt-3 col-md-7">
-                  <Form.Group>
-                    <div className="d-flex align-items-center">
-                      <Form.Label className="custom-label mb-0">
-                        Refunded on
-                      </Form.Label>
-                      {errors.refundDate && (
-                        <ErrorOutlineOutlinedIcon className="text-danger ms-2" />
-                      )}
-                    </div>
-                    <InputGroup className="mt-1">
-                      <Form.Control
-                        aria-label="Default"
-                        aria-describedby="inputGroup-sizing-default"
-                        className="custom-textfield"
-                        name="packageReceipt"
-                        type="date"
-                        {...register("refundDate")}
-                        value={refundStatus.refundDate}
-                        onChange={(e) =>
-                          setRefundStatus({
-                            ...refundStatus,
-                            refundDate: e.target.value,
-                          })
-                        }
-                      />
-                    </InputGroup>
-                  </Form.Group>
-                </div>
-                <div className="mt-4 col-md-7">
-                  <Form.Group>
-                    <div className="d-flex align-items-center">
-                      <Form.Label className="custom-label mb-0">
-                        Payment mode
-                      </Form.Label>
-                      {errors.paymentMode && (
-                        <ErrorOutlineOutlinedIcon className="text-danger ms-2" />
-                      )}
-                    </div>
-                    <InputGroup className="mt-1">
-                      <Form.Select
-                        aria-label="Select"
-                        className="custom-textfield"
-                        name="paymentMode"
-                        {...register("paymentMode")}
-                        value={refundStatus.paymentMode}
-                        onChange={(e) =>
-                          setRefundStatus({
-                            ...refundStatus,
-                            paymentMode: e.target.value,
-                          })
-                        }
-                      >
-                        <option value="">Payment mode</option>
-                        <option value="cash">Cash</option>
-                        <option value="bankTransfer">Bank transfer</option>
-                        <option value="cheque">Cheque</option>
-                        <option value="creditCard">Credit card</option>
-                        <option value="debitCard">Debit card</option>
-                        <option value="payPal">Paypal</option>
-                        <option value="other">Other</option>
-                      </Form.Select>
-                    </InputGroup>
-                  </Form.Group>
-                </div>
-                <div className="mt-4 d-flex align-items-center">
-                  <div className="col-md-7">
-                    <Form.Group>
-                      <div className="d-flex align-items-center">
-                        <Form.Label className="custom-label mb-0">
-                          Amount
-                        </Form.Label>
-                        {errors.amount && (
-                          <ErrorOutlineOutlinedIcon className="text-danger ms-2" />
-                        )}
-                      </div>
-                      <InputGroup className="mt-1">
-                        <Form.Control
-                          aria-label="Default"
-                          aria-describedby="inputGroup-sizing-default"
-                          className="custom-textfield"
-                          {...register("amount")}
-                          value={refundStatus.amount}
-                          onChange={(e) =>
-                            setRefundStatus({
-                              ...refundStatus,
-                              amount: Number(e.target.value) || 0,
-                            })
-                          }
-                        />
-                      </InputGroup>
-                    </Form.Group>
-                  </div>
-                  <div className="ms-3 mt-4">
-                    Refund amount: {creditNote?.refundAmount}
-                  </div>
-                </div>
-              </DialogContent>
-              <DialogActions
-                sx={{
-                  display: "flex",
-                  gap: "8px",
-                  padding: "16px",
-                  justifyContent: "center",
+          {!fromSalesInvoice && (
+            <div>
+              <h2>{creditNote?.creditNoteId}</h2>
+              <button
+                onClick={() => {
+                  backToList();
+                  setShowCreditDetails(false);
                 }}
+                className="goBack-btn"
               >
-                <Button
-                  variant="contained"
-                  onClick={handleDialogSubmit}
+                <span>
+                  <ArrowBackIosIcon />
+                </span>
+                Back
+              </button>
+              <div className="edit-print-del-btn mb-3">
+                <div className="action-btn edit-btn">
+                  <EditOutlinedIcon className="action-icon" />
+                  Edit
+                </div>
+                <div className="divider"></div>
+                <div className="action-btn print-btn" onClick={reactToPrintFn}>
+                  <PrintOutlinedIcon className="action-icon" />
+                  Print
+                </div>
+                <div className="divider"></div>
+                {creditNote?.refundStatus &&
+                  creditNote.status != "Closed" &&
+                  creditNote.status != "On-Hold" && (
+                    <>
+                      <div
+                        className="ms-2 me-2 cursor-pointer"
+                        onClick={() => handleCreditNoteComplete()}
+                      >
+                        Mark as completed
+                      </div>
+                      <div className="divider"></div>
+                    </>
+                  )}
+                {!creditNote?.refundStatus && (
+                  <>
+                    {creditNote?.status === "Approved" &&
+                    status === "Approved" ? (
+                      <React.Fragment>
+                        <Menu
+                          anchorEl={openRefunds}
+                          open={openRefund}
+                          onClose={() => setOpenRefunds(null)}
+                          aria-labelledby="with-menu-demo-breadcrumbs"
+                        >
+                          <MenuItem onClick={handleOpenDialog}>
+                            Direct refund
+                          </MenuItem>
+                          <hr className="mt-0 mb-0" />
+                          <MenuItem onClick={handleFutureCredit}>
+                            Future credit
+                          </MenuItem>
+                          <hr className="mt-0 mb-0" />
+                          <MenuItem onClick={handleLinkToInvoice}>
+                            Link to invoice
+                          </MenuItem>
+                        </Menu>
+                        <Breadcrumbs aria-label="breadcrumbs">
+                          <div
+                            className="more-icon-btn ms-2 me-2 text-dark cursor-pointer"
+                            onClick={handleRefundClick}
+                          >
+                            Refunds
+                            <span className="ms-2">
+                              <KeyboardArrowDownIcon />
+                            </span>
+                          </div>
+                        </Breadcrumbs>
+                      </React.Fragment>
+                    ) : (
+                      <Form.Select
+                        aria-label="Default select example"
+                        className="salesOrder-dropdown-style"
+                        defaultValue="1"
+                        onChange={handleStatusChange}
+                      >
+                        <option value="1" disabled>
+                          Status
+                        </option>
+                        <option value="Approved">Approve</option>
+                        <option value="Reject">Reject</option>
+                      </Form.Select>
+                    )}
+                    <div className="divider"></div>
+                  </>
+                )}
+                <div
+                  className="ms-2 me-2 cursor-pointer"
+                  onClick={handleOpenCreateInvoice}
+                >
+                  Create invoice
+                </div>
+                <div className="divider"></div>
+                <React.Fragment>
+                  <Menu
+                    anchorEl={openMoreIcon}
+                    open={openIcon}
+                    onClose={() => setOpenMoreIcon(null)}
+                    aria-labelledby="with-menu-demo-breadcrumbs"
+                  >
+                    <MenuItem onClick={() => setOpenMoreIcon(null)}>
+                      Void
+                    </MenuItem>
+                    <hr className="mt-0 mb-0" />
+                    <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                  </Menu>
+                  <Breadcrumbs aria-label="breadcrumbs">
+                    <IconButton
+                      className="more-icon-btn"
+                      size="large"
+                      onClick={handleClick}
+                    >
+                      <MoreVertOutlinedIcon />
+                    </IconButton>
+                  </Breadcrumbs>
+                </React.Fragment>
+                <Dialog
+                  open={openDialog}
+                  onClose={() => setOpenDialog(false)}
+                  aria-describedby="alert-dialog-slide-description"
                   sx={{
-                    fontWeight: "normal",
-                    paddingTop: "5px",
-                    paddingBottom: "3px",
-                    backgroundColor: "#1F3F7F",
-                    textTransform: "capitalize",
+                    "& .MuiDialog-paper": {
+                      width: "600px",
+                      maxWidth: "80vw",
+                    },
                   }}
                 >
-                  Save
-                </Button>
-                <Button
-                  onClick={() => setOpenDialog(false)}
-                  sx={{
-                    backgroundColor: "#CFCFCF",
-                    color: "black",
-                    fontWeight: "normal",
-                    paddingTop: "5px",
-                    paddingBottom: "3px",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  Cancel
-                </Button>
-              </DialogActions>
-            </Dialog>
-            <div className="divider"></div>
-          </div>
+                  <DialogTitle className="purchase-list" sx={{ padding: 0 }}>
+                    <h2>Direct Refund ({creditNote?.creditNoteId})</h2>
+                  </DialogTitle>
+                  <DialogContent>
+                    <div className="mt-3 col-md-7">
+                      <Form.Group>
+                        <div className="d-flex align-items-center">
+                          <Form.Label className="custom-label mb-0">
+                            Refunded on
+                          </Form.Label>
+                          {errors.refundDate && (
+                            <ErrorOutlineOutlinedIcon className="text-danger ms-2" />
+                          )}
+                        </div>
+                        <InputGroup className="mt-1">
+                          <Form.Control
+                            aria-label="Default"
+                            aria-describedby="inputGroup-sizing-default"
+                            className="custom-textfield"
+                            name="packageReceipt"
+                            type="date"
+                            {...register("refundDate")}
+                            value={refundStatus.refundDate}
+                            onChange={(e) =>
+                              setRefundStatus({
+                                ...refundStatus,
+                                refundDate: e.target.value,
+                              })
+                            }
+                          />
+                        </InputGroup>
+                      </Form.Group>
+                    </div>
+                    <div className="mt-4 col-md-7">
+                      <Form.Group>
+                        <div className="d-flex align-items-center">
+                          <Form.Label className="custom-label mb-0">
+                            Payment mode
+                          </Form.Label>
+                          {errors.paymentMode && (
+                            <ErrorOutlineOutlinedIcon className="text-danger ms-2" />
+                          )}
+                        </div>
+                        <InputGroup className="mt-1">
+                          <Form.Select
+                            aria-label="Select"
+                            className="custom-textfield"
+                            name="paymentMode"
+                            {...register("paymentMode")}
+                            value={refundStatus.paymentMode}
+                            onChange={(e) =>
+                              setRefundStatus({
+                                ...refundStatus,
+                                paymentMode: e.target.value,
+                              })
+                            }
+                          >
+                            <option value="">Payment mode</option>
+                            <option value="cash">Cash</option>
+                            <option value="bankTransfer">Bank transfer</option>
+                            <option value="cheque">Cheque</option>
+                            <option value="creditCard">Credit card</option>
+                            <option value="debitCard">Debit card</option>
+                            <option value="payPal">Paypal</option>
+                            <option value="other">Other</option>
+                          </Form.Select>
+                        </InputGroup>
+                      </Form.Group>
+                    </div>
+                    <div className="mt-4 d-flex align-items-center">
+                      <div className="col-md-7">
+                        <Form.Group>
+                          <div className="d-flex align-items-center">
+                            <Form.Label className="custom-label mb-0">
+                              Amount
+                            </Form.Label>
+                            {errors.amount && (
+                              <ErrorOutlineOutlinedIcon className="text-danger ms-2" />
+                            )}
+                          </div>
+                          <InputGroup className="mt-1">
+                            <Form.Control
+                              aria-label="Default"
+                              aria-describedby="inputGroup-sizing-default"
+                              className="custom-textfield"
+                              {...register("amount")}
+                              value={refundStatus.amount}
+                              onChange={(e) =>
+                                setRefundStatus({
+                                  ...refundStatus,
+                                  amount: Number(e.target.value) || 0,
+                                })
+                              }
+                            />
+                          </InputGroup>
+                        </Form.Group>
+                      </div>
+                      <div className="ms-3 mt-4">
+                        Refund amount: {creditNote?.refundAmount}
+                      </div>
+                    </div>
+                  </DialogContent>
+                  <DialogActions
+                    sx={{
+                      display: "flex",
+                      gap: "8px",
+                      padding: "16px",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={handleDialogSubmit}
+                      sx={{
+                        fontWeight: "normal",
+                        paddingTop: "5px",
+                        paddingBottom: "3px",
+                        backgroundColor: "#1F3F7F",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      onClick={() => setOpenDialog(false)}
+                      sx={{
+                        backgroundColor: "#CFCFCF",
+                        color: "black",
+                        fontWeight: "normal",
+                        paddingTop: "5px",
+                        paddingBottom: "3px",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+                <div className="divider"></div>
+              </div>
+            </div>
+          )}
           <div className="sales-invoice-outer-card mt-5" ref={componentRef}>
             <p
               className={

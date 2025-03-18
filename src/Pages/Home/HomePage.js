@@ -1,10 +1,12 @@
 import React from "react";
-import Home from "../../images/home.svg";
+import Home from "../../assests/images/home.svg";
 import HomeCard from "./HomeCard";
+import Header from "../Header/Header";
 
 const HomePage = () => {
   return (
     <>
+    <Header/>
       <div class="top-content">
         <div class="row main-content">
           <div class="col-12 col-md-8 home-top">

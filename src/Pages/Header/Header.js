@@ -1,5 +1,5 @@
 import React from 'react'
-import mooitLogo from "../../images/mooit-logo.svg";
+import mooitLogo from "../../assests/images/mooit-logo.svg";
 import { Link } from 'react-router-dom';
 
 const Header = () => {
@@ -29,12 +29,12 @@ const Header = () => {
                   <Link class="nav-link" to="">Blog</Link>
                 </li>
                 <li class="nav-item">
-                  <Link class="nav-link" to="">Contact</Link>
+                  <Link class="nav-link" to="/admin">Contact</Link>
                 </li>
               </ul>
               <div class="d-flex ms-auto flex-wrap align-items-center fw-bold button-group">
                 <div class="nav-item login-btn">
-                  <Link class="nav-link" to="/admin">Login</Link>
+                  <Link class="nav-link" to="/login">Login</Link>
                 </div>
                 <button class="btn btn-outline-secondary text-dark fw-bold try-it-btn">Try it free</button>
               </div>

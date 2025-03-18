@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import warehouse from "../../images/warehouse.svg";
+import warehouse from "../../assests/images/warehouse.svg";
 import { dashboardItems } from "../../Data/SidebarData";
-import mooitLogo from "../../images/mooit-logo.svg";
+import mooitLogo from "../../assests/images/mooit-logo.svg";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { FaCaretDown, FaCaretRight } from "react-icons/fa";

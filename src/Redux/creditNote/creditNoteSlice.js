@@ -90,6 +90,20 @@ export const getCreditNoteDetailsByCreditNoteId = createAsyncThunk(
   }
 );
 
+export const getCreditNoteDetailsByInvoiceId = createAsyncThunk(
+  "getCreditNoteDetailsByInvoiceId",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:4000/api/getCreditNoteDetailsByInvoiceId/${id}`
+      );
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  }
+);
+
 const creditNoteSlice = createSlice({
   name: "creditNoteSlice",
   initialState: {
@@ -118,7 +132,8 @@ const creditNoteSlice = createSlice({
         getAllCreditNotes,
         deleteCreditNoteByCreditNoteId,
         updateCreditNote,
-        getCreditNoteDetailsByCreditNoteId
+        getCreditNoteDetailsByCreditNoteId,
+        getCreditNoteDetailsByInvoiceId
     ].forEach((action) => {
       builder
         .addCase(action.pending, handlePending)

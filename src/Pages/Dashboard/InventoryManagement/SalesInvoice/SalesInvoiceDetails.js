@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import { Menu, MenuItem, IconButton, Breadcrumbs } from "@mui/material";
@@ -11,6 +11,12 @@ import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { refundDialogSchema } from "../../../../Helper/validation";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import SalesInvoiceReceipt from "./SalesInvoiceReceipt";
 import {
   Dialog,
   DialogActions,
@@ -28,6 +34,8 @@ import {
   editSalesInvoice,
 } from "../../../../Redux/salesInvoiceSlice/salesInvoice";
 import { useReactToPrint } from "react-to-print";
+import { getCreditNoteDetailsByInvoiceId } from "../../../../Redux/creditNote/creditNoteSlice";
+import NewCreditNoteDetails from "../CreditNote/NewCreditNoteDetails";
 
 const SalesInvoiceDetails = ({ backToList, salesInvoice }) => {
   const [openMoreIcon, setOpenMoreIcon] = React.useState(null);
@@ -37,6 +45,7 @@ const SalesInvoiceDetails = ({ backToList, salesInvoice }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const componentRef = React.useRef(null);
+  const [creditNote, setCreditNote] = useState({})
 
   const handleAfterPrint = React.useCallback(() => {
     console.log("`onAfterPrint` called");
@@ -175,6 +184,14 @@ const SalesInvoiceDetails = ({ backToList, salesInvoice }) => {
         })
       );
   };
+
+  useEffect(() => {
+    dispatch(getCreditNoteDetailsByInvoiceId(salesInvoice?.invoiceId))
+    .unwrap()
+    .then((response) => {
+      setCreditNote(response)
+    })
+  },[dispatch])
 
   return (
     <div className="purchase-list">
@@ -368,6 +385,47 @@ const SalesInvoiceDetails = ({ backToList, salesInvoice }) => {
           </DialogActions>
         </Dialog>
         <div className="divider"></div>
+      </div>
+      <div>
+        <Accordion
+          sx={{
+            boxShadow: "none",
+          }}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography sx={{ fontWeight: "bold" }}>
+              Original Invoice
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              <SalesInvoiceReceipt salesInvoice={salesInvoice}/>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion
+          sx={{
+            boxShadow: "none",
+            borderBottom: "1px solid #ddd",
+          }}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel2a-content"
+            id="panel2a-header"
+          >
+            <Typography sx={{ fontWeight: "bold" }}>Credit note</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              <NewCreditNoteDetails creditNote={creditNote} fromSalesInvoice={true}/>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
       </div>
       <div className="sales-invoice-outer-card mt-5" ref={componentRef}>
         <p

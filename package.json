@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^4.0.0",
     "@mui/icons-material": "^6.2.0",
+    "@mui/joy": "^5.0.0-beta.51",
     "@mui/material": "^6.3.0",
     "@mui/x-charts": "^7.23.2",
     "@mui/x-date-pickers": "^7.23.3",
@@ -29,6 +30,7 @@
     "react-to-print": "^3.0.4",
     "react-toastify": "^11.0.3",
     "redux-thunk": "^3.1.0",
+    "swiper": "^11.2.5",
     "yup": "^1.6.1"
   },
   "scripts": {

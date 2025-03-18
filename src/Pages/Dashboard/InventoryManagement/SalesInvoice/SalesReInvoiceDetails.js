@@ -82,47 +82,6 @@ const SalesReInvoiceDetails = ({ backToList }) => {
         </React.Fragment>
         <div className="divider"></div>
       </div>
-      <div>
-        <Accordion
-          sx={{
-            boxShadow: "none",
-          }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography sx={{ fontWeight: "bold" }}>
-              Original Invoice
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              <SalesInvoiceReceipt />
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion
-          sx={{
-            boxShadow: "none",
-            borderBottom: "1px solid #ddd",
-          }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
-            <Typography sx={{ fontWeight: "bold" }}>Credit note</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              <SalesInvoiceReceipt />
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-      </div>
       <div className="sales-invoice-outer-card mt-5">
       <p className={paymentStatus == "paid" ? "paid-label" : paymentStatus == "halfPaid" ?"half-paid-label" : "pending-label"}>{paymentStatus === "halfPaid" ? "Half Paid" : paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1)}</p>
         <div className="sales-invoice-detail">

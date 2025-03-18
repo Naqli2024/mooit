@@ -32,5 +32,5 @@ export const dashboardItems = [
     ],
   },
   { item: "Warehouse management", path: "warehouse-management", icon: <FaWarehouse /> },
-  { item: "User", path: "user", icon: <FaUsers /> },
+  { item: "Employees", path: "employees", icon: <FaUsers /> },
 ];
