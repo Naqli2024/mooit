@@ -84,3 +84,52 @@ export const deleteAccountSchema = yup.object().shape({
   reason: yup.string().required("Reason is required"),
   feedback: yup.string().required("Feedback is required"),
 });
+
+export const forgotPasswordEmailSchema = yup.object().shape({
+  emailId: yup.string().required("Email is required"),
+  newPassword: yup.string().required("New password is required"),
+  confirmNewPassword: yup.string().required("Confirm password is required"),
+});
+
+export const signUpSchema = yup.object().shape({
+  firstName: yup.string().required("First name is required"),
+  lastName: yup.string().required("Last name is required"),
+  emailId: yup.string().required("Email id is required"),
+  companyName: yup.string().required("Company name is required"),
+  phoneNumber: yup.string().required("Phone Number is required"),
+  password: yup.string().required("Password is required"),
+  confirmPassword: yup.string().required("Confirm Password is required"),
+  country: yup.string().required("Country is required"),
+  state: yup.string().required("State is required"),
+  city: yup.string().required("City is required"),
+  accountType: yup.string().required("Account type is required"),
+});
+
+export const signInSchema = yup.object().shape({
+  emailId: yup.string().required("Email is required"),
+  password: yup.string().required("Password is required"),
+});
+
+export const companyDetailsSchema = yup.object().shape({
+  companyName: yup.string().required("Company name is required"),
+  companyType: yup.string().required("Company type is required"),
+  website: yup.string().required("Website is required"),
+  country: yup.string().required("Country is required"),
+  state: yup.string().required("State is required"),
+  city: yup.string().required("City is required"),
+  streetName1: yup.string().required("Street name1 is required"),
+  zipCode: yup.string().required("Zip code is required"),
+  faxNumber: yup.string().required("Fax number is required"),
+  mobileNo: yup.string().required("Mobile number is required"),
+});
+
+export const newFloorManagementSchema = yup.object().shape({
+  warehouseName: yup.string().required("Warehouse name is required"),
+  country: yup.string().required("Country is required"),
+  state: yup.string().required("State is required"),
+  city: yup.string().required("City is required"),
+  postalCode: yup.string().required("Postal code is required"),
+  address: yup.string().required("Address is required"),
+  status: yup.string().required("Status is required"),
+  warehouseManger: yup.string().required("Warehouse manager no is required"),
+});

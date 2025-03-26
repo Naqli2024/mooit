@@ -24,6 +24,19 @@ export const createAccount = createAsyncThunk(
   }
 );
 
+// edit account
+export const editAccount = createAsyncThunk(
+  "auth/editAccount",
+  async ({id, payload}, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.put(`${baseUrl}/edit-account/${id}`, payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  }
+);
+
 // Async action to verify email
 export const verifyEmail = createAsyncThunk(
   "auth/verifyEmail",
@@ -74,9 +87,11 @@ export const logout = createAsyncThunk(
 // Async action for delete account
 export const deleteAccount = createAsyncThunk(
   "auth/deleteAccount",
-  async (id, { rejectWithValue }) => {
+  async ({id, payload}, { rejectWithValue }) => {
     try {
-      const { data } = await axios.delete(`${baseUrl}/delete-account`);
+      const { data } = await axios.delete(`${baseUrl}/delete-account/${id}`, {
+        data: payload  
+      });
       return data;
     } catch (error) {
       return rejectWithValue(handleApiError(error));
@@ -191,7 +206,20 @@ const authSlice = createSlice({
         state.loading = false;
         state.data = null;
         state.error = action.payload;
-      });
+      })
+      .addCase(editAccount.pending, state => {
+        state.loading = true
+      })
+      .addCase(editAccount.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+        state.error = null
+      })
+      .addCase(editAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.data = null;
+        state.error = action.payload
+      })
   },
 });
 

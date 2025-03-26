@@ -34,7 +34,8 @@ import {employeeReducer} from "./employee/employeeSlice";
 import empJobRoles from "./employee/employeeJobRoles";
 import {generateEmployeeIdReducer} from "./employee/employeeSlice";
 import createAccountReducer from "./auth/authSlice";
-import passwordSlice from "./auth/updatePassword"
+import passwordSlice from "./auth/updatePassword";
+import warehouse from "./floorManagement/warehouseSlice";
 
 const store = configureStore({
   reducer: {
@@ -73,7 +74,8 @@ const store = configureStore({
     empJobRoles: empJobRoles,
     generateEmployeeId: generateEmployeeIdReducer,
     createAccount: createAccountReducer,
-    password: passwordSlice
+    password: passwordSlice,
+    warehouse: warehouse
   },
 });
 

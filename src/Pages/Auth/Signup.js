@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -15,6 +15,10 @@ import { toast, ToastContainer } from "react-toastify";
 import { createAccount } from "../../Redux/auth/authSlice";
 import Loader from "../../Helper/Loader";
 import EmailVerificationModal from "../../Helper/EmailVerificationModal";
+import { signUpSchema } from "../../Helper/validation";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +41,15 @@ const Signup = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data } = useSelector((state) => state.createAccount);
+
+    const {
+      register,
+      handleSubmit,
+      setValue,
+      trigger,
+      formState: { errors },
+    } = useForm({ resolver: yupResolver(signUpSchema) });
 
   const handleCheckboxChange = () => {
     setIsChecked((prev) => !prev);
@@ -78,19 +91,19 @@ const Signup = () => {
         // Open the modal after successful registration
         setIsModalOpen(true);
         // Reset form data only after successful account creation
-        // setFormData({
-        //   firstName: "",
-        //   lastName: "",
-        //   emailId: "",
-        //   companyName: "",
-        //   phoneNumber: "",
-        //   password: "",
-        //   confirmPassword: "",
-        //   country: "",
-        //   state: "",
-        //   city: "",
-        //   accountType: "",
-        // });
+        setFormData({
+          firstName: "",
+          lastName: "",
+          emailId: "",
+          companyName: "",
+          phoneNumber: "",
+          password: "",
+          confirmPassword: "",
+          country: "",
+          state: "",
+          city: "",
+          accountType: "",
+        });
       })
       .catch((error) => {
         setLoading(false);
@@ -98,8 +111,14 @@ const Signup = () => {
       });
   };
 
+  useEffect(() => {
+    if(data?.data?.user) {
+      navigate("/admin/dashboard")
+    }
+  },[data, navigate])
+
   return (
-    <div className="signup">
+    <form onSubmit={handleSubmit(handleCreateAccount)} className="signup">
       {loading && <Loader isLoading={loading} />}
       <div className="emp-cancel-icon" onClick={handleLogin}>
         <CloseIcon className="fs-5 text-secondary" />
@@ -129,7 +148,10 @@ const Signup = () => {
         </p>
         <div className="create-account-field">
           <Form.Group className="col-md-5 mb-3">
-            <Form.Label>First name</Form.Label>
+          <div className="d-flex align-items-center">
+                  <Form.Label className="custom-label mb-0">First name</Form.Label>
+                  {errors.firstName && <ErrorOutlineOutlinedIcon className="text-danger ms-2" />}
+                </div>
             <InputGroup>
               <Form.Control
                 aria-label="Default"
@@ -138,11 +160,15 @@ const Signup = () => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
+                {...register("firstName")}
               />
             </InputGroup>
           </Form.Group>
           <Form.Group className="col-md-5 mb-3">
-            <Form.Label>Last name</Form.Label>
+          <div className="d-flex align-items-center">
+                  <Form.Label className="custom-label mb-0">Last name</Form.Label>
+                  {errors.lastName && <ErrorOutlineOutlinedIcon className="text-danger ms-2" />}
+                </div>
             <InputGroup>
               <Form.Control
                 aria-label="Default"
@@ -151,13 +177,17 @@ const Signup = () => {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
+                {...register("lastName")}
               />
             </InputGroup>
           </Form.Group>
         </div>
         <div className="create-account-field">
           <Form.Group className="col-md-12 mb-3">
-            <Form.Label>Email Id</Form.Label>
+          <div className="d-flex align-items-center">
+                  <Form.Label className="custom-label mb-0">Email Id</Form.Label>
+                  {errors.firstName && <ErrorOutlineOutlinedIcon className="text-danger ms-2" />}
+                </div>
             <InputGroup>
               <Form.Control
                 aria-label="Default"
@@ -166,13 +196,17 @@ const Signup = () => {
                 name="emailId"
                 value={formData.emailId}
                 onChange={handleChange}
+                {...register("emailId")}
               />
             </InputGroup>
           </Form.Group>
         </div>
         <div className="create-account-field">
           <Form.Group className="col-md-5 mb-3">
-            <Form.Label>Company name</Form.Label>
+          <div className="d-flex align-items-center">
+                  <Form.Label className="custom-label mb-0">Company name</Form.Label>
+                  {errors.companyName && <ErrorOutlineOutlinedIcon className="text-danger ms-2" />}
+                </div>
             <InputGroup>
               <Form.Control
                 aria-label="Default"
@@ -181,11 +215,15 @@ const Signup = () => {
                 name="companyName"
                 value={formData.companyName}
                 onChange={handleChange}
+                {...register("companyName")}
               />
             </InputGroup>
           </Form.Group>
           <Form.Group className="col-md-5 mb-3">
-            <Form.Label>Phone number</Form.Label>
+          <div className="d-flex align-items-center">
+                  <Form.Label className="custom-label mb-0">Phone number</Form.Label>
+                  {errors.phoneNumber && <ErrorOutlineOutlinedIcon className="text-danger ms-2" />}
+                </div>
             <InputGroup>
               <Form.Control
                 aria-label="Default"
@@ -194,13 +232,17 @@ const Signup = () => {
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
+                {...register("phoneNumber")}
               />
             </InputGroup>
           </Form.Group>
         </div>
         <div className="create-account-field">
           <Form.Group className="col-md-5 mb-3">
-            <Form.Label>Password</Form.Label>
+          <div className="d-flex align-items-center">
+                  <Form.Label className="custom-label mb-0">Password</Form.Label>
+                  {errors.password && <ErrorOutlineOutlinedIcon className="text-danger ms-2" />}
+                </div> 
             <InputGroup>
               <Form.Control
                 aria-label="Default"
@@ -210,6 +252,7 @@ const Signup = () => {
                 type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={handleChange}
+                {...register("password")}
               />
               <InputGroup.Text
                 onClick={() => setShowPassword(!showPassword)}
@@ -223,7 +266,10 @@ const Signup = () => {
             </InputGroup>
           </Form.Group>
           <Form.Group className="col-md-5 mb-3">
-            <Form.Label>Confirm password</Form.Label>
+          <div className="d-flex align-items-center">
+                  <Form.Label className="custom-label mb-0">Confirm Password</Form.Label>
+                  {errors.confirmPassword && <ErrorOutlineOutlinedIcon className="text-danger ms-2" />}
+                </div> 
             <InputGroup>
               <Form.Control
                 aria-label="Default"
@@ -233,6 +279,7 @@ const Signup = () => {
                 type={showConfirmPassword ? "text" : "password"}
                 value={formData.confirmPassword}
                 onChange={handleChange}
+                {...register("confirmPassword")}
               />
               <InputGroup.Text
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -248,7 +295,10 @@ const Signup = () => {
         </div>
         <div className="create-account-field">
           <Form.Group className="col-md-5 mb-3">
-            <Form.Label>Country</Form.Label>
+          <div className="d-flex align-items-center">
+                  <Form.Label className="custom-label mb-0">Country</Form.Label>
+                  {errors.country && <ErrorOutlineOutlinedIcon className="text-danger ms-2" />}
+                </div> 
             <InputGroup>
               <Form.Control
                 aria-label="Default"
@@ -257,11 +307,15 @@ const Signup = () => {
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
+                {...register("country")}
               />
             </InputGroup>
           </Form.Group>
           <Form.Group className="col-md-5 mb-3">
-            <Form.Label>State</Form.Label>
+          <div className="d-flex align-items-center">
+                  <Form.Label className="custom-label mb-0">State</Form.Label>
+                  {errors.state && <ErrorOutlineOutlinedIcon className="text-danger ms-2" />}
+                </div> 
             <InputGroup>
               <Form.Control
                 aria-label="Default"
@@ -270,13 +324,17 @@ const Signup = () => {
                 name="state"
                 value={formData.state}
                 onChange={handleChange}
+                {...register("state")}
               />
             </InputGroup>
           </Form.Group>
         </div>
         <div className="create-account-field">
           <Form.Group className="col-md-5 mb-3">
-            <Form.Label>City</Form.Label>
+          <div className="d-flex align-items-center">
+                  <Form.Label className="custom-label mb-0">City</Form.Label>
+                  {errors.city && <ErrorOutlineOutlinedIcon className="text-danger ms-2" />}
+                </div> 
             <InputGroup>
               <Form.Control
                 aria-label="Default"
@@ -285,19 +343,24 @@ const Signup = () => {
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
+                {...register("city")}
               />
             </InputGroup>
           </Form.Group>
           <Form.Group className="col-md-5 mb-3">
-            <Form.Label>Account type</Form.Label>
+          <div className="d-flex align-items-center">
+                  <Form.Label className="custom-label mb-0">Account type</Form.Label>
+                  {errors.accountType && <ErrorOutlineOutlinedIcon className="text-danger ms-2" />}
+                </div> 
             <Form.Select
               aria-label="Default select example"
               style={{ height: "45px" }}
               name="accountType"
               value={formData.accountType}
               onChange={handleChange}
+              {...register("accountType")}
             >
-              <option value="1">Account type</option>
+              <option value="">Account type</option>
               <option value="admin">Single User</option>
               <option value="user">Super User</option>
             </Form.Select>
@@ -322,7 +385,7 @@ const Signup = () => {
         </p>
         <div className="mt-4 d-flex justify-content-center w-100">
           <button
-            type="button"
+            type="submit"
             className="btn create-acc-btn p-2"
             onClick={handleCreateAccount}
           >
@@ -342,7 +405,7 @@ const Signup = () => {
       <ToastContainer />
       {/* Modal will only show when isModalOpen is true */}
       <EmailVerificationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </div>
+    </form>
   );
 };
 

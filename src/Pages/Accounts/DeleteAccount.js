@@ -17,10 +17,20 @@ import {
 } from "@mui/material";
 import { deleteAccountSchema } from "../../Helper/validation";
 import CloseIcon from "@mui/icons-material/Close";
+import { useDispatch, useSelector } from "react-redux";
+import { clearAuthState, deleteAccount } from "../../Redux/auth/authSlice";
+import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const DeleteAccount = () => {
   const [openDeleteAccountDialog, setOpenDeleteAccountDialog] = useState(false);
   const [openConfirmDeleteDialog, setOpenConfirmDeleteDialog] = useState(false);
+  const [reason, setReason] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { data } = useSelector((state) => state.createAccount);
+  const user = data?.data?.user ? data.data.user : {};
 
   const {
     register,
@@ -31,12 +41,32 @@ const DeleteAccount = () => {
   } = useForm({ resolver: yupResolver(deleteAccountSchema) });
 
   const handleDialogSubmit = async () => {
-    const isValid = await trigger(["reason", "feedback"]);
+    const isValid = await trigger(["reason", "username"]);
     if (isValid) {
       setOpenConfirmDeleteDialog(true);
       setOpenDeleteAccountDialog(false);
     }
   };
+
+  const handleAccountDelete = () => {
+    const payload = {
+      reason: reason || "No reason provided",
+      feedback: feedback || "No feedback provided"
+    }
+    dispatch(deleteAccount({id: user?._id, payload}))
+    .unwrap()
+    .then((response) => {
+      toast.success(response.message, {
+        position: "top-center",
+        closeButton: false
+      })
+      dispatch(clearAuthState()); 
+      setTimeout(() => {
+        navigate("/login"); 
+      }, 200);
+    })
+    .catch((error)=> toast.error(error))
+  }
 
   return (
     <div className="purchase-list">
@@ -99,12 +129,14 @@ const DeleteAccount = () => {
                   <Form.Select
                     aria-label="Default select example"
                     {...register("reason")}
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
                   >
                     <option value="">Select Reason</option>
-                    <option value="english">Business Closure</option>
-                    <option value="arabic">Personal Reasons</option>
-                    <option value="hindi">Financial Reasons</option>
-                    <option value="hindi">Business-Related Reasons</option>
+                    <option value="Business Closure">Business Closure</option>
+                    <option value="Personal Reasons">Personal Reasons</option>
+                    <option value="Financial Reasons">Financial Reasons</option>
+                    <option value="Business-Related Reasons">Business-Related Reasons</option>
                   </Form.Select>
                 </Form.Group>
               </div>
@@ -116,9 +148,6 @@ const DeleteAccount = () => {
                     <Form.Label className="custom-label mb-0">
                       Share Feedback
                     </Form.Label>
-                    {errors.feedback && (
-                      <ErrorOutlineOutlinedIcon className="text-danger ms-2" />
-                    )}
                   </div>
                   <InputGroup className="mt-2">
                     <Form.Control
@@ -126,7 +155,8 @@ const DeleteAccount = () => {
                       rows={4}
                       aria-label="Feedback"
                       className="description-textfield"
-                      {...register("feedback")}
+                      value={feedback}
+                      onChange={(e) => setFeedback(e.target.value)}
                     />
                   </InputGroup>
                 </Form.Group>
@@ -172,7 +202,8 @@ const DeleteAccount = () => {
             </div>
             <p className="mt-3 mb-3 text-center fw-bold">Delete Account</p>
             <p className="mt-3 mb-3 text-center text-danger">
-              <span className="fw-bold">Warning :</span> This is permanent and cannot be Undone
+              <span className="fw-bold">Warning :</span> This is permanent and
+              cannot be Undone
             </p>
             <div className="mt-5 d-flex justify-content-center align-items-center">
               <div className="col-md-8">
@@ -180,10 +211,14 @@ const DeleteAccount = () => {
                   <Form.Label className="custom-label mb-0">
                     Confirm Username
                   </Form.Label>
+                  {errors.username && (
+                    <ErrorOutlineOutlinedIcon className="text-danger ms-2" />
+                  )}
                   <InputGroup className="mt-2">
                     <Form.Control
                       aria-label="confirm-username"
                       className="custom-textfield"
+                      {...register("username")}
                     />
                   </InputGroup>
                 </Form.Group>
@@ -208,6 +243,7 @@ const DeleteAccount = () => {
                 textTransform: "capitalize",
                 width: "150px",
               }}
+              onClick={handleAccountDelete}
             >
               Delete
             </Button>
@@ -228,6 +264,7 @@ const DeleteAccount = () => {
           </DialogActions>
         </Dialog>
       </div>
+      <ToastContainer />
     </div>
   );
 };

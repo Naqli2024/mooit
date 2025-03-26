@@ -13,8 +13,15 @@ import { useDispatch } from "react-redux";
 import { userLogin } from "../../Redux/auth/authSlice";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../Helper/Loader";
+import ForgotPasswordModal from "../Accounts/ForgotPasswordModal";
+import { signInSchema } from "../../Helper/validation";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 
 const Login = () => {
+  const [openForgotPasswordDialog, setOpenForgotPasswordDialog] =
+    useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -23,6 +30,15 @@ const Login = () => {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(signInSchema),
+    mode: "onBlur",
+  });
 
   const backToHome = () => {
     navigate("/");
@@ -60,7 +76,7 @@ const Login = () => {
   };
 
   return (
-    <div className="login">
+    <form onSubmit={handleSubmit(handleLogin)} className="login">
       {loading && <Loader isLoading={loading} />}
       <div className="emp-cancel-icon" onClick={backToHome}>
         <CloseIcon className="fs-5 text-secondary" />
@@ -77,12 +93,18 @@ const Login = () => {
           <div className="col-12 col-md-6 login-form">
             <p className="login-text">Login</p>
             <Form.Group className="col-md-10 mb-3">
-              <Form.Label>Email Id</Form.Label>
+              <div className="d-flex align-items-center">
+                <Form.Label className="custom-label mb-0">Email Id</Form.Label>
+                {errors.emailId && (
+                  <ErrorOutlineOutlinedIcon className="text-danger ms-2" />
+                )}
+              </div>
               <InputGroup>
                 <Form.Control
                   aria-label="Default"
                   aria-describedby="inputGroup-sizing-default"
-                  className="custom-textfield"
+                  className="custom-textfield mt-2"
+                  {...register("emailId")}
                   name="emailId"
                   value={loginData.emailId}
                   onChange={handleChange}
@@ -90,12 +112,18 @@ const Login = () => {
               </InputGroup>
             </Form.Group>
             <Form.Group className="col-md-10 mb-3">
-              <Form.Label>Password</Form.Label>
+              <div className="d-flex align-items-center">
+                <Form.Label className="custom-label mb-0">Password</Form.Label>
+                {errors.password && (
+                  <ErrorOutlineOutlinedIcon className="text-danger ms-2" />
+                )}
+              </div>
               <InputGroup>
                 <Form.Control
                   aria-label="Default"
                   aria-describedby="inputGroup-sizing-default"
-                  className="custom-textfield"
+                  className="custom-textfield mt-2"
+                  {...register("password")}
                   name="password"
                   type={showPassword ? "text" : "password"}
                   value={loginData.password}
@@ -103,6 +131,7 @@ const Login = () => {
                 />
                 <InputGroup.Text
                   onClick={() => setShowPassword(!showPassword)}
+                  className="mt-2"
                   style={{
                     cursor: "pointer",
                     background: "transparent",
@@ -112,13 +141,18 @@ const Login = () => {
                 </InputGroup.Text>
               </InputGroup>
             </Form.Group>
-            <div className="text-primary cursor-pointer">Forgot Password?</div>
+            <div
+              className="text-primary cursor-pointer"
+              onClick={() => setOpenForgotPasswordDialog(true)}
+            >
+              Forgot Password?
+            </div>
             <div className="mt-4 d-flex col-md-10 justify-content-center">
               <button
                 type="submit"
                 className="btn flex-grow-1 p-2"
                 style={{ color: "white", backgroundColor: "#1F3F7F" }}
-                onClick={handleLogin}
+                // onClick={handleLogin}
               >
                 Login
               </button>
@@ -159,7 +193,13 @@ const Login = () => {
         className="login-background"
       />
       <ToastContainer />
-    </div>
+      {openForgotPasswordDialog && (
+        <ForgotPasswordModal
+          openForgotPasswordDialog={openForgotPasswordDialog}
+          setOpenForgotPasswordDialog={setOpenForgotPasswordDialog}
+        />
+      )}
+    </form>
   );
 };
 

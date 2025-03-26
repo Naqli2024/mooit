@@ -31,6 +31,14 @@ export const dashboardItems = [
       { item: "Category", path: "category" },
     ],
   },
-  { item: "Warehouse management", path: "warehouse-management", icon: <FaWarehouse /> },
+  { item: "Warehouse management",
+    path: "warehouse-management",
+    icon: <FaWarehouse />,
+    submenus: [
+      {item: "Storage",path: "storage"},
+      {item: "Floor management",path: "floor-management"},
+      {item: "Transfer log",path: "transfer-log"},
+    ]
+   },
   { item: "Employees", path: "employees", icon: <FaUsers /> },
 ];

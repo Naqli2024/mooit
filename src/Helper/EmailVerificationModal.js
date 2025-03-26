@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const EmailVerificationModal = ({ isOpen, onClose }) => {
@@ -7,12 +7,16 @@ const EmailVerificationModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/login");
+    if(data?.data?.isVerified) {
+      navigate("/login")
+    }
   };
 
   useEffect(() => {
     if (data) {
       console.log(data);
+    } if(data?.data?.user) {
+      navigate("/admin")
     }
   }, [data, onClose]);
 
@@ -21,7 +25,7 @@ const EmailVerificationModal = ({ isOpen, onClose }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        {data.isVerified ? (
+        {data?.data?.isVerified ? (
           <div className="email-verify-modal-1">
             <p>Email verified successfully.</p>
             <button

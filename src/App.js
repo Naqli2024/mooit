@@ -14,7 +14,6 @@ import SalesOrder from "./Pages/Dashboard/InventoryManagement/Salesorder/SalesOr
 import Packages from "./Pages/Dashboard/InventoryManagement/Packages/Packages";
 import Storage from "./Pages/Dashboard/Storage";
 import Return from "./Pages/Dashboard/Return";
-import FloorManagement from "./Pages/Dashboard/FloorManagement";
 import VendorPayment from "./Pages/Dashboard/VendorPayment";
 import Invoices from "./Pages/Dashboard/Invoices";
 import VendorManagement from "./Pages/Dashboard/VendorManagement";
@@ -48,6 +47,8 @@ import UserSettings from "./Pages/Accounts/UserSettings";
 import DeleteAccount from "./Pages/Accounts/DeleteAccount";
 import AccountMain from "./Pages/Accounts/AccountMain";
 import Authentication from "./Pages/Accounts/Authentication";
+import CompanyDetailsForm from "./Pages/CompanyDetails/CompanyDetailsForm";
+import FloorManagement from "./Pages/Dashboard/WarehouseManagement/FloorManagement/FloorManagement";
 
 function App() {
   const location = useLocation();
@@ -72,7 +73,7 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={data ? <Navigate to="/admin/dashboard" /> : <Login />} />
+        <Route path="/login" element={data?.data?.user ? <Navigate to="/admin/dashboard" /> : <Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/user/updatePassword" element={<UpdatePassword />} />
         <Route path="/verify-email" element={<InVerifyEmail />} />
@@ -82,6 +83,7 @@ function App() {
           <Route path="/admin" element={<Main />}>
             <Route index element={<Navigate to="/admin/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="company-details" element={<CompanyDetailsForm />} />
             <Route path="purchase-list" element={<PurchaseList />} />
             <Route path="vendors" element={<Vendors />} />
             <Route path="purchase-details/:id" element={<PurchaseDetails />} />
